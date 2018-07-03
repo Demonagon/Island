@@ -3,6 +3,9 @@ GLLIBS = -L/usr/X11R6/lib -lglut -lGL -lGLU
  
 CFLAGS =-ggdb3
 
-simulBras : simulBras.o
-	gcc  -o simulBras simulBras.o $(GLLIBS) $(XLIBS) -lm
+_BIN :
+	mkdir bin
+
+simulBras : simulBras.o $(BIN)
+	gcc  -o bin/simulBras simulBras.o $(GLLIBS) $(XLIBS) -lm
  
