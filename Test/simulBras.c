@@ -774,7 +774,7 @@ void initScene (void)
 	
 	Image rainbow;
 	glPixelStorei(GL_UNPACK_ALIGNMENT,1);
-    rainbow = LireImage("/home/mathieu/Bureau/Project Island/Island/Test/my-little-pony-friendship-is-magic-rainbow-dash-1440x1080-wallpaper.ppm") ;
+    rainbow = LireImage("my-little-pony-friendship-is-magic-rainbow-dash-1440x1080-wallpaper.ppm") ;
     glBindTexture(GL_TEXTURE_2D,textures[2]);
     gluBuild2DMipmaps(GL_TEXTURE_2D , 3 , rainbow->larg , rainbow->haut , GL_RGB , GL_UNSIGNED_BYTE , rainbow->dat);
     glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
@@ -784,7 +784,7 @@ void initScene (void)
 	
 	Image poneys;
 	glPixelStorei(GL_UNPACK_ALIGNMENT,1);
-    poneys = LireImage("/home/mathieu/Bureau/Project Island/Island/Test/my-little-pony-friendship-is-magic-all-ponies.ppm") ;
+    poneys = LireImage("my-little-pony-friendship-is-magic-all-ponies.ppm") ;
     glBindTexture(GL_TEXTURE_2D,textures[1]);
     gluBuild2DMipmaps(GL_TEXTURE_2D , 3 , poneys->larg , poneys->haut , GL_RGB , GL_UNSIGNED_BYTE , poneys->dat);
     glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
@@ -793,7 +793,7 @@ void initScene (void)
     
     Image chrome;
     glPixelStorei(GL_UNPACK_ALIGNMENT,1);
-    chrome = LireImage("/home/mathieu/Bureau/Project Island/Island/Test/TextureChrome.ppm") ;
+    chrome = LireImage("TextureChrome.ppm") ;
     glBindTexture(GL_TEXTURE_2D,textures[0]);
     gluBuild2DMipmaps(GL_TEXTURE_2D , 3 , chrome->larg , chrome->haut , GL_RGB , GL_UNSIGNED_BYTE , chrome->dat);
     glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
