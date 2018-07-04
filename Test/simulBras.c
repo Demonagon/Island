@@ -33,6 +33,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <time.h>
 #include <math.h>
 #if defined(__APPLE__) && !defined(__APPLE_X11)
 #include <GLUT/glut.h>
@@ -54,10 +55,22 @@ float transM3 = 0;
 int rotaGlob = 0;
 int mActu = 1;
 int MAXLIGNE = 256;
-GLuint textures[3];
+
+
+typedef enum{ TEXT_PONY_RAINBOW , TEXT_PONY_MANE6 , TEXT_CHROME }textType;
+textType textures[3];
+
+//paramétrisation de la heightmap
+int heightmap_largeur = 20; //x
+int heightmap_longeur = 10; //y
+int heightmap_hauteur_min = 0; //z_min
+int heightmap_hauteur_max = 7; //z_max
+int** heightmap = NULL;
+
+
 //matériaux chrome
 GLfloat Lnoire [4] = {0.0, 0.0, 0.0, 1.0};
-GLfloat matAmbiant [4] = {0.25, 0.25 , 0.25 ,0.25}; 
+GLfloat matAmbiant [4] = {0.25, 0.25 , 0.25 ,0.25};
 GLfloat matDiffuse [4] = {0.4, 0.4, 0.4, 0.4};
 GLfloat matSpecular [4] = {0.774597, 0.774597, 0.774597, 0.774597};
 GLfloat matShininess [1] = {76.8};
@@ -526,30 +539,33 @@ void epaule()
 
 
 
-
+//fonction qui construit la scène 3D
 void construireScene(void)
-{ printf("On passe dans 'construireScene'\n");
+{
+	//printf("On passe dans 'construireScene'\n");
 	//glColor3fv(couleurAxe);  
-// "effacement" de la fenetre et du z-buffer
-  glClear (GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-  // initialisation de MODELVIEW
+	// "effacement" de la fenetre et du z-buffer
+	glClear (GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	
+	// initialisation de MODELVIEW
 	glEnable(GL_LIGHTING);
 	//glLightModeli(GL_LIGHT_MODEL_TWO_SIDE,GL_TRUE);
 	glEnable(GL_NORMALIZE);
 	glEnable(GL_LIGHT0);
-	
+
 	glLoadIdentity ();
-  // position de la camera
-	
-  gluLookAt (Xcamera, Ycamera, Zcamera, // position
+	// position de la camera
+	gluLookAt (Xcamera, Ycamera, Zcamera, // position
              Xcamera + XaxeCamera , Ycamera + YaxeCamera, Zcamera + ZaxeCamera ,  // point vise
              0.0, 1.0, 0.0);  // "verticale appareil"
+	
+	//gestion des lumires
 	glLightfv (GL_LIGHT0, GL_AMBIENT, Lambiant);
 	glLightfv (GL_LIGHT0, GL_DIFFUSE, Lblanche);
 	glLightfv (GL_LIGHT0, GL_SPECULAR, Lblanche);
 	glLightfv (GL_LIGHT0, GL_POSITION, position);
              
-		glRotatef(rotaGlob, 0,1,0); 
+	glRotatef(rotaGlob, 0,1,0); 
   		
   
   //repereScene3D(5.); // on met un putain de quadrillage
@@ -581,11 +597,11 @@ void construireScene(void)
 	epaule();
 	
 	glBindTexture(GL_TEXTURE_2D,textures[0]);
-glPushMatrix(); // Membre 1
-	glTranslatef(0, 1.2, 0);
-	glRotatef(rotaM1, 0, 0, 1);
-	membre1();
-glPopMatrix();	
+	glPushMatrix(); // Membre 1
+		glTranslatef(0, 1.2, 0);
+		glRotatef(rotaM1, 0, 0, 1);
+		membre1();
+	glPopMatrix();	
 
 /*glPushMatrix();
 	glTranslatef( 9.5 * cos(M_PI * rotaM1 / 180.0 ), 9.5 * sin(M_PI * rotaM1 / 180.0 ), 0);
@@ -596,7 +612,7 @@ glPopMatrix(); */
   
 
 //printf ("%f" , Zcamera);
-  glutSwapBuffers ();
+	glutSwapBuffers ();
 }
 
 
@@ -748,6 +764,13 @@ void menu(int value)
    }
 }
 
+// renvoie un rand entier entre a et b inclus
+int rand_a_b(int a, int b)
+{
+	//pour avoir un entier entre a et b inclus (donc un intervalle de taille b-a+1 ) 
+	return rand()%(b-a+1) +a;
+}
+
 
 /* Initialisation et boucle d'evenements */
 /* ------------------------------------- */
@@ -762,48 +785,73 @@ on accedera a un pixel (i,j) avec terre->pix[i][j]
 on accedera a la totalite de la matrice image avec terre->dat
 */
 void initScene (void)
-{   glClearColor (0.0, 0.0, 0.0, 0.0);
-    glCullFace (GL_BACK); // designation des faces "non visibles"
-//  glEnable (GL_CULL_FACE); // faces "non visibles" ignorees
-    glPolygonMode (GL_FRONT_AND_BACK, GL_FILL); // faces avants pleines (sens trigo des sommets)
-    //glPolygonMode (GL_BACK, GL_FILL); // faces arrieres vides
-    glEnable (GL_DEPTH_TEST);
-    //chargement de l'image
+{
+	int i, j;
+	glClearColor (0.0, 0.0, 0.0, 0.0);
+	glCullFace (GL_BACK); // designation des faces "non visibles"
+	//  glEnable (GL_CULL_FACE); // faces "non visibles" ignorees
+	glPolygonMode (GL_FRONT_AND_BACK, GL_FILL); // faces avants pleines (sens trigo des sommets)
+	//glPolygonMode (GL_BACK, GL_FILL); // faces arrieres vides
+	glEnable (GL_DEPTH_TEST);
 	
+	//on charge les textures
 	glGenTextures(2, textures);
 	
 	Image rainbow;
 	glPixelStorei(GL_UNPACK_ALIGNMENT,1);
-    rainbow = LireImage("my-little-pony-friendship-is-magic-rainbow-dash-1440x1080-wallpaper.ppm") ;
-    glBindTexture(GL_TEXTURE_2D,textures[2]);
-    gluBuild2DMipmaps(GL_TEXTURE_2D , 3 , rainbow->larg , rainbow->haut , GL_RGB , GL_UNSIGNED_BYTE , rainbow->dat);
-    glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T , GL_REPEAT) ;
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S , GL_REPEAT) ;
-	
-	
+	rainbow = LireImage("my-little-pony-friendship-is-magic-rainbow-dash-1440x1080-wallpaper.ppm") ;
+	glBindTexture(GL_TEXTURE_2D,textures[2]);
+	gluBuild2DMipmaps(GL_TEXTURE_2D , 3 , rainbow->larg , rainbow->haut , GL_RGB , GL_UNSIGNED_BYTE , rainbow->dat);
+	glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T , GL_REPEAT) ;
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S , GL_REPEAT) ;
+
+
 	Image poneys;
 	glPixelStorei(GL_UNPACK_ALIGNMENT,1);
-    poneys = LireImage("my-little-pony-friendship-is-magic-all-ponies.ppm") ;
-    glBindTexture(GL_TEXTURE_2D,textures[1]);
-    gluBuild2DMipmaps(GL_TEXTURE_2D , 3 , poneys->larg , poneys->haut , GL_RGB , GL_UNSIGNED_BYTE , poneys->dat);
-    glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T , GL_REPEAT) ;
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S , GL_REPEAT) ;
+	poneys = LireImage("my-little-pony-friendship-is-magic-all-ponies.ppm") ;
+	glBindTexture(GL_TEXTURE_2D,textures[1]);
+	gluBuild2DMipmaps(GL_TEXTURE_2D , 3 , poneys->larg , poneys->haut , GL_RGB , GL_UNSIGNED_BYTE , poneys->dat);
+	glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T , GL_REPEAT) ;
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S , GL_REPEAT) ;
+
+	Image chrome;
+	glPixelStorei(GL_UNPACK_ALIGNMENT,1);
+	chrome = LireImage("TextureChrome.ppm") ;
+	glBindTexture(GL_TEXTURE_2D,textures[0]);
+	gluBuild2DMipmaps(GL_TEXTURE_2D , 3 , chrome->larg , chrome->haut , GL_RGB , GL_UNSIGNED_BYTE , chrome->dat);
+	glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T , GL_REPEAT) ;
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S , GL_REPEAT) ;
+
+	restituerImage( chrome );
+	
+	
+	//on créer la heightmap	
+	heightmap = malloc(sizeof(*heightmap) * heightmap_largeur);	
+	for (i = 0; i < heightmap_largeur; i++)
+		heightmap[i] = malloc(sizeof(**heightmap) * heightmap_longeur);
     
-    Image chrome;
-    glPixelStorei(GL_UNPACK_ALIGNMENT,1);
-    chrome = LireImage("TextureChrome.ppm") ;
-    glBindTexture(GL_TEXTURE_2D,textures[0]);
-    gluBuild2DMipmaps(GL_TEXTURE_2D , 3 , chrome->larg , chrome->haut , GL_RGB , GL_UNSIGNED_BYTE , chrome->dat);
-    glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T , GL_REPEAT) ;
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S , GL_REPEAT) ;
-    
-    
-    
-    restituerImage( chrome );
-    
+	if (heightmap == NULL) // Si l'allocation a échoué
+	{
+		exit(0); // On arrête le programme
+	}
+	//on met des valeurs dans la heightmap
+	srand(time(NULL)); // initialisation de rand
+
+	
+	for (i = 0; i < heightmap_largeur; i++)
+	{
+		for (j = 0; j < heightmap_longeur; j++)
+		{
+			heightmap[i][j] = rand_a_b( heightmap_hauteur_min , heightmap_hauteur_max );
+			printf("| %d |", heightmap[i][j]);
+		}
+			printf("\n");
+	}
+	
+	
 }
 
 
@@ -863,19 +911,19 @@ int main (int argc, char **argv)
 	
 	
 	/* initialisation de la session GLUT */
-    glutInit (&argc, argv);
-    glutInitDisplayMode (GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
-    /* creation d'une fenetre hauteur-largeur*/
-    glutInitWindowSize (512,512);
-    glutInitWindowPosition (50, 50);
-    glutCreateWindow (argv [0]);
-    /* designation des fonctions liees aux interruptions */
-    glutDisplayFunc(construireScene);
-    glutReshapeFunc(fenetrage);
-    glutKeyboardFunc(clavier);
-    glutMouseFunc(souris);
-    glutSpecialFunc(fleches);
-        /* Un petit menu au bouton gauche */
+	glutInit (&argc, argv);
+	glutInitDisplayMode (GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
+	/* creation d'une fenetre hauteur-largeur*/
+	glutInitWindowSize (512,512);
+	glutInitWindowPosition (50, 50);
+	glutCreateWindow (argv [0]);
+	/* designation des fonctions liees aux interruptions */
+	glutDisplayFunc(construireScene);
+	glutReshapeFunc(fenetrage);
+	glutKeyboardFunc(clavier);
+	glutMouseFunc(souris);
+	glutSpecialFunc(fleches);
+	/* Un petit menu au bouton gauche */
 	int numSousMenuRemplissage;
     	numSousMenuRemplissage = glutCreateMenu(sousMenuRemplissage);
    	glutAddMenuEntry("Arête" , 0);
@@ -885,24 +933,21 @@ int main (int argc, char **argv)
    	glutAddMenuEntry("Violet" , 0);
 	glutAddMenuEntry("Bleu" , 1);
 	glutAddMenuEntry("Gris" , 2);
-    	glutCreateMenu(menu);
-    	//glutAddMenuEntry("facettes/aretes", 0);
-	glutAddSubMenu("Je te remplis?" , numSousMenuRemplissage);
-	glutAddSubMenu("choix couleur" , numSousMenu);
-	glutAddMenuEntry("quitter", 2);
-	printf("Test 1\n");
-    
-
-
+	glutCreateMenu(menu);
+	//glutAddMenuEntry("facettes/aretes", 0);
+		glutAddSubMenu("Je te remplis?" , numSousMenuRemplissage);
+		glutAddSubMenu("choix couleur" , numSousMenu);
+		glutAddMenuEntry("quitter", 2);
 	
-            
-    
     glutAttachMenu(GLUT_LEFT_BUTTON);
-    /* boucle d'evenements */
+    
+    //initialisation de a scene
     initScene();
-   	printf("Test 2\n");
-
+    
+	/* boucle d'evenements */
     glutMainLoop ();
+    
+    free(heightmap);
     return 0;
 }
 
