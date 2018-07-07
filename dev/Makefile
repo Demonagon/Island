@@ -19,8 +19,7 @@ MAIN=$(BIN_FOLDER)/$(EXEC)
 
 HEADERS=$(wildcard $(HEADER_FOLDER)/*.h)
 SRCS=$(wildcard $(SRC_FOLDER)/*.c)
-OBJS=$(SRCS:.c=.o)
-
+OBJS=$(patsubst $(SRC_FOLDER)/%.c,$(OBJ_FOLDER)/%.o,$(SRCS))
 
 .PHONY: depend clean
 
@@ -33,7 +32,7 @@ $(MAIN): $(OBJS)
 
 $(OBJ_FOLDER)/%.o : $(SRC_FOLDER)/%.c
 	mkdir -p $(OBJ_FOLDER); \
-	$(CC) $(CFLAGS) $(INCLUDES) -c $(SRC_FOLDER)/$< -o $@
+	$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@
 
 clean:
 	$(RM) $(OBJ_FOLDER)/*.o *~ $(MAIN)
