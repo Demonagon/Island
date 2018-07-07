@@ -34,6 +34,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
+
+
+
+
 #include <math.h>
 #if defined(__APPLE__) && !defined(__APPLE_X11)
 #include <GLUT/glut.h>
@@ -61,10 +65,10 @@ typedef enum{ TEXT_PONY_RAINBOW , TEXT_PONY_MANE6 , TEXT_CHROME }textType;
 textType textures[3];
 
 //paramétrisation de la heightmap
-int heightmap_largeur = 20; //x
-int heightmap_longeur = 10; //y
+int heightmap_largeur = 80; //x
+int heightmap_longeur = 40; //y
 int heightmap_hauteur_min = 0; //z_min
-int heightmap_hauteur_max = 7; //z_max
+int heightmap_hauteur_max = 3; //z_max
 int** heightmap = NULL;
 
 
@@ -542,10 +546,16 @@ void epaule()
 //fonction qui construit la scène 3D
 void construireScene(void)
 {
-	//printf("On passe dans 'construireScene'\n");
+	int x , y , i , j;	
 	//glColor3fv(couleurAxe);  
 	// "effacement" de la fenetre et du z-buffer
 	glClear (GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	
+	/*
+	//tracball
+	glPushMatrix();
+	glMultMatrixd(mlTbGetTransformation());
+	*/
 	
 	// initialisation de MODELVIEW
 	glEnable(GL_LIGHTING);
@@ -565,7 +575,7 @@ void construireScene(void)
 	glLightfv (GL_LIGHT0, GL_SPECULAR, Lblanche);
 	glLightfv (GL_LIGHT0, GL_POSITION, position);
              
-	glRotatef(rotaGlob, 0,1,0); 
+	//glRotatef(rotaGlob, 0,1,0); 
   		
   
   //repereScene3D(5.); // on met un putain de quadrillage
@@ -585,15 +595,137 @@ void construireScene(void)
 		glVertex3f(20,0,j);
 		glEnd();
 	}   */
-
-	//on définit le matériau de du bras et socle(épaule)
+	
+	//pour centrrer l'ile
+	glTranslatef(-heightmap_largeur/2 , 0.0 , -heightmap_longeur/2);
+	
+	//******************** HEIGHTMAP*******************
+	//on définit le matériau de "sol" généré par la heightmap
 	glMaterialfv(GL_FRONT, GL_EMISSION, Lnoire);
 	glMaterialfv(GL_FRONT, GL_AMBIENT, matAmbiant);
 	glMaterialfv(GL_FRONT, GL_DIFFUSE, matDiffuse);
 	glMaterialfv(GL_FRONT, GL_SPECULAR, matSpecular);
 	glMaterialfv(GL_FRONT, GL_SHININESS,matShininess);
+	
+	//texture a appliquer au "sol"
+	glEnable(GL_TEXTURE_2D);
+	glBindTexture(GL_TEXTURE_2D,textures[TEXT_CHROME]);
+	
+	
+	
+	/*
+	//verion ful tardos
+	for ( x = 1 ; x < heightmap_largeur - 1 ; x++ )
+	{
+		for ( y = 1 ; y < heightmap_longeur - 1 ; y++ )
+		{
+			//trianles du carré en haut a droite
+			glBegin(GL_TRIANGLES);
+				//pour les 4 points a(x,y) b(x,y+1) c(x+1,y+1) d(x+1,y), on trace les tiangles abc et acd
+				//triangle "abc"
+				glTexCoord2f(0.0, 0.0);
+				glVertex3i( x , heightmap[x][y] , y );
+				
+				glTexCoord2f(0.0, 7.0);
+				glVertex3i( x , heightmap[x][y+1] , y+1  );
+				
+				glTexCoord2f(7.0, 7.0);
+				glVertex3i( x+1 , heightmap[x][y+1] ,  y+1  );
+			glEnd();
+			
+			glBegin(GL_TRIANGLES);
+				//triangle "acd"
+				glTexCoord2f(0.0, 0.0);
+				glVertex3i( x , heightmap[x][y] , y );
+				
+				glTexCoord2f(7.0, 7.0);
+				glVertex3i( x+1 , heightmap[x][y+1] , y+1 );
+				
+				glTexCoord2f(7.0, 0.0);
+				glVertex3i( x+1 , heightmap[x+1][y] , y );
+			glEnd();
+			
+		//trianles du carré en haut a gauche
+		glBegin(GL_TRIANGLES);
+				//pour les 4 points a(x,y) b(x,y+1) c(x+1,y+1) d(x+1,y), on trace les tiangles abc et acd
+				//triangle "abc"
+				glTexCoord2f(0.0, 0.0);
+				glVertex3i( x , heightmap[x][y] , y );
+				
+				glTexCoord2f(0.0, 7.0);
+				glVertex3i( x , heightmap[x][y+1] , y+1  );
+				
+				glTexCoord2f(7.0, 7.0);
+				glVertex3i( x+1 , heightmap[x][y+1] ,  y+1  );
+			glEnd();
+			
+			glBegin(GL_TRIANGLES);
+				//triangle "acd"
+				glTexCoord2f(0.0, 0.0);
+				glVertex3i( x , heightmap[x][y] , y );
+				
+				glTexCoord2f(7.0, 7.0);
+				glVertex3i( x+1 , heightmap[x][y+1] , y+1 );
+				
+				glTexCoord2f(7.0, 0.0);
+				glVertex3i( x+1 , heightmap[x+1][y] , y );
+			glEnd();
+		}
+	}
+	*/
+	
+	
+	//1ere verion
+	glBegin(GL_QUADS);
+		glTexCoord2f(0.0, 0.0);
+		glVertex3i( 0 , 0 , 0 );
+		
+		glTexCoord2f(0.0, heightmap_longeur);
+		glVertex3i( 0 , 0 , heightmap_longeur );
+		
+		glTexCoord2f(heightmap_largeur, heightmap_longeur);
+		glVertex3i( heightmap_largeur , 0 , heightmap_longeur);
+		
+		glTexCoord2f(heightmap_largeur, 0.0);
+		glVertex3i( heightmap_largeur , 0 , 0 );
+	glEnd();
+	
 
-	glBindTexture(GL_TEXTURE_2D,textures[1]);
+	for ( x = 0 ; x < heightmap_largeur - 1 ; x++ )
+	{
+		for ( y = 0 ; y < heightmap_longeur - 1 ; y++ )
+		{
+			glBegin(GL_TRIANGLES);
+				//pour les 4 points a(x,y) b(x,y+1) c(x+1,y+1) d(x+1,y), on trace les tiangles abc et acd
+				//triangle "abc"
+				glTexCoord2f(0.0, 0.0);
+				glVertex3i( x , heightmap[x][y] , y );
+				
+				glTexCoord2f(0.0, 7.0);
+				glVertex3i( x , heightmap[x][y+1] , y+1  );
+				
+				glTexCoord2f(7.0, 7.0);
+				glVertex3i( x+1 , heightmap[x][y+1] ,  y+1  );
+			glEnd();
+			
+			glBegin(GL_TRIANGLES);
+				//triangle "acd"
+				glTexCoord2f(0.0, 0.0);
+				glVertex3i( x , heightmap[x][y] , y );
+				
+				glTexCoord2f(7.0, 7.0);
+				glVertex3i( x+1 , heightmap[x][y+1] , y+1 );
+				
+				glTexCoord2f(7.0, 0.0);
+				glVertex3i( x+1 , heightmap[x+1][y] , y );
+			glEnd();
+		}
+	}
+	
+	
+	
+	
+	/*
 	epaule();
 	
 	glBindTexture(GL_TEXTURE_2D,textures[0]);
@@ -602,12 +734,12 @@ void construireScene(void)
 		glRotatef(rotaM1, 0, 0, 1);
 		membre1();
 	glPopMatrix();	
-
-/*glPushMatrix();
-	glTranslatef( 9.5 * cos(M_PI * rotaM1 / 180.0 ), 9.5 * sin(M_PI * rotaM1 / 180.0 ), 0);
-	glRotatef(rotaM1 + 270, 0, 0, 1);
-    membre();
-glPopMatrix(); */
+	-*
+	/*glPushMatrix();
+		glTranslatef( 9.5 * cos(M_PI * rotaM1 / 180.0 ), 9.5 * sin(M_PI * rotaM1 / 180.0 ), 0);
+		glRotatef(rotaM1 + 270, 0, 0, 1);
+		membre();
+	glPopMatrix(); */
 		
   
 
@@ -627,6 +759,10 @@ void fenetrage(int largeur, int hauteur)
   glLoadIdentity ();
   gluPerspective (65.0, (float) largeur/(float) hauteur, 1.0, 500.0);
   glMatrixMode (GL_MODELVIEW);
+  
+  //mlTbInit(winX, winY);
+  
+  glutPostRedisplay();
 }
 
 
@@ -674,7 +810,9 @@ void fleches(int key, int x, int y)
 	switch (key)
 	{
 		case GLUT_KEY_UP :
-			switch (mActu)
+			Ycamera = Xcamera + 10;
+			
+			/*switch (mActu)
 			{
 				case 1 :
 					if(rotaM1 < 90)
@@ -691,11 +829,13 @@ void fleches(int key, int x, int y)
 					if( transM3 < 0)
 						transM3 = 0;
 				break;
-			}
+			}*/
 		break;
 				
 		case GLUT_KEY_DOWN :
-			switch (mActu)
+			Ycamera = Xcamera - 10;
+		
+			/*switch (mActu)
 			{
 				case 1 :
 					if(rotaM1 > 0) 
@@ -712,19 +852,25 @@ void fleches(int key, int x, int y)
 					if( transM3 > 5.6)
 						transM3 = 5.6;
 				break;
-			}
+			}*/
 		break;
 						
 		case GLUT_KEY_LEFT :
+			Xcamera = Xcamera - 10;
 			/*Xcamera = Xcam*cos(M_PI/ 8) + Zcam*sin(M_PI / 8);
 			Zcamera = -Xcam*sin(M_PI / 8) + Zcam*cos(M_PI/8);*/
-			  rotaGlob += 10;
+			
+			
+			//rotaGlob += 10;
 		break;
 		
-		case GLUT_KEY_RIGHT :	
+		case GLUT_KEY_RIGHT :
+			Xcamera = Xcamera + 10;
 			/*Xcamera = Xcam*cos(M_PI / 8) - Zcam*sin(M_PI / 8);
 			Zcamera =  Xcam*sin(M_PI / 8) + Zcam*cos(M_PI/8); */
-			rotaGlob -=10;
+			
+			
+			//rotaGlob -=10;
 		break;
 	}
 
@@ -788,9 +934,9 @@ void initScene (void)
 {
 	int i, j;
 	glClearColor (0.0, 0.0, 0.0, 0.0);
-	glCullFace (GL_BACK); // designation des faces "non visibles"
-	//  glEnable (GL_CULL_FACE); // faces "non visibles" ignorees
-	glPolygonMode (GL_FRONT_AND_BACK, GL_FILL); // faces avants pleines (sens trigo des sommets)
+	//glCullFace (GL_BACK); // designation des faces "non visibles"
+	glEnable (GL_CULL_FACE); // faces "non visibles" ignorees
+	glPolygonMode (GL_FRONT_AND_BACK , GL_FILL); // faces avants pleines (sens trigo des sommets)
 	//glPolygonMode (GL_BACK, GL_FILL); // faces arrieres vides
 	glEnable (GL_DEPTH_TEST);
 	
@@ -846,9 +992,9 @@ void initScene (void)
 		for (j = 0; j < heightmap_longeur; j++)
 		{
 			heightmap[i][j] = rand_a_b( heightmap_hauteur_min , heightmap_hauteur_max );
-			printf("| %d |", heightmap[i][j]);
+			//printf("| %d |", heightmap[i][j]);
 		}
-			printf("\n");
+			//printf("\n");
 	}
 	
 	
