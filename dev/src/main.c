@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include "util_math.h"
 #include "update.h"
+#include "island.h"
 
 void plot() {
 	#define PLOT_SIZE 80
@@ -22,10 +23,11 @@ void plot() {
 	printf("\n");
 }
 
-int main(void) {
+int main(int argc, char **argv) {
 
 	//plot();
-	updateTest();
+	//updateTest();
+	island(argc , argv);
 
 	return 0;
 }
