@@ -1,7 +1,7 @@
 #XLIBS = -L/usr/X11/lib -L/usr/X11R6/lib
 #GLLIBS = 
 INCLUDES = -Iheader
-CFLAGS = -std=c99 -pedantic -Wall $(INCLUDES)
+CFLAGS = -std=c99 -pedantic -Wall
 LFLAGS = -L/usr/X11/lib -L/usr/X11R6/lib -L/usr/X11R6/lib
 LIBS = -lX11 -lXext -lpthread -lglut -lGL -lGLU -lm
 DEBUG = -ggdb3
