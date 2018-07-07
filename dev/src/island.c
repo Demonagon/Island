@@ -61,7 +61,7 @@ int mActu = 1;
 int MAXLIGNE = 256;
 
 
-typedef enum{ TEXT_CHROME , TEXT_PONY_MANE6 , TEXT_PONY_RAINBOW }textType;
+typedef enum{ TEXT_CHROME , TEXT_PONY_MANE6 , TEXT_PONY_RAINBOW , TEXT_TRIANGLE }textType;
 int textures[3];
 
 //paramétrisation de la heightmap
@@ -609,7 +609,7 @@ void construireScene(void)
 	
 	//texture a appliquer au "sol"
 	glEnable(GL_TEXTURE_2D);
-	glBindTexture(GL_TEXTURE_2D,textures[TEXT_PONY_RAINBOW]);
+	glBindTexture(GL_TEXTURE_2D,textures[TEXT_TRIANGLE]);
 	
 	
 	
@@ -971,8 +971,18 @@ void initScene (void)
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T , GL_REPEAT) ;
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S , GL_REPEAT) ;
 
-	restituerImage( chrome );
+
+	Image triangle_sol;
+	glPixelStorei(GL_UNPACK_ALIGNMENT,1);
+	chrome = LireImage("text/texture_triangle.ppm") ;
+	glBindTexture(GL_TEXTURE_2D,textures[3]);
+	gluBuild2DMipmaps(GL_TEXTURE_2D , 3 , chrome->larg , chrome->haut , GL_RGB , GL_UNSIGNED_BYTE , chrome->dat);
+	glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T , GL_REPEAT) ;
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S , GL_REPEAT) ;
 	
+	
+	restituerImage( chrome );
 	
 	//on créer la heightmap	
 	heightmap = malloc(sizeof(*heightmap) * heightmap_largeur);	
