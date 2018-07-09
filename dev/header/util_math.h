@@ -29,4 +29,31 @@ double accelerationInterpolation(double x);
 
 double decelerationInterpolation(double x);
 
+/**
+* Nombre complexe pour toute manipulation de coordonnées dans le plan.
+*/
+
+typedef struct ComplexNumber {
+	double a;
+	double b;
+} ComplexNumber;
+
+/**
+* Petit raccourcis pour raccourcir le nom
+*/
+
+typedef ComplexNumber Complex;
+
+Complex complexCreate(double a, double b);
+Complex complexAdd(Complex a, Complex b);
+Complex complexRemove(Complex a, Complex b);
+Complex complexMultiply(Complex a, Complex b);
+Complex complexDivide(Complex a, Complex b);
+double  complexNorm(Complex c);
+Complex complexScale(Complex c, double scale);
+Complex complexNormalize(Complex c);
+double  complexAngle(Complex c);
+
+char isPointInCircle(Complex point, Complex centre, double radius);
+
 #endif

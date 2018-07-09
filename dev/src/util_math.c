@@ -18,3 +18,46 @@ double decelerationInterpolation(double x) {
 	if( x >= 1 ) return 1;
 	return 2*x - x*x;
 }
+
+Complex complexCreate(double a, double b) {
+	return (Complex) { .a = a, .b = b };
+}
+
+Complex complexAdd(Complex a, Complex b) {
+	return complexCreate(a.a + b.a, a.b + b.b);
+}
+
+Complex complexRemove(Complex a, Complex b) {
+	return complexCreate(a.a - b.a, a.b - b.b);
+}
+
+Complex complexMultiply(Complex a, Complex b) {
+	return complexCreate(a.a * b.a - a.b * b.b, a.b * b.a + a.a * b.b);
+}
+
+Complex complexDivide(Complex a, Complex b) {
+	double alpha = a.a * b.a + a.b * b.b;
+	double beta = a.b * b.a - a.a * b.b;
+	double gamma = b.a * b.a + b.b * b.b;
+	return complexCreate(alpha / gamma, beta / gamma);
+}
+
+double complexNorm(Complex c) {
+	return sqrt(c.a * c.a + c.b * c.b);
+}
+
+Complex complexScale(Complex c, double scale) {
+	return complexCreate(c.a * scale, c.b * scale);
+}
+
+Complex complexNormalize(Complex c) {
+	return complexScale(c, 1 / complexNorm(c) );
+}
+
+double complexAngle(Complex c) {
+	return atan2(c.a, c.b);
+}
+
+char isPointInCircle(Complex point, Complex centre, double radius) {
+	return complexNorm( complexRemove(centre, point) ) <= radius;
+}
