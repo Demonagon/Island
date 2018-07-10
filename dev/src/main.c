@@ -28,8 +28,8 @@ int main(int argc, char **argv) {
 
 	//plot();
 	//updateTest();
-	//island(argc , argv);
-	mainListTest();
+	island(argc , argv);
+	//mainListTest();
 
 	return 0;
 }

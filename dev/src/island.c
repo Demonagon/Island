@@ -1,41 +1,8 @@
-/* CANEVAS POUR UNE INITIATION A OPENGL */
-/*======================================*/
-
-/* Compilation sous UNIX : dans le répertoire de travail
- 
- 1°) Creez un fichier "Makefile" avec le texte ci-dessous (remplacez <tabulation> par la caractère  tabulation). Supprimez -lXi -lXmu suivant les configurations systèmes.
- -----------------------------------------
- XLIBS = -L/usr/X11/lib -L/usr/X11R6/lib -lX11 -lXext -lpthread
- GLLIBS = -L/usr/X11R6/lib -lglut -lGL -lGLU
- 
- helloGlut : helloGlut.o
- <tabulation>gcc -o helloGlut helloGlut.o $(GLLIBS) $(XLIBS) -lm
- 
- 2°) Compilez avec la commande 
- -----------------------------
- make helloGlut
- 
- 3°) Executez avec la commande
- -----------------------------
- ./helloGlut
- 
-*/
-
-
-
-
-/* Exemple des fonctionnalites du fenetrage GLUT */
-/* ============================================= */
-
-// La scene consiste juste en un triangle et le trace des 3 axes du repere.
-// Le bouton gauche de la souris donne acces a un menu
-// Un message specifique revele l'enchainement des fonctions d'interruption declenchees par GLUT
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
 #include "island.h"
-
+#include "ml.h"
 
 
 #include <math.h>
@@ -49,6 +16,11 @@
 
 /* Variables globales pour parametrer la scene */
 /* ------------------------------------------- */
+
+/* Taille de la fenetre */
+int winX = 800;
+int winY = 600;
+
 //couleurs objet et axes
 float couleurObjet[3] = {1, 1, 1};
 float couleurObjetAretes[3] = {1 , 0 , 1};
@@ -59,10 +31,10 @@ float transM3 = 0;
 int rotaGlob = 0;
 int mActu = 1;
 int MAXLIGNE = 256;
-
+int mouseLeftDown;
 
 typedef enum{ TEXT_CHROME , TEXT_PONY_MANE6 , TEXT_PONY_RAINBOW , TEXT_TRIANGLE }textType;
-int textures[3];
+int textures[4];
 
 //paramÈtrisation de la heightmap
 int heightmap_largeur = 80; //x
@@ -105,16 +77,6 @@ typedef struct image
 	GLubyte *dat;
 	GLubyte **pix;
 } *Image; 
-/*
-Si on definit la variable :
-   Image terre ;
-on chargera l'image de la terre avec l'instruction
-   terre=LireImage("terre.ppm") ;
-terre->rgb est un booleen qui precise si un pixel est cod√© sur 3 ou 1 octet
-les dimensions de l'image seront terre->larg et terre->haut
-on accedera a un pixel (i,j) avec terre->pix[i][j]
-on accedera a la totalite de la matrice image avec terre->dat
-*/
 
 /* lecture d'une image PPM (rgb) ou PGM (niveaux de gris) */
 Image LireImage(char *nom)
@@ -123,7 +85,6 @@ Image LireImage(char *nom)
 	Image I;
 	FILE *f;
 	char s[MAXLIGNE];
-	int maxgrey;
 	/* Ouverture du fichier */
 	f = fopen(nom, "r");
 	if (f == NULL) exit(0);
@@ -161,11 +122,6 @@ void restituerImage(Image I)
   free(I);
   I=NULL;
 }
-
-
-
-
-
 
 
 void construireObjet(void)
@@ -546,24 +502,24 @@ void epaule()
 //fonction qui construit la scËne 3D
 void construireScene(void)
 {
-	int x , y , i , j;	
+	int x , y;	
 	//glColor3fv(couleurAxe);  
 	// "effacement" de la fenetre et du z-buffer
 	glClear (GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	
-	/*
-	//tracball
+	
+	//trackball
 	glPushMatrix();
 	glMultMatrixd(mlTbGetTransformation());
-	*/
 	
+	/*
 	// initialisation de MODELVIEW
 	glEnable(GL_LIGHTING);
 	//glLightModeli(GL_LIGHT_MODEL_TWO_SIDE,GL_TRUE);
 	glEnable(GL_NORMALIZE);
 	glEnable(GL_LIGHT0);
 
-	glLoadIdentity ();
+	
 	// position de la camera
 	gluLookAt (Xcamera, Ycamera, Zcamera, // position
              Xcamera + XaxeCamera , Ycamera + YaxeCamera, Zcamera + ZaxeCamera ,  // point vise
@@ -574,106 +530,26 @@ void construireScene(void)
 	glLightfv (GL_LIGHT0, GL_DIFFUSE, Lblanche);
 	glLightfv (GL_LIGHT0, GL_SPECULAR, Lblanche);
 	glLightfv (GL_LIGHT0, GL_POSITION, position);
-             
-	//glRotatef(rotaGlob, 0,1,0); 
-  		
-  
-  //repereScene3D(5.); // on met un putain de quadrillage
 
-/*	int i , j;	
-	for (i  = -20 ; i <=20 ; i++)
-	{
-		glBegin(GL_LINES);
-		glVertex3f(i,0,-20);
-		glVertex3f(i,0,20);
-		glEnd();
-	}
-	for (j  = -20 ; j <=20 ; j++)
-	{
-		glBegin(GL_LINES);
-		glVertex3f(-20,0,j);
-		glVertex3f(20,0,j);
-		glEnd();
-	}   */
 	
-	//pour centrrer l'ile
-	glTranslatef(-heightmap_largeur/2 , 0.0 , -heightmap_longeur/2);
 	
-	//******************** HEIGHTMAP*******************
+	
 	//on dÈfinit le matÈriau de "sol" gÈnÈrÈ par la heightmap
 	glMaterialfv(GL_FRONT, GL_EMISSION, Lnoire);
 	glMaterialfv(GL_FRONT, GL_AMBIENT, matAmbiant);
 	glMaterialfv(GL_FRONT, GL_DIFFUSE, matDiffuse);
 	glMaterialfv(GL_FRONT, GL_SPECULAR, matSpecular);
 	glMaterialfv(GL_FRONT, GL_SHININESS,matShininess);
-	
-	//texture a appliquer au "sol"
-	glEnable(GL_TEXTURE_2D);
-	glBindTexture(GL_TEXTURE_2D,textures[TEXT_TRIANGLE]);
-	
-	
-	
-	/*
-	//verion ful tardos
-	for ( x = 1 ; x < heightmap_largeur - 1 ; x++ )
-	{
-		for ( y = 1 ; y < heightmap_longeur - 1 ; y++ )
-		{
-			//trianles du carrÈ en haut a droite
-			glBegin(GL_TRIANGLES);
-				//pour les 4 points a(x,y) b(x,y+1) c(x+1,y+1) d(x+1,y), on trace les tiangles abc et acd
-				//triangle "abc"
-				glTexCoord2f(0.0, 0.0);
-				glVertex3i( x , heightmap[x][y] , y );
-				
-				glTexCoord2f(0.0, 7.0);
-				glVertex3i( x , heightmap[x][y+1] , y+1  );
-				
-				glTexCoord2f(7.0, 7.0);
-				glVertex3i( x+1 , heightmap[x][y+1] ,  y+1  );
-			glEnd();
-			
-			glBegin(GL_TRIANGLES);
-				//triangle "acd"
-				glTexCoord2f(0.0, 0.0);
-				glVertex3i( x , heightmap[x][y] , y );
-				
-				glTexCoord2f(7.0, 7.0);
-				glVertex3i( x+1 , heightmap[x][y+1] , y+1 );
-				
-				glTexCoord2f(7.0, 0.0);
-				glVertex3i( x+1 , heightmap[x+1][y] , y );
-			glEnd();
-			
-		//trianles du carrÈ en haut a gauche
-		glBegin(GL_TRIANGLES);
-				//pour les 4 points a(x,y) b(x,y+1) c(x+1,y+1) d(x+1,y), on trace les tiangles abc et acd
-				//triangle "abc"
-				glTexCoord2f(0.0, 0.0);
-				glVertex3i( x , heightmap[x][y] , y );
-				
-				glTexCoord2f(0.0, 7.0);
-				glVertex3i( x , heightmap[x][y+1] , y+1  );
-				
-				glTexCoord2f(7.0, 7.0);
-				glVertex3i( x+1 , heightmap[x][y+1] ,  y+1  );
-			glEnd();
-			
-			glBegin(GL_TRIANGLES);
-				//triangle "acd"
-				glTexCoord2f(0.0, 0.0);
-				glVertex3i( x , heightmap[x][y] , y );
-				
-				glTexCoord2f(7.0, 7.0);
-				glVertex3i( x+1 , heightmap[x][y+1] , y+1 );
-				
-				glTexCoord2f(7.0, 0.0);
-				glVertex3i( x+1 , heightmap[x+1][y] , y );
-			glEnd();
-		}
-	}
 	*/
 	
+	
+	//******************** HEIGHTMAP*******************
+	glEnable(GL_TEXTURE_2D);
+	//pour centrrer l'ile
+	glTranslatef(-heightmap_largeur/2 , 0.0 , -heightmap_longeur/2);
+	//texture a appliquer au "sol"
+	
+	glBindTexture(GL_TEXTURE_2D,textures[TEXT_TRIANGLE]);
 	
 	//1ere verion
 	glBegin(GL_QUADS);
@@ -721,29 +597,8 @@ void construireScene(void)
 			glEnd();
 		}
 	}
-	
-	
-	
-	
-	/*
-	epaule();
-	
-	glBindTexture(GL_TEXTURE_2D,textures[0]);
-	glPushMatrix(); // Membre 1
-		glTranslatef(0, 1.2, 0);
-		glRotatef(rotaM1, 0, 0, 1);
-		membre1();
-	glPopMatrix();	
-	-*
-	/*glPushMatrix();
-		glTranslatef( 9.5 * cos(M_PI * rotaM1 / 180.0 ), 9.5 * sin(M_PI * rotaM1 / 180.0 ), 0);
-		glRotatef(rotaM1 + 270, 0, 0, 1);
-		membre();
-	glPopMatrix(); */
-		
-  
 
-//printf ("%f" , Zcamera);
+	glPopMatrix();
 	glutSwapBuffers ();
 }
 
@@ -751,18 +606,23 @@ void construireScene(void)
 /* Fonction liees aux interruptions */
 /* -------------------------------- */
 
-void fenetrage(int largeur, int hauteur)
-{ printf("On passe dans 'projection'\n");
-  glViewport (0, 0, largeur, hauteur);
-  // Projection 3D -> 2D liee à la taille de la fenêtre
-  glMatrixMode (GL_PROJECTION);
-  glLoadIdentity ();
-  gluPerspective (65.0, (float) largeur/(float) hauteur, 1.0, 500.0);
-  glMatrixMode (GL_MODELVIEW);
-  
-  //mlTbInit(winX, winY);
-  
-  glutPostRedisplay();
+void fenetrage(int _w, int _h)
+{ 
+	winX = _w;
+	winY = _h;
+
+	glViewport(0, 0, winX, winY);
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+	gluPerspective(60.0, (double)winX/(double)winY, 0.1, 50000.0);
+	
+	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
+	gluLookAt(20.00, +20.00, +20.00, +0.00, +0.00, +0.00, +0.00, +1.00, +0.00);
+	
+
+	mlTbInit(winX, winY);
+	glutPostRedisplay();
 }
 
 
@@ -878,31 +738,30 @@ void fleches(int key, int x, int y)
 	glutPostRedisplay(); //pour demander au systeme un nouvel affichage
 }
 
-void souris(int bouton, int state, int x, int y)
-{ // state vaut GLUT_DOWN ou GLUT_UP
-  printf("click souris\n");
-  switch (bouton)
-  { case GLUT_LEFT_BUTTON : /* inutile ici, car utilise pour le menu (cf main) */
-      break;
-    case GLUT_MIDDLE_BUTTON :
-      // inserer ici l'action associee au bouton central
-      // glutPostRedisplay();  si l'evenement doit modifier l'affichage
-      break;
-    case GLUT_RIGHT_BUTTON :
-     	 TracerCube();
-      break;
-  }
+void souris(int _button, int _state, int _x, int _y)
+{ 
+	if(_button == GLUT_LEFT_BUTTON)
+	{
+		mouseLeftDown = (_state == GLUT_DOWN);
+
+		if(mouseLeftDown == 1)
+			mlTbClick(_x, _y);
+		else
+			mlTbRelease(_x, _y);
+	}
+	else if(_state == GLUT_UP)
+	{
+		if(_button == 3)
+			mlTbZoom(-0.01);
+		else if(_button == 4)
+			mlTbZoom(0.01);
+	}
 }
 
 void menu(int value)
 { switch (value)
   { case 0: /* bascule face pleine/aretes que vous devez programmer */
 	
-		
-	
-	
-	
-	printf("COUCOU MA GUEULE!\n") ;
       break ;
     case 2:
       exit(0);
@@ -917,31 +776,69 @@ int rand_a_b(int a, int b)
 	return rand()%(b-a+1) +a;
 }
 
+/* Callback OpenGL de gestion de drag */
+void motionGL(int _x, int _y)
+{
+	if(mouseLeftDown == 1)
+		mlTbMotion(_x, _y);
 
-/* Initialisation et boucle d'evenements */
-/* ------------------------------------- */
-/*
-Si on definit la variable :
-   Image terre ;
-on chargera l'image de la terre avec l'instruction
-   terre=LireImage("terre.ppm") ;
-terre->rgb est un booleen qui precise si un pixel est codÈ sur 3 ou 1 octet
-les dimensions de l'image seront terre->larg et terre->haut
-on accedera a un pixel (i,j) avec terre->pix[i][j]
-on accedera a la totalite de la matrice image avec terre->dat
-*/
+	glutPostRedisplay();
+}
+
 void initScene (void)
 {
 	int i, j;
-	glClearColor (0.0, 0.0, 0.0, 0.0);
+	
+	//initialisation des variables
+	mouseLeftDown = 0;
+	
+	
+	
+	glClearColor(0.8, 0.8, 0.7, 1.0);
 	//glCullFace (GL_BACK); // designation des faces "non visibles"
-	glEnable (GL_CULL_FACE); // faces "non visibles" ignorees
-	glPolygonMode (GL_FRONT_AND_BACK , GL_FILL); // faces avants pleines (sens trigo des sommets)
+	//glEnable (GL_CULL_FACE); // faces "non visibles" ignorees
+	//glPolygonMode (GL_FRONT_AND_BACK , GL_FILL); // faces avants pleines (sens trigo des sommets)
 	//glPolygonMode (GL_BACK, GL_FILL); // faces arrieres vides
-	glEnable (GL_DEPTH_TEST);
+	//glEnable (GL_DEPTH_TEST);
+	
+	
+	
+	
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+	glEnable(GL_COLOR_MATERIAL);
+	glEnable(GL_NORMALIZE);
+	
+	glEnable(GL_DEPTH_TEST);
+	glDepthFunc(GL_LEQUAL);
+
+	glShadeModel(GL_SMOOTH);
+	
+	
 	
 	//on charge les textures
-	glGenTextures(2, textures);
+	glGenTextures(3, textures);
+	
+	Image chrome;
+	glPixelStorei(GL_UNPACK_ALIGNMENT,1);
+	chrome = LireImage("text/TextureChrome.ppm") ;
+	glBindTexture(GL_TEXTURE_2D,textures[0]);
+	gluBuild2DMipmaps(GL_TEXTURE_2D , 3 , chrome->larg , chrome->haut , GL_RGB , GL_UNSIGNED_BYTE , chrome->dat);
+	glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T , GL_REPEAT) ;
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S , GL_REPEAT) ;
+	restituerImage( chrome );
+	
+	Image poneys;
+	glPixelStorei(GL_UNPACK_ALIGNMENT,1);
+	poneys = LireImage("text/my-little-pony-friendship-is-magic-all-ponies.ppm") ;
+	glBindTexture(GL_TEXTURE_2D,textures[1]);
+	gluBuild2DMipmaps(GL_TEXTURE_2D , 3 , poneys->larg , poneys->haut , GL_RGB , GL_UNSIGNED_BYTE , poneys->dat);
+	glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T , GL_REPEAT) ;
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S , GL_REPEAT) ;
+	restituerImage( poneys );
 	
 	Image rainbow;
 	glPixelStorei(GL_UNPACK_ALIGNMENT,1);
@@ -951,39 +848,18 @@ void initScene (void)
 	glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T , GL_REPEAT) ;
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S , GL_REPEAT) ;
-
-
-	Image poneys;
-	glPixelStorei(GL_UNPACK_ALIGNMENT,1);
-	poneys = LireImage("text/my-little-pony-friendship-is-magic-all-ponies.ppm") ;
-	glBindTexture(GL_TEXTURE_2D,textures[1]);
-	gluBuild2DMipmaps(GL_TEXTURE_2D , 3 , poneys->larg , poneys->haut , GL_RGB , GL_UNSIGNED_BYTE , poneys->dat);
-	glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T , GL_REPEAT) ;
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S , GL_REPEAT) ;
-
-	Image chrome;
-	glPixelStorei(GL_UNPACK_ALIGNMENT,1);
-	chrome = LireImage("text/TextureChrome.ppm") ;
-	glBindTexture(GL_TEXTURE_2D,textures[0]);
-	gluBuild2DMipmaps(GL_TEXTURE_2D , 3 , chrome->larg , chrome->haut , GL_RGB , GL_UNSIGNED_BYTE , chrome->dat);
-	glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T , GL_REPEAT) ;
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S , GL_REPEAT) ;
-
+	restituerImage( rainbow );
 
 	Image triangle_sol;
 	glPixelStorei(GL_UNPACK_ALIGNMENT,1);
-	chrome = LireImage("text/texture_triangle.ppm") ;
+	triangle_sol = LireImage("text/texture_triangle.ppm") ;
 	glBindTexture(GL_TEXTURE_2D,textures[3]);
-	gluBuild2DMipmaps(GL_TEXTURE_2D , 3 , chrome->larg , chrome->haut , GL_RGB , GL_UNSIGNED_BYTE , chrome->dat);
+	gluBuild2DMipmaps(GL_TEXTURE_2D , 3 , triangle_sol->larg , triangle_sol->haut , GL_RGB , GL_UNSIGNED_BYTE , triangle_sol->dat);
 	glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T , GL_REPEAT) ;
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S , GL_REPEAT) ;
-	
-	
-	restituerImage( chrome );
-	
+	restituerImage( triangle_sol );
+
 	//on crÈer la heightmap	
 	heightmap = malloc(sizeof(*heightmap) * heightmap_largeur);	
 	for (i = 0; i < heightmap_largeur; i++)
@@ -1079,7 +955,9 @@ int island (int argc, char **argv)
 	glutKeyboardFunc(clavier);
 	glutMouseFunc(souris);
 	glutSpecialFunc(fleches);
+	glutMotionFunc(motionGL);
 	/* Un petit menu au bouton gauche */
+	/*
 	int numSousMenuRemplissage;
     	numSousMenuRemplissage = glutCreateMenu(sousMenuRemplissage);
    	glutAddMenuEntry("ArÍte" , 0);
@@ -1096,7 +974,7 @@ int island (int argc, char **argv)
 		glutAddMenuEntry("quitter", 2);
 	
     glutAttachMenu(GLUT_LEFT_BUTTON);
-    
+    */
     //initialisation de a scene
     initScene();
     
