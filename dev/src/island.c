@@ -33,14 +33,14 @@ int mActu = 1;
 int MAXLIGNE = 256;
 int mouseLeftDown;
 
-typedef enum{ TEXT_CHROME , TEXT_PONY_MANE6 , TEXT_PONY_RAINBOW , TEXT_TRIANGLE }textType;
-int textures[4];
+typedef enum{ TEXT_CHROME , TEXT_PONY_MANE6 , TEXT_PONY_RAINBOW , TEXT_TRIANGLE , TEXT_SOL }textType;
+int textures[5];
 
 //paramétrisation de la heightmap
-int heightmap_largeur = 80; //x
-int heightmap_longeur = 40; //y
+int heightmap_largeur = 5; //x
+int heightmap_longeur = 5; //y
 int heightmap_hauteur_min = 0; //z_min
-int heightmap_hauteur_max = 3; //z_max
+int heightmap_hauteur_max = 4; //z_max
 int** heightmap = NULL;
 
 
@@ -123,382 +123,6 @@ void restituerImage(Image I)
   I=NULL;
 }
 
-
-void construireObjet(void)
-{  glBegin (GL_TRIANGLES);
-     glVertex3f (-1., .0, .0);
-     glVertex3f (1., .0, .0);
-     glVertex3f (0., 1., .0);
-   glEnd ();
-}
-
-
-
-// Repere orthonorme
-void repereScene3D(float l)
-{  glColor3f(1., 0., 0.) ;
-   glBegin (GL_LINES);
-     glVertex3f (0., 0., 0.);
-     glVertex3f (l, 0., 0.);
-     glVertex3f (0., 0., 0.);
-     glVertex3f (0., l, 0.);
-     glVertex3f (0., 0., 0.);
-     glVertex3f (0., 0., l);
-   glEnd ();
-}
-
-void TracerCube()
-{
-	typedef float Point3D[3];
-
-	Point3D p1 = {-0.5, 0.5, 0.5};
-	
-	Point3D p2 = {-0.5, -0.5, 0.5};
-
-	Point3D p3 = {0.5, -0.5, 0.5};
-
-	Point3D p4 = {0.5, 0.5, 0.5};
-
-	Point3D p5 = {0.5, 0.5, -0.5};
-
-	Point3D p6 = {-0.5, 0.5, -0.5};
-
-	Point3D p7 = {0.5, -0.5, -0.5};
-
-	Point3D p8 = {-0.5, -0.5, -0.5};
-
-	glEnable(GL_TEXTURE_2D);
-	
-
-	glBegin(GL_QUADS);
-	/*
-	 * N[0][0] = 1; //x
-	N[1][0] = -1; //-x
-	N[2][1] = 1; //y
-	N[3][1] = -1; //-y
-	N[4][2] = 1; //z
-	N[5][2] = -1; //-z
-	* */
-	
-	//DEVANT
-	
-	glNormal3f(N[4][0] , N[4][1] , N[4][2] );
-	
-	
-	glTexCoord2f(0.0, 0.0); 
-	glVertex3fv(p1);
-
-	
-	glTexCoord2f(1.0, 0.0); 
-	glVertex3fv(p2);
-	
-	glTexCoord2f(1.0, 1.0);
-	glVertex3fv(p3); 
-	
-	glTexCoord2f(0.0, 1.0);
-	glVertex3fv(p4); 
-
-	//DROITE
-	glNormal3f(N[0][0] , N[0][1] , N[0][2] );
-	glTexCoord2f(0.0, 0.0); 
-	glVertex3fv(p4);
-	
-	glTexCoord2f(1.0, 0.0);
-	glVertex3fv(p3);
-	
-	glTexCoord2f(1.0, 1.0); 
-	glVertex3fv(p7);
-	
-	glTexCoord2f(0.0, 1.0); 
-	glVertex3fv(p5);
-
-	//HAUT
-	glNormal3f(N[2][0] , N[2][1] , N[2][2] );
-	glTexCoord2f(0.0, 0.0); 
-	glVertex3fv(p6);
-	
-	glTexCoord2f(1.0, 0.0);
-	glVertex3fv(p1);
-	
-	glTexCoord2f(2.0, 1.0);
-	glVertex3fv(p4);
-	
-	glTexCoord2f(0.0, 1.0); 
-	glVertex3fv(p5);
-
-	//GAUCHE
-	glNormal3f(N[1][0] , N[1][1] , N[1][2] );
-	glTexCoord2f(0.0, 0.0); 
-	glVertex3fv(p6);
-	
-	glTexCoord2f(1.0, 0.0);
-	glVertex3fv(p8);
-	
-	glTexCoord2f(1.0, 1.0);
-	glVertex3fv(p2);
-	
-	glTexCoord2f(0.0, 1.0); 
-	glVertex3fv(p1);
-
-	//DERRIERE
-	glNormal3f(N[5][0] , N[5][1] , N[5][2] );
-	glTexCoord2f(0.0, 0.0); 
-	glVertex3fv(p5);
-	
-	glTexCoord2f(1.0, 0.0);
-	glVertex3fv(p7);
-	
-	glTexCoord2f(1.0, 1.0);
-	glVertex3fv(p8);
-	
-	glTexCoord2f(0.0, 1.0); 
-	glVertex3fv(p6);
-
-	//DESSOUS
-	glNormal3f(N[3][0] , N[3][1] , N[3][2] );
-	glTexCoord2f(0.0, 0.0); 
-	glVertex3fv(p2);
-	
-	glTexCoord2f(1.0, 0.0);
-	glVertex3fv(p8);
-	
-	glTexCoord2f(1.0, 2.0);
-	glVertex3fv(p7);
-	
-	glTexCoord2f(0.0, 1.0); 
-	glVertex3fv(p3);
-
-	glEnd();
-	
-	glDisable(GL_TEXTURE_2D);
-	
-}
-
-void TracerCubeSol() //permet de réaliser la texture du sol sans que cette dernière soit étirée
-{
-	typedef float Point3D[3];
-
-	Point3D p1 = {-0.5, 0.5, 0.5};
-	
-	Point3D p2 = {-0.5, -0.5, 0.5};
-
-	Point3D p3 = {0.5, -0.5, 0.5};
-
-	Point3D p4 = {0.5, 0.5, 0.5};
-
-	Point3D p5 = {0.5, 0.5, -0.5};
-
-	Point3D p6 = {-0.5, 0.5, -0.5};
-
-	Point3D p7 = {0.5, -0.5, -0.5};
-
-	Point3D p8 = {-0.5, -0.5, -0.5};
-
-	glEnable(GL_TEXTURE_2D);
-	
-
-	glBegin(GL_QUADS);
-	/*
-	 * N[0][0] = 1; //x
-	N[1][0] = -1; //-x
-	N[2][1] = 1; //y
-	N[3][1] = -1; //-y
-	N[4][2] = 1; //z
-	N[5][2] = -1; //-z
-	* */
-	
-	//DEVANT
-	
-	glNormal3f(N[4][0] , N[4][1] , N[4][2] );
-	
-	
-	glTexCoord2f(0.0, 0.0); 
-	glVertex3fv(p1);
-
-	
-	glTexCoord2f(7, 0.0); 
-	glVertex3fv(p2);
-	
-	glTexCoord2f(7.0, 7.0);
-	glVertex3fv(p3); 
-	
-	glTexCoord2f(0.0, 7.0);
-	glVertex3fv(p4); 
-
-	//DROITE
-	glNormal3f(N[0][0] , N[0][1] , N[0][2] );
-	glTexCoord2f(0.0, 0.0); 
-	glVertex3fv(p4);
-	
-	glTexCoord2f(7.0, 0.0);
-	glVertex3fv(p3);
-	
-	glTexCoord2f(7.0, 7.0); 
-	glVertex3fv(p7);
-	
-	glTexCoord2f(0.0, 7.0); 
-	glVertex3fv(p5);
-
-	//HAUT
-	glNormal3f(N[2][0] , N[2][1] , N[2][2] );
-	glTexCoord2f(0.0, 0.0); 
-	glVertex3fv(p6);
-	
-	glTexCoord2f(7.0, 0.0);
-	glVertex3fv(p1);
-	
-	glTexCoord2f(7.0, 7.0);
-	glVertex3fv(p4);
-	
-	glTexCoord2f(0.0, 7.0); 
-	glVertex3fv(p5);
-
-	//GAUCHE
-	glNormal3f(N[1][0] , N[1][1] , N[1][2] );
-	glTexCoord2f(0.0, 0.0); 
-	glVertex3fv(p6);
-	
-	glTexCoord2f(7.0, 0.0);
-	glVertex3fv(p8);
-	
-	glTexCoord2f(7.0, 7.0);
-	glVertex3fv(p2);
-	
-	glTexCoord2f(0.0, 7.0); 
-	glVertex3fv(p1);
-
-	//DERRIERE
-	glNormal3f(N[5][0] , N[5][1] , N[5][2] );
-	glTexCoord2f(0.0, 0.0); 
-	glVertex3fv(p5);
-	
-	glTexCoord2f(7.0, 0.0);
-	glVertex3fv(p7);
-	
-	glTexCoord2f(7.0, 7.0);
-	glVertex3fv(p8);
-	
-	glTexCoord2f(0.0, 7.0); 
-	glVertex3fv(p6);
-
-	//DESSOUS
-	glNormal3f(N[3][0] , N[3][1] , N[3][2] );
-	glTexCoord2f(0.0, 0.0); 
-	glVertex3fv(p2);
-	
-	glTexCoord2f(7.0, 0.0);
-	glVertex3fv(p8);
-	
-	glTexCoord2f(7.0, 7.0);
-	glVertex3fv(p7);
-	
-	glTexCoord2f(0.0, 7.0); 
-	glVertex3fv(p3);
-
-	glEnd();
-	glDisable(GL_TEXTURE_2D);
-	
-}
-
-void membre3()
-{
-glPushMatrix();
-	glTranslatef(17 - transM3, 0, 0);
-	glRotatef( 180 , 0 , 1 , 0 );
-	glScalef(0.7 , 0.7 , 0.7 );
-	glPushMatrix();
-		glTranslatef(5.5, 0, 0);
-		glScalef(9, 1, 1);
-		TracerCube();
-	glPopMatrix();
-
-	glPushMatrix();
-		glTranslatef(0.5, 0, 0.6);
-		glScalef(3, 1, 0.2);
-		TracerCube();
-	glPopMatrix();
-
-	glPushMatrix();
-		glTranslatef(0.5, 0, -0.6);
-		glScalef(3, 1, 0.2);
-		TracerCube();
-	glPopMatrix();
-glPopMatrix();	
-
-}
-
-void membre2()
-{
-glPushMatrix();
-	glTranslatef(9.5, 0, 0);
-	glRotatef(-rotaM2, 0, 0, 1);	
-	glPushMatrix();
-		glTranslatef(5.5, 0, 0);
-		glScalef(9, 1, 1);
-		TracerCube();
-	glPopMatrix();
-
-	glPushMatrix();
-		glTranslatef(0.5, 0, 0.6);
-		glScalef(3, 1, 0.2);
-		TracerCube();
-	glPopMatrix();
-
-	glPushMatrix();
-		glTranslatef(0.5, 0, -0.6);
-		glScalef(3, 1, 0.2);
-		TracerCube();
-	glPopMatrix();
-	membre3();
-glPopMatrix();	
-
-}
-
-void membre1()
-{
-	glPushMatrix();
-		glTranslatef(5.5, 0, 0);
-		glScalef(9, 1, 1);
-		TracerCube();
-	glPopMatrix();
-
-	glPushMatrix();
-		glTranslatef(0.5, 0, 0.6);
-		glScalef(3, 1, 0.2);
-		TracerCube();
-	glPopMatrix();
-
-	glPushMatrix();
-		glTranslatef(0.5, 0, -0.6);
-		glScalef(3, 1, 0.2);
-		TracerCube();
-	glPopMatrix();
-	
-	membre2();
-
-}
-
-void epaule()
-{
-	glPushMatrix();
-		glTranslatef(0, 0.95, 0);
-		glScalef(1, 1.5, 1);
-		TracerCube();
-	glPopMatrix();
-	glBindTexture(GL_TEXTURE_2D,textures[2]);
-	glPushMatrix();
-		glRotatef(-rotaGlob, 0,1,0); //la rotation globale sur tout le système sauf le socle
-		glTranslatef(0.0, 0.1, 0.0);
-		glScalef(64, 0.2, 64);
-		TracerCubeSol();
-	glPopMatrix();
-
-}
-
-
-
-
-
 //fonction qui construit la scène 3D
 void construireScene(void)
 {
@@ -513,28 +137,13 @@ void construireScene(void)
 	glMultMatrixd(mlTbGetTransformation());
 	
 	/*
-	// initialisation de MODELVIEW
-	glEnable(GL_LIGHTING);
-	//glLightModeli(GL_LIGHT_MODEL_TWO_SIDE,GL_TRUE);
-	glEnable(GL_NORMALIZE);
-	glEnable(GL_LIGHT0);
-
-	
-	// position de la camera
-	gluLookAt (Xcamera, Ycamera, Zcamera, // position
-             Xcamera + XaxeCamera , Ycamera + YaxeCamera, Zcamera + ZaxeCamera ,  // point vise
-             0.0, 1.0, 0.0);  // "verticale appareil"
-	
 	//gestion des lumires
 	glLightfv (GL_LIGHT0, GL_AMBIENT, Lambiant);
 	glLightfv (GL_LIGHT0, GL_DIFFUSE, Lblanche);
 	glLightfv (GL_LIGHT0, GL_SPECULAR, Lblanche);
 	glLightfv (GL_LIGHT0, GL_POSITION, position);
 
-	
-	
-	
-	//on définit le matériau de "sol" généré par la heightmap
+	//on définit le matériau 
 	glMaterialfv(GL_FRONT, GL_EMISSION, Lnoire);
 	glMaterialfv(GL_FRONT, GL_AMBIENT, matAmbiant);
 	glMaterialfv(GL_FRONT, GL_DIFFUSE, matDiffuse);
@@ -549,7 +158,7 @@ void construireScene(void)
 	glTranslatef(-heightmap_largeur/2 , 0.0 , -heightmap_longeur/2);
 	//texture a appliquer au "sol"
 	
-	glBindTexture(GL_TEXTURE_2D,textures[TEXT_TRIANGLE]);
+	glBindTexture(GL_TEXTURE_2D,textures[TEXT_SOL]);
 	
 	//1ere verion
 	glBegin(GL_QUADS);
@@ -566,7 +175,7 @@ void construireScene(void)
 		glVertex3i( heightmap_largeur , 0 , 0 );
 	glEnd();
 	
-	
+	glBindTexture(GL_TEXTURE_2D,textures[TEXT_TRIANGLE]);
 	for ( x = 0 ; x < heightmap_largeur - 1 ; x++ )
 	{
 		for ( y = 0 ; y < heightmap_longeur - 1 ; y++ )
@@ -606,6 +215,7 @@ void construireScene(void)
 /* Fonction liees aux interruptions */
 /* -------------------------------- */
 
+//fonction qui gere un changement de taille de la fenetre
 void fenetrage(int _w, int _h)
 { 
 	winX = _w;
@@ -625,15 +235,20 @@ void fenetrage(int _w, int _h)
 	glutPostRedisplay();
 }
 
-
-
-
-
+//gere les appuits des tches du clavier
 void clavier (unsigned char key, int x, int y)
 {   switch (key)
 	{ 
 		case 27 : /* escape : fin */
 			exit (0);
+		break;
+		
+		case 'i' : //zoom in
+			mlTbZoom(+0.1);
+		break;
+		
+		case 'o' : //zoom out
+			mlTbZoom(-0.1);
 		break;
 		
 		case 122 : //z avance camera sur l'axe z
@@ -694,25 +309,6 @@ void fleches(int key, int x, int y)
 				
 		case GLUT_KEY_DOWN :
 			Ycamera = Xcamera - 10;
-		
-			/*switch (mActu)
-			{
-				case 1 :
-					if(rotaM1 > 0) 
-						rotaM1 -= 10;
-				break;
-				
-				case 2 :
-					if(rotaM2 < 90) 
-						rotaM2 += 10;
-				break;
-				
-				case 3 :
-					transM3 += 1;
-					if( transM3 > 5.6)
-						transM3 = 5.6;
-				break;
-			}*/
 		break;
 						
 		case GLUT_KEY_LEFT :
@@ -734,8 +330,7 @@ void fleches(int key, int x, int y)
 		break;
 	}
 
-	//gluLookAt(Xcamera, Ycamera, Zcamera, 0, 0, 0, 0, 1, 0);
-	glutPostRedisplay(); //pour demander au systeme un nouvel affichage
+	glutPostRedisplay();
 }
 
 void souris(int _button, int _state, int _x, int _y)
@@ -818,7 +413,7 @@ void initScene (void)
 	
 	
 	//on charge les textures
-	glGenTextures(3, textures);
+	glGenTextures(5, textures);
 	
 	Image chrome;
 	glPixelStorei(GL_UNPACK_ALIGNMENT,1);
@@ -850,10 +445,21 @@ void initScene (void)
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S , GL_REPEAT) ;
 	restituerImage( rainbow );
 
+	Image triangle;
+	glPixelStorei(GL_UNPACK_ALIGNMENT,1);
+	triangle = LireImage("text/texture_triangle.ppm") ;
+	glBindTexture(GL_TEXTURE_2D,textures[3]);
+	gluBuild2DMipmaps(GL_TEXTURE_2D , 3 , triangle->larg , triangle->haut , GL_RGB , GL_UNSIGNED_BYTE , triangle->dat);
+	glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T , GL_REPEAT) ;
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S , GL_REPEAT) ;
+	restituerImage( triangle );
+	
+	
 	Image triangle_sol;
 	glPixelStorei(GL_UNPACK_ALIGNMENT,1);
-	triangle_sol = LireImage("text/texture_triangle.ppm") ;
-	glBindTexture(GL_TEXTURE_2D,textures[3]);
+	triangle_sol = LireImage("text/texture_sol.ppm") ;
+	glBindTexture(GL_TEXTURE_2D,textures[4]);
 	gluBuild2DMipmaps(GL_TEXTURE_2D , 3 , triangle_sol->larg , triangle_sol->haut , GL_RGB , GL_UNSIGNED_BYTE , triangle_sol->dat);
 	glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T , GL_REPEAT) ;
