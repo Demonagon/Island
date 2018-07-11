@@ -1,5 +1,6 @@
 #ifndef UPDATE__H
 #define UPDATE__H
+#include "list.h"
 
 /**
 * Dans tout jeu, il y a un moment où l'on veut mettre à jour une liste d'objets
@@ -13,8 +14,11 @@
 * le maximum possible étant définit par le #define UPDATE_REGISTER_CYCLE_COUNT.
 * Pour l'instant ce système est supporté par un tableau, ce qui veut dire que
 * le nombre d'entité mis à jour par cycle est limité à un nombre définit par
-* #define UPDATE_REGISTER_ARRAY_SIZE ; si cela devient un problème cela pourra toujours
+* #define UPDATE_REGISTER_ARRAY_SIZE ; si cela devient un problème cela pourra µ
+* toujours
 * être pris en compte en changeant le tableau par une liste chaînée.
+* -> mise à jour du 11 Juillet 2018 ; le remplacement par une liste chaînée est
+* en cours.
 */
 
 /**
@@ -25,8 +29,7 @@
 * parallèle (mais c'est pas tout de suite).
 */
 
-#define UPDATE_REGISTER_ARRAY_SIZE 100
-#define UPDATE_REGISTER_CYCLE_COUNT 5
+#define UPDATE_REGISTER_CYCLE_COUNT 20
 
 /**
 * une instance de UpdateHandle est là pour permettre au registre d'appeler
@@ -39,37 +42,28 @@ typedef void (*CallBack)(void *);
 typedef struct {
 	void * data;
 	CallBack function;
+	ListLink list_link;
 } UpdateHandle;
 
-UpdateHandle handleCreate(void * data, CallBack function);
+UpdateHandle updateHandleInit(UpdateHandle * handle, void * data,
+												CallBack function);
 
-void handleCall(UpdateHandle handle);
+void updateHandleCall(UpdateHandle handle);
 
-/**
-* Les variables globales qui constituent le registre de mise à jour : un tableau
-* qui contient les listes, un tableau qui contient la taille de chaque liste
-* et une valeur qui indique à quelle liste on est actuellement.
-* NOTE IMPORTANTE : dans la pratique, il sera impossible d'utiliser le délai
-* de delay = UPDATE_REGISTER_CYCLE_COUNT - 1, car ce tableau est utilisé lors
-* de la mise à jour et ne pourra pas être modifié en même temps qu'il est lu
-* (c'est un problème qui pourra être résolu avec une mise en parallèle).
-*/
+/****************************** UPDATE REGISTER *******************************/
 
-UpdateHandle update_register_arrays
-	[UPDATE_REGISTER_ARRAY_SIZE * UPDATE_REGISTER_CYCLE_COUNT];
-int update_register_sizes[UPDATE_REGISTER_CYCLE_COUNT];
-int update_register_current_array;
+typedef struct UpdateRegister {
+	List * update_lists;
+	int current_list;
+} UpdateRegister;
 
-void updateRegisterInit();
+UpdateRegister updateRegisterCreate();
 
-UpdateHandle * updateRegisterGetCurrentArray();
-void updateRegisterClearCurrentArray();
+List * updateRegisterGetCurrentList(UpdateRegister * update_register);
 
-UpdateHandle * updateRegisterGetKthArray(int k);
-int updateRegisterGetKthArraySize(int k);
-void updateRegisterSetKthArraySize(int k, int size);
+List * updateRegisterGetKthList(UpdateRegister * update_register, int k);
 
-void updateRegisterSwitch();
+void updateRegisterSwitch(UpdateRegister * update_register);
 
 /**
 * Fonction qui sera la plus utilisée dans le code : c'est la fonction qui permet
@@ -81,14 +75,17 @@ void updateRegisterSwitch();
 * (voir plus haut).
 */
 
-void updateAdd(UpdateHandle handle, int delay);
+void updateRegisterAdd(UpdateRegister * update_register,
+							 UpdateHandle handle, int delay);
 
 /**
 * Fonction la plus importante, qui exécute toutes les handles, et passe à la
 * liste suivante.
 */
 
-void updateHandles();
+void updateRegisterUpdate(UpdateRegister * update_register);
+
+/************************************* TEST ***********************************/
 
 void updateTest();
 

@@ -77,10 +77,9 @@ typedef struct GridBeacon {
 	ListLink list_link;
 } GridBeacon;
 
-GridBeacon gridBeaconCreate(Complex * position, EventHandler event_handler);
-
 // Initialise le chaînon pour contenir l'adresse précise de la balise.
-void gridBeaconInit(GridBeacon * beacon);
+void gridBeaconInit(GridBeacon * beacon, Complex * position, EventHandler 
+										event_handler);
 
 void gridBeaconRemove(GridBeacon * beacon);
 
@@ -106,5 +105,9 @@ void eventGridEventCallApplication(void * data, void * parameter);
 char eventGridIsCircleInCell(EventGrid * grid, int x, int y, Complex c, double radius);
 
 void eventGridBroadcast(EventGrid * grid, GridEvent * event);
+
+/********************************* TEST ***************************************/
+
+void mainEventGridTest();
 
 #endif

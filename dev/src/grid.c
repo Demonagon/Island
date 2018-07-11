@@ -11,13 +11,12 @@ GridEvent gridEventCreate(GridEventType type, GridEventData data,
 
 /***************************** GRID BEACON ************************************/
 
-GridBeacon gridBeaconCreate(Complex * position, EventHandler event_handler) {
-	return (GridBeacon) {.position = position, .event_handler = event_handler,
-						 .list_link = listCreate() };
-}
-
 // Initialise le chaînon pour contenir l'adresse précise de la balise.
-void gridBeaconInit(GridBeacon * beacon) {
+void gridBeaconInit(GridBeacon * beacon,
+				Complex * position, EventHandler event_handler) {
+	beacon->position = position;
+	beacon->event_handler = event_handler;
+	beacon->list_link = listCreate();
 	beacon->list_link.data = beacon;
 }
 
@@ -123,4 +122,47 @@ void eventGridBroadcast(EventGrid * grid, GridEvent * event)  {
 				listParameterizedApplyAll(*list, eventGridEventCallApplication,
 				  						  event);
 		}				
+}
+
+/******************************** TEST ****************************************/
+
+void mainEventGridTest() {
+	EventGrid grid;
+	Complex pos1 = complexCreate(4, 4), pos2 = complexCreate(6, 6),
+					pos3 = complexCreate(90, 90);
+	GridBeacon b1, b2, b3;
+
+	eventGridInit(&grid, 100, 100);
+
+	gridBeaconInit(&b1, &pos1, NULL);
+	gridBeaconInit(&b2, &pos2, NULL);
+	gridBeaconInit(&b3, &pos3, NULL);
+
+	eventGridPlaceBeacon(&grid, &b1);
+	eventGridPlaceBeacon(&grid, &b2);
+	eventGridPlaceBeacon(&grid, &b3);
+
+	GridEventData data;
+	data.tmp = 0;
+	Complex event_pos = complexCreate(50, 50);
+	GridEvent event = gridEventCreate(_GRID_CALL_YOURSELF_EVENT, data,
+																	  event_pos, 60);
+
+	printf("b1 = %p\n", (void*) &b1);
+	printf("b2 = %p\n", (void*) &b2);
+	printf("b3 = %p\n", (void*) &b3);
+
+	eventGridBroadcast(&grid, &event);
+
+	gridBeaconRemove(&b3);
+
+	event = gridEventCreate(_GRID_CALL_YOURSELF_EVENT, data,
+																	  event_pos, 70);
+
+	printf("----------------------------\n");
+
+	eventGridBroadcast(&grid, &event);
+
+	gridBeaconRemove(&b1);
+	gridBeaconRemove(&b2);
 }
