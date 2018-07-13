@@ -4,6 +4,7 @@
 #include "island.h"
 #include "list.h"
 #include "grid.h"
+#include "main_memory.h"
 
 void plot() {
 	#define PLOT_SIZE 80
@@ -31,7 +32,7 @@ int main(int argc, char **argv) {
 	//updateTest();
 	//island(argc , argv);
 	//mainListTest();
-	mainEventGridTest();
+	//mainEventGridTest();
 
 	return 0;
 }

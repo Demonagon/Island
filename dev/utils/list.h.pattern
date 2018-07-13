@@ -1,0 +1,43 @@
+#ifndef [MAJ_TYPE]LIST__H
+#define [MAJ_TYPE]LIST__H
+#include [LOW_TYPE].h
+
+/**
+* Fait le 9 Juillet 2018 par Pacôme
+* Code d'une simple liste chaînée. Chaque chaînon possède une information
+* sous la forme d'un void *. Pour des liste chaînées dont l'information
+* ne doit pas être contenue sous pointeurs, écrire sa propre copie de
+* ce code, en remplaçant [TYPE] par le type désiré. (en gros.)
+* Afin de prévenir toute boucle d'information dans la mémoire, un chaînon
+* est automatiquement retiré de l'endroit où il est avant d'être rajouté
+* quelque part.
+*/
+
+typedef struct [TYPE]ListLink {
+	[TYPE] data;
+	struct [TYPE]ListLink * previous;
+	struct [TYPE]ListLink * next;
+} [TYPE]ListLink;
+
+typedef [TYPE]ListLink [TYPE]List;
+
+typedef void (*[TYPE]ListApplication) ([TYPE] *);
+
+// S'applique sur le premier argument avec le second comme paramètre
+typedef void (*Parameterized[TYPE]ListApplication) ([TYPE] *, void *);
+
+[TYPE]List [LOW_TYPE]ListCreate();
+[TYPE]ListLink [LOW_TYPE]ListLinkCreate([TYPE] data);
+void [LOW_TYPE]LinkConnect([TYPE]ListLink * a, [TYPE]ListLink * b);
+void [LOW_TYPE]ListAdd([TYPE]List * list, [TYPE]ListLink * new_link);
+void [LOW_TYPE]ListLinkDetach([TYPE]ListLink * link);
+void [LOW_TYPE]ListClear([TYPE]List * list);
+void [LOW_TYPE]ListApplyAll([TYPE]List list, [TYPE]ListApplication application);
+void [LOW_TYPE]ListParameterizedApplyAll(
+				[TYPE]List list,
+				Parameterized[TYPE]ListApplication application,
+				void * parameters);
+
+void main[TYPE]ListTest();
+
+#endif

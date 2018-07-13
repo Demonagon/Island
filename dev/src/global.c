@@ -1,0 +1,13 @@
+#include "global.h"
+
+MainMemory MAIN_MEMORY;
+
+EventGrid EVENT_GRID;
+
+UpdateRegister UPDATE_REGISTER;
+
+void globalsInit() {
+	MAIN_MEMORY = mainMemoryCreate();
+	eventGridInit(&EVENT_GRID, EVENT_GRID_WIDTH, EVENT_GRID_HEIGHT);
+	updateRegisterInit(&UPDATE_REGISTER);
+}

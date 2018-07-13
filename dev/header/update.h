@@ -45,7 +45,7 @@ typedef struct {
 	ListLink list_link;
 } UpdateHandle;
 
-UpdateHandle updateHandleInit(UpdateHandle * handle, void * data,
+void updateHandleInit(UpdateHandle * handle, void * data,
 												CallBack function);
 
 void updateHandleCall(UpdateHandle handle);
@@ -53,11 +53,11 @@ void updateHandleCall(UpdateHandle handle);
 /****************************** UPDATE REGISTER *******************************/
 
 typedef struct UpdateRegister {
-	List * update_lists;
+	List update_lists[UPDATE_REGISTER_CYCLE_COUNT];
 	int current_list;
 } UpdateRegister;
 
-UpdateRegister updateRegisterCreate();
+void updateRegisterInit(UpdateRegister * update_register);
 
 List * updateRegisterGetCurrentList(UpdateRegister * update_register);
 
@@ -71,12 +71,13 @@ void updateRegisterSwitch(UpdateRegister * update_register);
 * équivalent au nombre de listes qui seront sautées avant d'effectuer l'ajout.
 * Pour executer la mise à jour le plus tôt possible, il suffit de mettre delay
 * à 0.
-* La valeur maximale acceptée pour delay est UPDATE_REGISTER_CYCLE_COUNT - 2
-* (voir plus haut).
+* La valeur maximale acceptée pour delay est UPDATE_REGISTER_CYCLE_COUNT - 3.
+* La valeur delay est capée à ce maximum. De cette façon la liste précédente
+* ne peut pas être modifiée, ce qui permet une bonne opération des choses.
 */
 
 void updateRegisterAdd(UpdateRegister * update_register,
-							 UpdateHandle handle, int delay);
+							 UpdateHandle * handle, int delay);
 
 /**
 * Fonction la plus importante, qui exécute toutes les handles, et passe à la

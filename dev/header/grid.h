@@ -40,11 +40,19 @@
 */
 
 typedef enum GridEventType {
-	_GRID_CALL_YOURSELF_EVENT
+	_GRID_CALL_YOURSELF_EVENT,
+
+	/* TODO */
+	/** CUSTOM EVENTS HERE **/
+	TREE_SPAWNING_COLISION_CHECK_EVENT
+	/** ** ** *** ** ** ** **/
 } GridEventType;
 
 typedef union GridEventData {
-	int tmp;
+	/* TODO */
+	/** CUSTOM DATA HERE **/
+	Complex tree_spawn_location; // -> TREE_SPAWNING_COLISION_CHECK_EVENT
+	/** ** ** * ** ** ** **/
 } GridEventData;
 
 typedef struct GridEvent {

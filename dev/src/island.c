@@ -34,7 +34,7 @@ int MAXLIGNE = 256;
 int mouseLeftDown;
 
 typedef enum{ TEXT_CHROME , TEXT_PONY_MANE6 , TEXT_PONY_RAINBOW , TEXT_TRIANGLE , TEXT_SOL }textType;
-int textures[5];
+unsigned int textures[5];
 
 //paramétrisation de la heightmap
 int heightmap_largeur = 5; //x

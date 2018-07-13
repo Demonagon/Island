@@ -1,0 +1,102 @@
+#include "[LOW_TYPE]_list.h"
+#include <stddef.h>
+#include <stdio.h>
+
+[TYPE]List [LOW_TYPE]ListCreate() {
+	[TYPE]List list;
+	list.previous = NULL;
+	list.next = NULL;
+	return list;
+}
+
+[TYPE]ListLink [LOW_TYPE]ListLinkCreate([TYPE] data) {
+	return ([TYPE]ListLink) {.data = data, .previous = NULL, .next = NULL};
+}
+
+void [LOW_TYPE]LinkConnect([TYPE]ListLink * a, [TYPE]ListLink * b) {
+	if( a ) a->next     = b;
+	if( b ) b->previous = a;
+}
+
+void [LOW_TYPE]ListAdd([TYPE]List * [LOW_TYPE]List, [TYPE]ListLink * new_link) {
+	if(! new_link || ! [LOW_TYPE]List) return;
+
+	// Dans le cas où le chaînon serait déjà dans la [LOW_TYPE]Liste, pour éviter une 
+	// boucle
+	[LOW_TYPE]ListLinkDetach(new_link);
+
+	[LOW_TYPE]LinkConnect(new_link, [LOW_TYPE]List->next);
+	[LOW_TYPE]LinkConnect([LOW_TYPE]List, new_link);
+}
+
+void [LOW_TYPE]ListLinkDetach([TYPE]ListLink * link) {
+	if(! link) return;
+
+	[LOW_TYPE]LinkConnect(link->previous, link->next);
+
+	link->previous = NULL;
+	link->next = NULL;
+}
+
+void [LOW_TYPE]ListClear([TYPE]List * [LOW_TYPE]List) {
+	if([LOW_TYPE]List)
+		[LOW_TYPE]LinkConnect(NULL, [LOW_TYPE]List->next);
+	[LOW_TYPE]LinkConnect([LOW_TYPE]List, NULL);
+}
+
+void [LOW_TYPE]ListApplyAll([TYPE]List [LOW_TYPE]List, [TYPE]ListApplication application) {
+	[TYPE]ListLink * current_link = [LOW_TYPE]List.next;
+
+	while(current_link) {
+		application(&current_link->data);
+		current_link = current_link->next;
+	}
+}
+
+void [LOW_TYPE]ListParameterizedApplyAll([TYPE]List [LOW_TYPE]List,
+		Parameterized[TYPE]ListApplication application, void * parameters) {
+	[TYPE]ListLink * current_link = [LOW_TYPE]List.next;
+
+	while(current_link) {
+		application(&current_link->data, parameters);
+		current_link = current_link->next;
+	}
+}
+
+/*************************** TEST *******************************/
+
+void main[TYPE]ListTestPrintApplication([TYPE] * p) {
+	/* TODO place some test message display about the object */
+}
+
+void main[TYPE]ListTest() {
+	[TYPE] t1, t2, t3;
+	[TYPE]List list = [LOW_TYPE]ListCreate();
+	[TYPE]ListLink
+		l_a = [LOW_TYPE]ListLinkCreate(t1),
+		l_b = [LOW_TYPE]ListLinkCreate(t2),
+		l_c = [LOW_TYPE]ListLinkCreate(t3);
+
+	[LOW_TYPE]ListAdd(&list, &l_a);
+	[LOW_TYPE]ListAdd(&list, &l_b);
+	[LOW_TYPE]ListAdd(&list, &l_c);
+
+	[LOW_TYPE]ListApplyAll(list, main[TYPE]ListTestPrintApplication);
+	printf("\n");
+
+	[LOW_TYPE]ListLinkDetach(&l_b);
+
+	[LOW_TYPE]ListApplyAll(list, main[TYPE]ListTestPrintApplication);
+	printf("\n");
+
+	[LOW_TYPE]ListLinkDetach(&l_a);
+
+	[LOW_TYPE]ListApplyAll(list, main[TYPE]ListTestPrintApplication);
+	printf("\n");
+
+	[LOW_TYPE]ListAdd(&list, &l_b);
+	[LOW_TYPE]ListAdd(&list, &l_a);
+
+	[LOW_TYPE]ListApplyAll(list, main[TYPE]ListTestPrintApplication);
+	printf("\n");
+}

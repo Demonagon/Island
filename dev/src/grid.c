@@ -143,7 +143,6 @@ void mainEventGridTest() {
 	eventGridPlaceBeacon(&grid, &b3);
 
 	GridEventData data;
-	data.tmp = 0;
 	Complex event_pos = complexCreate(50, 50);
 	GridEvent event = gridEventCreate(_GRID_CALL_YOURSELF_EVENT, data,
 																	  event_pos, 60);
