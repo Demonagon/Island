@@ -6,8 +6,12 @@ EventGrid EVENT_GRID;
 
 UpdateRegister UPDATE_REGISTER;
 
-void globalsInit() {
+void globalInit() {
 	MAIN_MEMORY = mainMemoryCreate();
 	eventGridInit(&EVENT_GRID, EVENT_GRID_WIDTH, EVENT_GRID_HEIGHT);
 	updateRegisterInit(&UPDATE_REGISTER);
+}
+
+void globalFree() {
+	mainMemoryFree(&MAIN_MEMORY);
 }

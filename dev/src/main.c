@@ -1,5 +1,7 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include "util_math.h"
+#include "global.h"
 #include "update.h"
 #include "island.h"
 #include "list.h"
@@ -27,12 +29,16 @@ void plot() {
 }
 
 int main(int argc, char **argv) {
+	globalInit();
 
 	//plot();
 	//updateTest();
 	//island(argc , argv);
 	//mainListTest();
 	//mainEventGridTest();
+	if(argc<2)printf("t'as oublié le paramètre coco\n");
+	else mainTreeStressTest(atoi(argv[1]));
 
+	globalFree();
 	return 0;
 }

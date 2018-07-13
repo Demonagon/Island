@@ -37,7 +37,7 @@
 typedef unsigned int MemoryIndex;
 
 typedef void (*IndexUpdater) (GameObject *, MemoryIndex);
-typedef void (*SetupRoutine) (GameObject *);
+typedef void (*SetupRoutine) (GameObject *, MemoryIndex);
 
 typedef struct MemoryObject {
 	IndexUpdater index_updater;
@@ -55,6 +55,8 @@ typedef struct MainMemory {
 
 MainMemory mainMemoryCreate();
 
+void mainMemoryFree(MainMemory * memory);
+
 void mainMemoryAddArray(MainMemory * memory);
 void mainMemoryRemoveArray(MainMemory * memory);
 unsigned int mainMemoryGetTotalSize(MainMemory * memory);
@@ -64,9 +66,11 @@ unsigned int mainMemoryGetIndexChunk(MemoryIndex index);
 unsigned int mainMemoryGetInChunkIndex(MemoryIndex index);
 
 MemoryIndex mainMemoryAddObject(MainMemory * memory, GameObject object,
-								IndexUpdater index_updater,
-								SetupRoutine setup_routine);
+								SetupRoutine setup_routine,
+								IndexUpdater index_updater);
 GameObject mainMemoryRemoveObject(MainMemory * memory, MemoryIndex index);
+
+GameObject * mainMemoryAccessObject(MainMemory * memory, MemoryIndex index);
 
 /*----------------------------------------------------------------------------*/
 
@@ -74,7 +78,7 @@ GameObject mainMemoryRemoveObject(MainMemory * memory, MemoryIndex index);
 * Des fonctions qui raccourcisent le boulot pour placer un objet en mémoire.
 */
 
-void gameObjectCopyAndSetup(MainMemory * memory, GameObject object,
-							SetupRoutine setup_routine);
+//void gameObjectCopyAndSetup(MainMemory * memory, GameObject object,
+//							SetupRoutine setup_routine);
 
 #endif

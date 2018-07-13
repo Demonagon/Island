@@ -12,6 +12,7 @@ EventGrid EVENT_GRID;
 #include "update.h"
 UpdateRegister UPDATE_REGISTER;
 
-void globalsInit();
+void globalInit();
+void globalFree();
 
 #endif

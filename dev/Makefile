@@ -30,7 +30,7 @@ $(MAIN): $(OBJS)
 
 $(OBJ_FOLDER)/%.o : $(SRC_FOLDER)/%.c
 	mkdir -p $(OBJ_FOLDER); \
-	$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@
+	$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@ -g
 
 clean:
 	$(RM) $(OBJ_FOLDER)/*.o *~ $(MAIN)

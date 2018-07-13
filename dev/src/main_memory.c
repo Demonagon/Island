@@ -11,7 +11,14 @@ MainMemory mainMemoryCreate() {
 	};
 }
 
+void mainMemoryFree(MainMemory * memory) {
+	for(int k = 0; k < memory->dynamical_array_size; k++)
+		free(memory->dynamical_array[k]);
+	free(memory->dynamical_array);
+}
+
 void mainMemoryAddArray(MainMemory * memory) {
+
 	MemoryObject ** old_array = memory->dynamical_array;
 	int old_size = memory->dynamical_array_size;
 
@@ -76,10 +83,12 @@ unsigned int mainMemoryGetInChunkIndex(MemoryIndex index) {
 }
 
 MemoryIndex mainMemoryAddObject(MainMemory * memory, GameObject object,
-								IndexUpdater index_updater,
-								SetupRoutine setup_routine) {
+								IndexUpdater setup_routine,
+								SetupRoutine index_updater) {
 	if( ! mainMemoryGetTotalCapacity(memory) )
 		mainMemoryAddArray(memory);
+
+	printf("par -> %p\n", & index_updater);
 
 	MemoryIndex new_index = mainMemoryGetTotalSize(memory);
 
@@ -89,17 +98,19 @@ MemoryIndex mainMemoryAddObject(MainMemory * memory, GameObject object,
 	MemoryObject memory_object =
 		(MemoryObject) {.index_updater = index_updater, .object = object};
 
+
 	memory->dynamical_array[chunk][chunk_index] = memory_object;
 
-	if(chunk == memory->dynamical_array_size - 2)
+	if(chunk == memory->dynamical_array_size - 1)
 		memory->last_chunk_size++;
-	else if(chunk == memory->dynamical_array_size - 1)
+	else if(chunk == memory->dynamical_array_size - 2)
 		memory->before_last_chunk_size++;
 
 	// Once the new object is placed, we call the setup routine
 
 	if( setup_routine )
-		setup_routine( & memory->dynamical_array[chunk][chunk_index].object );
+		setup_routine( & memory->dynamical_array[chunk][chunk_index].object,
+						new_index );
 
 	return new_index;
 }
@@ -128,21 +139,27 @@ GameObject mainMemoryRemoveObject(MainMemory * memory, MemoryIndex index) {
 	unsigned int last_chunk_index = mainMemoryGetInChunkIndex(last_object_index);
 
 	// Filling empty room with last object
-	memory->dynamical_array[chunk][chunk_index] =
-		memory->dynamical_array[last_chunk][last_chunk_index];
+	memory->dynamical_array[chunk][chunk_index].index_updater =
+		memory->dynamical_array[last_chunk][last_chunk_index].index_updater;
+	memory->dynamical_array[chunk][chunk_index].object =
+		memory->dynamical_array[last_chunk][last_chunk_index].object;
 
-	// Notifying newly replaced objet of the change in it's index
+	// Notifying newly replaced objet of the change of it's index
+
+	printf("%p\n", & memory->dynamical_array[chunk][chunk_index].index_updater);
+
 	if( memory->dynamical_array[chunk][chunk_index].index_updater )
 		memory->dynamical_array[chunk][chunk_index].index_updater(
 			&memory->dynamical_array[chunk][chunk_index].object, last_object_index
 		);
 
 	// Applying memory size shrink
-	if(chunk == memory->dynamical_array_size - 2)
+	if(chunk == memory->dynamical_array_size - 1)
 		memory->last_chunk_size--;
-	else if(chunk == memory->dynamical_array_size - 1)
+	else if(chunk == memory->dynamical_array_size - 2)
 		memory->before_last_chunk_size--;
 
+	// If there is enought room open, remove the last chunk
 	if( memory->dynamical_array_size > 1 &&
 		! memory->last_chunk_size &&
 		! memory->before_last_chunk_size )
@@ -151,9 +168,26 @@ GameObject mainMemoryRemoveObject(MainMemory * memory, MemoryIndex index) {
 	return remove_object.object;
 }
 
+GameObject * mainMemoryAccessObject(MainMemory * memory, MemoryIndex index) {
+	if( index >= mainMemoryGetTotalSize(memory) ) {
+		fprintf(stderr, "(%s, line %d) => Memory received a out of bounds",
+			__FILE__, __LINE__);
+		fprintf(stderr, " memory index to access to (value = %d, size = %d)\n",
+			index, mainMemoryGetTotalSize(memory));
+		fprintf(stderr, "Are you sure the index you gave was properly ");
+		fprintf(stderr, "maintained by the index updater ?\n");
+		exit(-1);
+	}
+
+	unsigned int chunk = mainMemoryGetIndexChunk(index);
+	unsigned int chunk_index = mainMemoryGetInChunkIndex(index);
+
+	return & memory->dynamical_array[chunk][chunk_index].object;
+}
+
 /*--------------------------- GAME OBJECT FUNCTIONS --------------------------*/
 
-void standardGameObjectIndexUpdater(GameObject * object, MemoryIndex index) {
+/*void standardGameObjectIndexUpdater(GameObject * object, MemoryIndex index) {
 	object->memory_index = index;
 }
 
@@ -161,5 +195,5 @@ void gameObjectCopyAndSetup(MainMemory * memory, GameObject object,
 							SetupRoutine setup_routine) {
 	mainMemoryAddObject(memory, object,
 		standardGameObjectIndexUpdater, setup_routine);
-}
+}*/
 
