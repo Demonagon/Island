@@ -18,7 +18,6 @@ void mainMemoryFree(MainMemory * memory) {
 }
 
 void mainMemoryAddArray(MainMemory * memory) {
-
 	MemoryObject ** old_array = memory->dynamical_array;
 	int old_size = memory->dynamical_array_size;
 
@@ -32,6 +31,8 @@ void mainMemoryAddArray(MainMemory * memory) {
 		= malloc( sizeof(MemoryObject) * MAIN_MEMORY_CHUNK_SIZE );
 
 	memory->dynamical_array_size++;
+	memory->before_last_chunk_size = memory->last_chunk_size;
+	memory->last_chunk_size = 0;
 
 	free(old_array);
 }
@@ -63,7 +64,7 @@ unsigned int mainMemoryGetTotalSize(MainMemory * memory) {
 		case 2 : return memory->before_last_chunk_size
 						+ memory->last_chunk_size;
 		default :
-			return memory->dynamical_array_size * (MAIN_MEMORY_CHUNK_SIZE - 2)
+			return (memory->dynamical_array_size - 2) * MAIN_MEMORY_CHUNK_SIZE
 			+ memory->before_last_chunk_size + memory->last_chunk_size;
 	}
 }
@@ -78,17 +79,14 @@ unsigned int mainMemoryGetIndexChunk(MemoryIndex index) {
 }
 
 unsigned int mainMemoryGetInChunkIndex(MemoryIndex index) {
-	unsigned int chunk = mainMemoryGetIndexChunk(index);
-	return index - (chunk * MAIN_MEMORY_CHUNK_SIZE);
+	return index % MAIN_MEMORY_CHUNK_SIZE;
 }
 
 MemoryIndex mainMemoryAddObject(MainMemory * memory, GameObject object,
-								IndexUpdater setup_routine,
-								SetupRoutine index_updater) {
+								SetupRoutine setup_routine,
+								IndexUpdater index_updater) {
 	if( ! mainMemoryGetTotalCapacity(memory) )
 		mainMemoryAddArray(memory);
-
-	printf("par -> %p\n", & index_updater);
 
 	MemoryIndex new_index = mainMemoryGetTotalSize(memory);
 
@@ -97,7 +95,6 @@ MemoryIndex mainMemoryAddObject(MainMemory * memory, GameObject object,
 
 	MemoryObject memory_object =
 		(MemoryObject) {.index_updater = index_updater, .object = object};
-
 
 	memory->dynamical_array[chunk][chunk_index] = memory_object;
 
@@ -133,7 +130,7 @@ GameObject mainMemoryRemoveObject(MainMemory * memory, MemoryIndex index) {
 	MemoryObject remove_object = memory->dynamical_array[chunk][chunk_index];
 
 	// Taking the last objet in memory
-	unsigned int last_object_index = mainMemoryGetTotalSize(memory);
+	unsigned int last_object_index = mainMemoryGetTotalSize(memory) - 1;
 
 	unsigned int last_chunk = mainMemoryGetIndexChunk(last_object_index);
 	unsigned int last_chunk_index = mainMemoryGetInChunkIndex(last_object_index);
@@ -146,11 +143,9 @@ GameObject mainMemoryRemoveObject(MainMemory * memory, MemoryIndex index) {
 
 	// Notifying newly replaced objet of the change of it's index
 
-	printf("%p\n", & memory->dynamical_array[chunk][chunk_index].index_updater);
-
 	if( memory->dynamical_array[chunk][chunk_index].index_updater )
 		memory->dynamical_array[chunk][chunk_index].index_updater(
-			&memory->dynamical_array[chunk][chunk_index].object, last_object_index
+			&memory->dynamical_array[chunk][chunk_index].object, index
 		);
 
 	// Applying memory size shrink

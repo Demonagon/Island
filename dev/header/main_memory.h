@@ -36,8 +36,8 @@
 
 typedef unsigned int MemoryIndex;
 
-typedef void (*IndexUpdater) (GameObject *, MemoryIndex);
 typedef void (*SetupRoutine) (GameObject *, MemoryIndex);
+typedef void (*IndexUpdater) (GameObject *, MemoryIndex);
 
 typedef struct MemoryObject {
 	IndexUpdater index_updater;

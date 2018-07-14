@@ -7,13 +7,11 @@
 Tree * treeCreate(Complex position) {
 	GameObjectData data;
 	data.tree =
-		(Tree) {.position = position, .memory_index = 0, .state = INITIAL};
+		(Tree) {.position = position, .memory_index = 0, .state = INITIAL };
 	GameObject tree_object = gameObjectCreate(TREE, data);
 
-	printf("ref -> %p\n", & TreeMemoryIndexUpdater);
-
 	MemoryIndex index = mainMemoryAddObject(&MAIN_MEMORY, tree_object,
-		TreeSetupRoutine, TreeMemoryIndexUpdater);
+		treeSetupRoutine, treeMemoryIndexUpdater);
 
 	GameObject * final_tree = mainMemoryAccessObject(&MAIN_MEMORY, index);
 
@@ -24,25 +22,25 @@ void treeDestroy(Tree * tree) {
 	mainMemoryRemoveObject(&MAIN_MEMORY, tree->memory_index);
 }
 
-void TreeSetupRoutine(GameObject * tree, MemoryIndex index) {
+void treeSetupRoutine(GameObject * tree, MemoryIndex index) {
+	printf("Je suis un joli arbre avec l'adresse %d !\n", index);
 	tree->data.tree.memory_index = index;
+	
 }
 
-void TreeMemoryIndexUpdater(GameObject * tree, MemoryIndex index) {
-	printf("coucou");
+void treeMemoryIndexUpdater(GameObject * tree, MemoryIndex index) {
 	printf("Moi, l'arbre d'indice %d, passe à l'indice %d\n",tree->data.tree.memory_index, index);
 	tree->data.tree.memory_index = index;
 }
 
 void mainTreeStressTest(int stress_level) {
-	Tree * my_forest[ stress_level ];
+	// Pour gérer le problème de ne pas pouvoir suivre un objet en mémoire
+	// lorsqu'il est balancé à droite et à gauche par la main memory, ajouter
+	// une collection de pointeurs sur fonction pour résoudre le soucis
+	//Tree * forest[stress_level];
 	for(int k = 0; k < stress_level; k++)
-		my_forest[k] = treeCreate( complexCreate(0, 0) );
+		treeCreate( complexCreate(0, 0) );
 
 	for(int k = 0; k < stress_level; k++)
-		printf("Je suis un joli arbre avec l'adresse %d !\n",
-				my_forest[k]->memory_index);
-
-	for(int k = 0; k < stress_level; k++)
-		treeDestroy( my_forest[k] );
+		mainMemoryRemoveObject(&MAIN_MEMORY, 0);
 }

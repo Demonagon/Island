@@ -3,6 +3,7 @@
 //#include "update.h"
 //#include "grid.h"
 #include "util_math.h"
+#include "list.h"
 
 struct GameObject;
 
@@ -29,9 +30,9 @@ Tree * treeCreate(Complex position);
 
 void treeDestroy(Tree * tree);
 
-void TreeSetupRoutine(struct GameObject * tree, unsigned int index);
+void treeSetupRoutine(struct GameObject * tree, unsigned int index);
 
-void TreeMemoryIndexUpdater(struct GameObject * tree, unsigned int index);
+void treeMemoryIndexUpdater(struct GameObject * tree, unsigned int index);
 
 void mainTreeStressTest(int stress_level);
 
