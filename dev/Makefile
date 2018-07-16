@@ -28,8 +28,21 @@ $(MAIN): $(OBJS)
 	mkdir -p $(BIN_FOLDER); \
 	$(CC) $(CFLAGS) $(INCLUDES) -o $(MAIN) $(OBJS) $(LFLAGS) $(LIBS)
 
-$(OBJ_FOLDER)/%.o : $(SRC_FOLDER)/%.c
+$(OBJ_FOLDER)/%.o : $(SRC_FOLDER)/%.c lib/libml.a
 	mkdir -p $(OBJ_FOLDER); \
+	$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@  -g # <- retirer le premier # pour débugger
+
+ML_SRC_FOLDER = lib/ml/src
+ML_OBJ_FOLDER = lib/ml/obj
+
+ML_SRCS = $(wildcard $(ML_SRC_FOLDER)/*.c)
+ML_OBJS = $(patsubst $(ML_SRC_FOLDER)/%.c,$(ML_OBJ_FOLDER)/%.o,$(ML_SRCS))
+
+lib/libml.a : $(ML_OBJS)
+	ar -cvq lib/libml.a $(ML_OBJS)
+
+$(ML_OBJ_FOLDER)/%.o : $(ML_SRC_FOLDER)/%.c
+	mkdir -p $(ML_OBJ_FOLDER); \
 	$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@  -g # <- retirer le premier # pour débugger
 
 clean:
