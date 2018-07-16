@@ -36,11 +36,11 @@ int MAXLIGNE = 256;
 int mouseLeftDown;
 
 typedef enum{ TEXT_CHROME , TEXT_PONY_MANE6 , TEXT_PONY_RAINBOW , TEXT_SOL }textType;
-unsigned int textures[5];
+unsigned int textures[4];
 
 //paramétrisation de la heightmap
-int heightmap_largeur = 5; //x
-int heightmap_longeur = 5; //y
+int heightmap_largeur = 100; //x
+int heightmap_longeur = 100; //y
 int heightmap_hauteur_min = 0; //z_min
 int heightmap_hauteur_max = 4; //z_max
 int** heightmap = NULL;
@@ -156,9 +156,10 @@ void construireScene(void)
 	
 	//******************** HEIGHTMAP*******************
 	glEnable(GL_TEXTURE_2D);
+	glTranslatef(-heightmap_largeur/2 , 0.0 , -heightmap_longeur/2);
 	/*
 	//pour centrrer l'ile
-	glTranslatef(-heightmap_largeur/2 , 0.0 , -heightmap_longeur/2);
+	
 	//texture a appliquer au "sol"
 	
 	glBindTexture(GL_TEXTURE_2D,textures[TEXT_SOL]);

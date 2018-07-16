@@ -4,6 +4,7 @@
 #include "global.h"
 #include "update.h"
 #include "island.h"
+#include "heightmap.h"
 #include "list.h"
 #include "grid.h"
 #include "main_memory.h"
