@@ -35,7 +35,7 @@ int mActu = 1;
 int MAXLIGNE = 256;
 int mouseLeftDown;
 
-typedef enum{ TEXT_CHROME , TEXT_PONY_MANE6 , TEXT_PONY_RAINBOW , TEXT_TRIANGLE , TEXT_SOL }textType;
+typedef enum{ TEXT_CHROME , TEXT_PONY_MANE6 , TEXT_PONY_RAINBOW , TEXT_SOL }textType;
 unsigned int textures[5];
 
 //paramétrisation de la heightmap
@@ -156,6 +156,7 @@ void construireScene(void)
 	
 	//******************** HEIGHTMAP*******************
 	glEnable(GL_TEXTURE_2D);
+	/*
 	//pour centrrer l'ile
 	glTranslatef(-heightmap_largeur/2 , 0.0 , -heightmap_longeur/2);
 	//texture a appliquer au "sol"
@@ -176,8 +177,8 @@ void construireScene(void)
 		glTexCoord2f(heightmap_largeur, 0.0);
 		glVertex3i( heightmap_largeur , 0 , 0 );
 	glEnd();
-	
-	glBindTexture(GL_TEXTURE_2D,textures[TEXT_TRIANGLE]);
+	*/
+	glBindTexture(GL_TEXTURE_2D,textures[TEXT_SOL]);
 	for ( x = 0 ; x < heightmap_largeur - 1 ; x++ )
 	{
 		for ( y = 0 ; y < heightmap_longeur - 1 ; y++ )
@@ -190,24 +191,11 @@ void construireScene(void)
 				glVertex3i( x , heightmap[x][y+1] , y+1  );
 				
 				glTexCoord2f(1.0, 1.0);
-				glVertex3i( x+1 , heightmap[x][y+1] ,  y+1  );
+				glVertex3i( x+1 , heightmap[x+1][y+1] ,  y+1  );
 				
 				glTexCoord2f(1.0, 0.0);
 				glVertex3i( x+1 , heightmap[x+1][y] , y );
 			glEnd();
-			/*
-			glBegin(GL_TRIANGLES);
-				//triangle "acd"
-				glTexCoord2f(0.0, 0.0);
-				glVertex3i( x , heightmap[x][y] , y );
-				
-				glTexCoord2f(1.0, 1.0);
-				glVertex3i( x+1 , heightmap[x][y+1] , y+1 );
-				
-				glTexCoord2f(1.0, 0.0);
-				glVertex3i( x+1 , heightmap[x+1][y] , y );
-			glEnd();
-			*/
 		}
 	}
 
@@ -417,7 +405,7 @@ void initScene (void)
 	
 	
 	//on charge les textures
-	glGenTextures(5, textures);
+	glGenTextures(4, textures);
 	
 	Image chrome;
 	glPixelStorei(GL_UNPACK_ALIGNMENT,1);
@@ -448,22 +436,11 @@ void initScene (void)
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T , GL_REPEAT) ;
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S , GL_REPEAT) ;
 	restituerImage( rainbow );
-
-	Image triangle;
-	glPixelStorei(GL_UNPACK_ALIGNMENT,1);
-	triangle = LireImage("text/texture_triangle.ppm") ;
-	glBindTexture(GL_TEXTURE_2D,textures[3]);
-	gluBuild2DMipmaps(GL_TEXTURE_2D , 3 , triangle->larg , triangle->haut , GL_RGB , GL_UNSIGNED_BYTE , triangle->dat);
-	glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T , GL_REPEAT) ;
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S , GL_REPEAT) ;
-	restituerImage( triangle );
-	
 	
 	Image triangle_sol;
 	glPixelStorei(GL_UNPACK_ALIGNMENT,1);
 	triangle_sol = LireImage("text/texture_sol.ppm") ;
-	glBindTexture(GL_TEXTURE_2D,textures[4]);
+	glBindTexture(GL_TEXTURE_2D,textures[3]);
 	gluBuild2DMipmaps(GL_TEXTURE_2D , 3 , triangle_sol->larg , triangle_sol->haut , GL_RGB , GL_UNSIGNED_BYTE , triangle_sol->dat);
 	glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T , GL_REPEAT) ;
@@ -487,7 +464,15 @@ void initScene (void)
 	{
 		for (j = 0; j < heightmap_longeur; j++)
 		{
-			heightmap[i][j] = rand_a_b( heightmap_hauteur_min , heightmap_hauteur_max );
+			//on met les bords à hautur min pour avoir de joli bords lololo
+			if( i == 0 || j == 0 || i == heightmap_largeur-1 || j == heightmap_longeur-1 )
+			{
+				heightmap[i][j] = heightmap_hauteur_min;
+			}
+			else
+			{
+				heightmap[i][j] = rand_a_b( heightmap_hauteur_min , heightmap_hauteur_max );
+			}
 			//printf("| %d |", heightmap[i][j]);
 		}
 			//printf("\n");
