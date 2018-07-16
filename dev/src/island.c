@@ -4,7 +4,6 @@
 #include "island.h"
 #include "ml.h"
 
-
 #include <math.h>
 #if defined(__APPLE__) && !defined(__APPLE_X11)
 #include <GLUT/glut.h>
@@ -12,6 +11,9 @@
 #include <GL/glut.h>
 #endif
 #define PI (3.1415926)
+
+
+
 
 
 /* Variables globales pour parametrer la scene */
@@ -180,9 +182,7 @@ void construireScene(void)
 	{
 		for ( y = 0 ; y < heightmap_longeur - 1 ; y++ )
 		{
-			glBegin(GL_TRIANGLES);
-				//pour les 4 points a(x,y) b(x,y+1) c(x+1,y+1) d(x+1,y), on trace les tiangles abc et acd
-				//triangle "abc"
+			glBegin(GL_QUADS);
 				glTexCoord2f(0.0, 0.0);
 				glVertex3i( x , heightmap[x][y] , y );
 				
@@ -191,8 +191,11 @@ void construireScene(void)
 				
 				glTexCoord2f(1.0, 1.0);
 				glVertex3i( x+1 , heightmap[x][y+1] ,  y+1  );
+				
+				glTexCoord2f(1.0, 0.0);
+				glVertex3i( x+1 , heightmap[x+1][y] , y );
 			glEnd();
-			
+			/*
 			glBegin(GL_TRIANGLES);
 				//triangle "acd"
 				glTexCoord2f(0.0, 0.0);
@@ -204,6 +207,7 @@ void construireScene(void)
 				glTexCoord2f(1.0, 0.0);
 				glVertex3i( x+1 , heightmap[x+1][y] , y );
 			glEnd();
+			*/
 		}
 	}
 

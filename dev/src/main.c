@@ -33,12 +33,15 @@ int main(int argc, char **argv) {
 
 	//plot();
 	//updateTest();
-	//island(argc , argv);
+	island(argc , argv);
 	//mainListTest();
 	//mainEventGridTest();
+	
+	/*
 	if(argc<2)printf("t'as oublié le paramètre coco\n");
 	else mainTreeStressTest(atoi(argv[1]));
 
 	globalFree();
+	*/
 	return 0;
 }
