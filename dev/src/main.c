@@ -8,6 +8,7 @@
 #include "list.h"
 #include "grid.h"
 #include "main_memory.h"
+#include "fluid.h"
 
 void plot() {
 	#define PLOT_SIZE 80
@@ -30,19 +31,19 @@ void plot() {
 }
 
 int main(int argc, char **argv) {
-	globalInit();
 
 	//plot();
 	//updateTest();
-	island(argc , argv);
+	//island(argc , argv);
 	//mainListTest();
 	//mainEventGridTest();
 	
-	/*
+	/*globalInit();
 	if(argc<2)printf("t'as oublié le paramètre coco\n");
 	else mainTreeStressTest(atoi(argv[1]));
+	globalFree();*/
 
-	globalFree();
-	*/
+	fluidMatrixMainTest();
+
 	return 0;
 }

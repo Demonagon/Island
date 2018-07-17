@@ -1,5 +1,6 @@
 #include "util_math.h"
 #include <math.h>
+#include <stdio.h>
 
 double smootherInterpolation(double x) {
 	if( x <= 0 ) return 0;
@@ -21,6 +22,10 @@ double decelerationInterpolation(double x) {
 
 Complex complexCreate(double a, double b) {
 	return (Complex) { .a = a, .b = b };
+}
+
+Complex complexCreatePolar(double angle, double norm) {
+	return complexCreate( cos(angle) * norm, sin(angle) * norm );
 }
 
 Complex complexAdd(Complex a, Complex b) {
@@ -55,7 +60,11 @@ Complex complexNormalize(Complex c) {
 }
 
 double complexAngle(Complex c) {
-	return atan2(c.a, c.b);
+	return ( !c.a && !c.b ) ? 0 : atan2(c.b, c.a);
+}
+
+void complexPrint(Complex c) {
+	printf("(%3lf, %3lf)", c.a, c.b);
 }
 
 char isPointInCircle(Complex point, Complex centre, double radius) {
