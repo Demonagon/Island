@@ -19,8 +19,12 @@ Ajout de fonction de calculs utilisés dans la heightmap
 * Les angles sont en radians.
 */
 
+// renvoie un rand double entre a et b inclus
+double rand_double_a_b(double a, double b);
+
+
 // renvoie un rand entier entre a et b inclus
-int rand_a_b(int a, int b);
+int rand_int_a_b(int a, int b);
 
 /**
 * Prend une entrée sur [0, 1] et renvoie une valeur sur [0, 1]. Le plot de
