@@ -5,6 +5,8 @@
 #define MATH_2_PI 6.28318530718
 #define MATH_PI_2 9.86960440109
 
+#define SQRT_2 1.41421356237
+
 /**
 * Par Pacôme le 04/07/2018
 * Ce fichier est là pour contenir toute fonction mathématique générale que nous
@@ -55,6 +57,7 @@ Complex complexAdd(Complex a, Complex b);
 Complex complexRemove(Complex a, Complex b);
 Complex complexMultiply(Complex a, Complex b);
 Complex complexDivide(Complex a, Complex b);
+Complex complexDot(Complex a, Complex b);
 double  complexNorm(Complex c);
 Complex complexScale(Complex c, double scale);
 Complex complexNormalize(Complex c);

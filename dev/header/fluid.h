@@ -39,9 +39,13 @@ FV fluidVectorCreate(FVAngle angle, FVValue value);
 FVC fluidVectorComplexRepresentation(FV vector, FVAngleP a, FVValueP v);
 FV fluidVectorConvert(Complex complex, FVAngleP a, FVValueP v);
 
-FVC fluidVectorInfluence(FVC fv_source, FVC fv_actor, double pliability);
+FVC fluidVectorInfluence(FVC fv_source, FVC fv_actor, double pliability,
+						double * influence);
 
-FVC fluidVectorUpdate(FVC * neighbours, FVC center, double pliability);
+FVC fluidVectorDotInfluence(FVC fv_source, FVC fv_actor, double pliability,
+						int neightbour_index);
+
+FVC fluidVectorUpdate(FVC * neighbours, FVC center, double pliability, double loss);
 
 typedef struct FluidMatrix {
 	int width; int height;
@@ -49,9 +53,10 @@ typedef struct FluidMatrix {
 	FluidVectorAnglePrecision angle_precision;
 	FluidVectorValuePrecision value_precision;
 	double pliability;
+	double loss;
 } FluidMatrix;
 
-FluidMatrix fluidMatrixCreate(int width, int height, double pliability,
+FluidMatrix fluidMatrixCreate(int width, int height, double pliability, double loss,
 							  FluidVectorAnglePrecision angle_precision,
 							  FluidVectorValuePrecision value_precision);
 void fluidMatrixFree(FluidMatrix * matrix);

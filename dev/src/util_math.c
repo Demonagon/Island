@@ -47,6 +47,10 @@ Complex complexDivide(Complex a, Complex b) {
 	return complexCreate(alpha / gamma, beta / gamma);
 }
 
+Complex complexDot(Complex a, Complex b) {
+	return complexCreate(a.a * b.a, a.b * b.b);
+}
+
 double complexNorm(Complex c) {
 	return sqrt(c.a * c.a + c.b * c.b);
 }
