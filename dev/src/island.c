@@ -3,6 +3,7 @@
 #include <time.h>
 #include "island.h"
 #include "ml.h"
+#include "heightmap.h"
 
 #include <math.h>
 #if defined(__APPLE__) && !defined(__APPLE_X11)
@@ -357,13 +358,6 @@ void menu(int value)
    }
 }
 
-// renvoie un rand entier entre a et b inclus
-int rand_a_b(int a, int b)
-{
-	//pour avoir un entier entre a et b inclus (donc un intervalle de taille b-a+1 ) 
-	return rand()%(b-a+1) +a;
-}
-
 /* Callback OpenGL de gestion de drag */
 void motionGL(int _x, int _y)
 {
@@ -374,9 +368,7 @@ void motionGL(int _x, int _y)
 }
 
 void initScene (void)
-{
-	int i, j;
-	
+{	
 	//initialisation des variables
 	mouseLeftDown = 0;
 	
@@ -448,37 +440,8 @@ void initScene (void)
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S , GL_REPEAT) ;
 	restituerImage( triangle_sol );
 
-	//on créer la heightmap	
-	heightmap = malloc(sizeof(*heightmap) * heightmap_largeur);	
-	for (i = 0; i < heightmap_largeur; i++)
-		heightmap[i] = malloc(sizeof(**heightmap) * heightmap_longeur);
-    
-	if (heightmap == NULL) // Si l'allocation a échoué
-	{
-		exit(0); // On arrête le programme
-	}
-	//on met des valeurs dans la heightmap
-	srand(time(NULL)); // initialisation de rand
-
-	
-	for (i = 0; i < heightmap_largeur; i++)
-	{
-		for (j = 0; j < heightmap_longeur; j++)
-		{
-			//on met les bords à hautur min pour avoir de joli bords lololo
-			if( i == 0 || j == 0 || i == heightmap_largeur-1 || j == heightmap_longeur-1 )
-			{
-				heightmap[i][j] = heightmap_hauteur_min;
-			}
-			else
-			{
-				heightmap[i][j] = rand_a_b( heightmap_hauteur_min , heightmap_hauteur_max );
-			}
-			//printf("| %d |", heightmap[i][j]);
-		}
-			//printf("\n");
-	}
-	
+	//initialisation de la heightmaps
+	heightmap = heightmap_init( heightmap, heightmap_largeur , heightmap_longeur , heightmap_hauteur_min , heightmap_hauteur_max );
 	
 }
 

@@ -7,6 +7,10 @@
 
 #define SQRT_2 1.41421356237
 
+/*Modifié par Mathieu le 22/07/2018
+Ajout de fonction de calculs utilisés dans la heightmap
+*/
+
 /**
 * Par Pacôme le 04/07/2018
 * Ce fichier est là pour contenir toute fonction mathématique générale que nous
@@ -14,6 +18,9 @@
 * C. Par exemple, des fonctions d'interpolation...
 * Les angles sont en radians.
 */
+
+// renvoie un rand entier entre a et b inclus
+int rand_a_b(int a, int b);
 
 /**
 * Prend une entrée sur [0, 1] et renvoie une valeur sur [0, 1]. Le plot de
