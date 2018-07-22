@@ -3,7 +3,12 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-int rand_a_b(int a, int b)
+double rand_double_a_b(double a, double b)
+{
+	return ( rand()/(double)RAND_MAX ) * (b-a) + a;
+}
+
+int rand_int_a_b(int a, int b)
 {
 	return rand()%(b-a+1) +a;
 }

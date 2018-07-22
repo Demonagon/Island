@@ -14,9 +14,6 @@
 #define PI (3.1415926)
 
 
-
-
-
 /* Variables globales pour parametrer la scene */
 /* ------------------------------------------- */
 
@@ -36,16 +33,17 @@ int mActu = 1;
 int MAXLIGNE = 256;
 int mouseLeftDown;
 
-typedef enum{ TEXT_CHROME , TEXT_PONY_MANE6 , TEXT_PONY_RAINBOW , TEXT_SOL }textType;
 unsigned int textures[4];
 
 //paramétrisation de la heightmap
-int heightmap_largeur = 100; //x
-int heightmap_longeur = 100; //y
+int heightmap_largeur = 10; //x
+int heightmap_longeur = 10; //y
 int heightmap_hauteur_min = 0; //z_min
 int heightmap_hauteur_max = 4; //z_max
 int** heightmap = NULL;
-
+double** heightmap_interpol = NULL;
+int plot_interpolated_heightmap = 0;//si on affiche ou pas l'interpolation de la heihtmap
+int resolution = 3;
 
 //matériaux chrome
 GLfloat Lnoire [4] = {0.0, 0.0, 0.0, 1.0};
@@ -130,6 +128,9 @@ void restituerImage(Image I)
 void construireScene(void)
 {
 	int x , y;	
+	int heightmap_interpolated_largeur = heightmap_largeur + (heightmap_largeur - 1) * (resolution - 2);
+	int heightmap_interpolated_longeur = heightmap_longeur + (heightmap_longeur - 1) * (resolution - 2);
+	double x_tmp, y_tmp, ratio;
 	//glColor3fv(couleurAxe);  
 	// "effacement" de la fenetre et du z-buffer
 	glClear (GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -155,52 +156,62 @@ void construireScene(void)
 	*/
 	
 	
-	//******************** HEIGHTMAP*******************
-	glEnable(GL_TEXTURE_2D);
-	glTranslatef(-heightmap_largeur/2 , 0.0 , -heightmap_longeur/2);
-	/*
-	//pour centrrer l'ile
-	
-	//texture a appliquer au "sol"
-	
-	glBindTexture(GL_TEXTURE_2D,textures[TEXT_SOL]);
-	
-	//1ere verion
-	glBegin(GL_QUADS);
-		glTexCoord2f(0.0, 0.0);
-		glVertex3i( 0 , 0 , 0 );
-		
-		glTexCoord2f(0.0, heightmap_longeur);
-		glVertex3i( 0 , 0 , heightmap_longeur );
-		
-		glTexCoord2f(heightmap_largeur, heightmap_longeur);
-		glVertex3i( heightmap_largeur , 0 , heightmap_longeur);
-		
-		glTexCoord2f(heightmap_largeur, 0.0);
-		glVertex3i( heightmap_largeur , 0 , 0 );
-	glEnd();
-	*/
-	glBindTexture(GL_TEXTURE_2D,textures[TEXT_SOL]);
-	for ( x = 0 ; x < heightmap_largeur - 1 ; x++ )
+	if( plot_interpolated_heightmap == 0 )
 	{
-		for ( y = 0 ; y < heightmap_longeur - 1 ; y++ )
+		glEnable(GL_TEXTURE_2D);
+		glTranslatef(-heightmap_largeur/2 , 0.0 , -heightmap_longeur/2);
+		glBindTexture(GL_TEXTURE_2D,textures[TEXT_SOL]);
+		//********************BASE_HEIGHTMAP*******************
+		
+		for ( x = 0 ; x < heightmap_largeur - 1 ; x++ )
 		{
-			glBegin(GL_QUADS);
-				glTexCoord2f(0.0, 0.0);
-				glVertex3i( x , heightmap[x][y] , y );
-				
-				glTexCoord2f(0.0, 1.0);
-				glVertex3i( x , heightmap[x][y+1] , y+1  );
-				
-				glTexCoord2f(1.0, 1.0);
-				glVertex3i( x+1 , heightmap[x+1][y+1] ,  y+1  );
-				
-				glTexCoord2f(1.0, 0.0);
-				glVertex3i( x+1 , heightmap[x+1][y] , y );
-			glEnd();
+			for ( y = 0 ; y < heightmap_longeur - 1 ; y++ )
+			{
+				glBegin(GL_QUADS);
+					glTexCoord2f(0.0, 0.0);
+					glVertex3i( x , heightmap[x][y] , y );
+					
+					glTexCoord2f(0.0, 1.0);
+					glVertex3i( x , heightmap[x][y+1] , y+1  );
+					
+					glTexCoord2f(1.0, 1.0);
+					glVertex3i( x+1 , heightmap[x+1][y+1] ,  y+1  );
+					
+					glTexCoord2f(1.0, 0.0);
+					glVertex3i( x+1 , heightmap[x+1][y] , y );
+				glEnd();
+			}
 		}
 	}
-
+	if( plot_interpolated_heightmap == 1 )
+	{
+		ratio = (double)(heightmap_largeur)/(double)(heightmap_interpolated_largeur);
+		glEnable(GL_TEXTURE_2D);
+		glTranslatef(-heightmap_largeur/2 , 0.0 , -heightmap_longeur/2);
+		glBindTexture(GL_TEXTURE_2D,textures[TEXT_SOL]);
+		//********************INTERPOLAED_HEIGHTMAP*******************
+		for ( x = 0 ; x < heightmap_interpolated_largeur - 1 ; x++ )
+		{
+			for ( y = 0 ; y < heightmap_interpolated_longeur - 1 ; y++ )
+			{
+				x_tmp = x*ratio;
+				y_tmp = y*ratio;
+				glBegin(GL_QUADS);
+					glTexCoord2f(0.0, 0.0);
+					glVertex3f( (float)x , heightmap_interpol[x][y] , (float)y );
+					
+					glTexCoord2f(0.0, 1.0);
+					glVertex3f( (float)x , heightmap_interpol[x][y+1] , (float)y+1  );
+					
+					glTexCoord2f(1.0, 1.0);
+					glVertex3f( (float)x+1 , heightmap_interpol[x+1][y+1] , (float)y+1  );
+					
+					glTexCoord2f(1.0, 0.0);
+					glVertex3f( (float)x+1 , heightmap_interpol[x+1][y] , (float)y );
+				glEnd();
+			}
+		}
+	}
 	glPopMatrix();
 	glutSwapBuffers ();
 }
@@ -233,6 +244,13 @@ void fenetrage(int _w, int _h)
 void clavier (unsigned char key, int x, int y)
 {   switch (key)
 	{ 
+		case 'p' : //zoom in
+			plot_interpolated_heightmap = !plot_interpolated_heightmap;
+		break;
+		case 'P' : //zoom in
+			plot_interpolated_heightmap = !plot_interpolated_heightmap;
+		break;
+		
 		case 27 : /* escape : fin */
 			exit (0);
 		break;
@@ -369,6 +387,7 @@ void motionGL(int _x, int _y)
 
 void initScene (void)
 {	
+	InterpolationType interpol_type;
 	//initialisation des variables
 	mouseLeftDown = 0;
 	
@@ -443,8 +462,11 @@ void initScene (void)
 	//on met des valeurs dans la heightmap
 	srand(time(NULL)); // initialisation de rand
 	
-	//initialisation de la heightmaps
+	//initialisation de la heightmap
 	heightmap = heightmap_init( heightmap_largeur , heightmap_longeur , heightmap_hauteur_min , heightmap_hauteur_max );
+	//on interpole la heightmap
+	interpol_type = INTERPOL_DIAMOND_SQUARE;
+	heightmap_interpol = heightmap_interpolate( heightmap , interpol_type , resolution , heightmap_largeur , heightmap_longeur );
 	
 }
 
