@@ -3,6 +3,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+int rand_a_b(int a, int b)
+{
+	return rand()%(b-a+1) +a;
+}
+
 double smootherInterpolation(double x) {
 	if( x <= 0 ) return 0;
 	if( x >= 1 ) return 1;
