@@ -5,8 +5,9 @@
 #include "island.h"
 #include "util_math.h"
 //On crée la heighmap de base à partir de laquelle on va interpoler plusieurs sous heighmap
-int** heightmap_init ( int** heightmap , int heightmap_largeur , int heightmap_longeur , int heightmap_hauteur_min , int heightmap_hauteur_max )
+int** heightmap_init ( int heightmap_largeur , int heightmap_longeur , int heightmap_hauteur_min , int heightmap_hauteur_max )
 {
+	int** heightmap;
 	int i, j;
 	//on créer la heightmap	
 	heightmap = malloc(sizeof(*heightmap) * heightmap_largeur);
@@ -15,11 +16,10 @@ int** heightmap_init ( int** heightmap , int heightmap_largeur , int heightmap_l
 		
 	if (heightmap == NULL) // Si l'allocation a échoué
 	{
-		exit(0); // On arrête le programme
+		fprintf(stderr, "erreur d'allocation de la heightmap");
+		exit(-1); // On arrête le programme
 		return 0;
 	}
-	//on met des valeurs dans la heightmap
-	srand(time(NULL)); // initialisation de rand
 
 	for (i = 0; i < heightmap_largeur; i++)
 	{

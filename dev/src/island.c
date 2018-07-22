@@ -440,8 +440,11 @@ void initScene (void)
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S , GL_REPEAT) ;
 	restituerImage( triangle_sol );
 
+	//on met des valeurs dans la heightmap
+	srand(time(NULL)); // initialisation de rand
+	
 	//initialisation de la heightmaps
-	heightmap = heightmap_init( heightmap, heightmap_largeur , heightmap_longeur , heightmap_hauteur_min , heightmap_hauteur_max );
+	heightmap = heightmap_init( heightmap_largeur , heightmap_longeur , heightmap_hauteur_min , heightmap_hauteur_max );
 	
 }
 

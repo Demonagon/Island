@@ -1,6 +1,7 @@
 #include "util_math.h"
 #include <math.h>
 #include <stdio.h>
+#include <stdlib.h>
 
 double smootherInterpolation(double x) {
 	if( x <= 0 ) return 0;
