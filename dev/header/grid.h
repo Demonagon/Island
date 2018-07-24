@@ -51,7 +51,7 @@ typedef enum GridEventType {
 typedef union GridEventData {
 	/* TODO */
 	/** CUSTOM DATA HERE **/
-	Complex tree_spawn_location; // -> TREE_SPAWNING_COLISION_CHECK_EVENT
+	void * spawning_tree; // -> TREE_SPAWNING_COLISION_CHECK_EVENT
 	/** ** ** * ** ** ** **/
 } GridEventData;
 
@@ -77,19 +77,26 @@ GridEvent gridEventCreate(GridEventType type, GridEventData data,
 * qui lui correspond, afin d'éviter les étapes de mise à jour.
 */
 
-typedef void (*EventHandler)(GridEvent);
+typedef void (*EventHandler)(void *, GridEvent);
 
 typedef struct GridBeacon {
+	void * data;
 	Complex * position;
 	EventHandler event_handler;
 	ListLink list_link;
 } GridBeacon;
 
+GridBeacon gridBeaconCreateEmpty();
+
 // Initialise le chaînon pour contenir l'adresse précise de la balise.
-void gridBeaconInit(GridBeacon * beacon, Complex * position, EventHandler 
-										event_handler);
+void gridBeaconInit(GridBeacon * beacon, void * data,
+					Complex * position, EventHandler event_handler);
 
 void gridBeaconRemove(GridBeacon * beacon);
+
+void gridBeaconReceiveEvent(GridBeacon * beacon, GridEvent event);
+
+void gridBeaconUpdateMemoryLocation(GridBeacon * beacon, void * data, Complex * position);
 
 /****************************** EVENT GRID ************************************/
 
@@ -112,7 +119,7 @@ void eventGridEventCallApplication(void * data, void * parameter);
 
 char eventGridIsCircleInCell(EventGrid * grid, int x, int y, Complex c, double radius);
 
-void eventGridBroadcast(EventGrid * grid, GridEvent * event);
+void eventGridBroadcast(EventGrid * grid, GridEvent event);
 
 /********************************* TEST ***************************************/
 

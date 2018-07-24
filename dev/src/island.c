@@ -130,7 +130,8 @@ void construireScene(void)
 	int x , y;	
 	int heightmap_interpolated_largeur = heightmap_largeur + (heightmap_largeur - 1) * (resolution - 2);
 	int heightmap_interpolated_longeur = heightmap_longeur + (heightmap_longeur - 1) * (resolution - 2);
-	double x_tmp, y_tmp, ratio;
+	//double x_tmp, y_tmp;
+	//double ratio;
 	//glColor3fv(couleurAxe);  
 	// "effacement" de la fenetre et du z-buffer
 	glClear (GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -185,7 +186,7 @@ void construireScene(void)
 	}
 	if( plot_interpolated_heightmap == 1 )
 	{
-		ratio = (double)(heightmap_largeur)/(double)(heightmap_interpolated_largeur);
+		//ratio = (double)(heightmap_largeur)/(double)(heightmap_interpolated_largeur);
 		glEnable(GL_TEXTURE_2D);
 		glTranslatef(-heightmap_largeur/2 , 0.0 , -heightmap_longeur/2);
 		glBindTexture(GL_TEXTURE_2D,textures[TEXT_SOL]);
@@ -194,8 +195,8 @@ void construireScene(void)
 		{
 			for ( y = 0 ; y < heightmap_interpolated_longeur - 1 ; y++ )
 			{
-				x_tmp = x*ratio;
-				y_tmp = y*ratio;
+				//x_tmp = x*ratio;
+				//y_tmp = y*ratio;
 				glBegin(GL_QUADS);
 					glTexCoord2f(0.0, 0.0);
 					glVertex3f( (float)x , heightmap_interpol[x][y] , (float)y );

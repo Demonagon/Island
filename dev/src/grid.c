@@ -11,9 +11,19 @@ GridEvent gridEventCreate(GridEventType type, GridEventData data,
 
 /***************************** GRID BEACON ************************************/
 
+GridBeacon gridBeaconCreateEmpty() {
+	return (GridBeacon) {
+		.data = NULL,
+		.position = NULL,
+		.event_handler = NULL,
+		.list_link = listCreate()
+	};
+}
+
 // Initialise le chaînon pour contenir l'adresse précise de la balise.
-void gridBeaconInit(GridBeacon * beacon,
-				Complex * position, EventHandler event_handler) {
+void gridBeaconInit(GridBeacon * beacon, void * data,
+					Complex * position, EventHandler event_handler) {
+	beacon->data = data;
 	beacon->position = position;
 	beacon->event_handler = event_handler;
 	beacon->list_link = listCreate();
@@ -22,6 +32,17 @@ void gridBeaconInit(GridBeacon * beacon,
 
 void gridBeaconRemove(GridBeacon * beacon) {
 	listLinkDetach( & beacon->list_link );
+}
+
+void gridBeaconReceiveEvent(GridBeacon * beacon, GridEvent event) {
+	if( beacon->event_handler )
+		beacon->event_handler(beacon->data, event);
+}
+
+void gridBeaconUpdateMemoryLocation(GridBeacon * beacon, void * data, Complex * position) {
+	listLinkUpdateMemoryLocation(&beacon->list_link);
+	beacon->data = data;
+	beacon->position = position;
 }
 
 /****************************** EVENT GRID ************************************/
@@ -80,8 +101,7 @@ void eventGridEventCallApplication(void * data, void * parameter) {
 			printf("I'm %p !\n", data);
 			break;
 		default :
-			if( beacon->event_handler )
-				beacon->event_handler(*event);
+			gridBeaconReceiveEvent(beacon, *event);
 			break;
 	}
 
@@ -113,14 +133,20 @@ char eventGridIsCircleInCell(EventGrid * grid, int x, int y,
 	return 0;
 }
 
-void eventGridBroadcast(EventGrid * grid, GridEvent * event)  {
+void eventGridBroadcast(EventGrid * grid, GridEvent event)  {
 	for(int x = 0; x < GRID_WIDTH; x++)
 		for(int y = 0; y < GRID_HEIGHT; y++) {
+			//printf("x = %d, y = %d\n", x, y);
 			List * list = eventGridGetList(grid, x, y);
+			//printf("a\n");
 			if( eventGridIsCircleInCell(grid, x, y, 
-					  event->position, event->range) )
+					  event.position, event.range) ) {
+			//printf("b\n");
 				listParameterizedApplyAll(*list, eventGridEventCallApplication,
-				  						  event);
+				  						  &event);
+			//printf("c\n");
+			}
+			//printf("d\n");
 		}				
 }
 
@@ -134,9 +160,9 @@ void mainEventGridTest() {
 
 	eventGridInit(&grid, 100, 100);
 
-	gridBeaconInit(&b1, &pos1, NULL);
-	gridBeaconInit(&b2, &pos2, NULL);
-	gridBeaconInit(&b3, &pos3, NULL);
+	gridBeaconInit(&b1, NULL, &pos1, NULL);
+	gridBeaconInit(&b2, NULL, &pos2, NULL);
+	gridBeaconInit(&b3, NULL, &pos3, NULL);
 
 	eventGridPlaceBeacon(&grid, &b1);
 	eventGridPlaceBeacon(&grid, &b2);
@@ -144,23 +170,20 @@ void mainEventGridTest() {
 
 	GridEventData data;
 	Complex event_pos = complexCreate(50, 50);
-	GridEvent event = gridEventCreate(_GRID_CALL_YOURSELF_EVENT, data,
-																	  event_pos, 60);
 
 	printf("b1 = %p\n", (void*) &b1);
 	printf("b2 = %p\n", (void*) &b2);
 	printf("b3 = %p\n", (void*) &b3);
 
-	eventGridBroadcast(&grid, &event);
+	eventGridBroadcast(&grid,
+		gridEventCreate(_GRID_CALL_YOURSELF_EVENT, data, event_pos, 60));
 
 	gridBeaconRemove(&b3);
 
-	event = gridEventCreate(_GRID_CALL_YOURSELF_EVENT, data,
-																	  event_pos, 70);
-
 	printf("----------------------------\n");
 
-	eventGridBroadcast(&grid, &event);
+	eventGridBroadcast(&grid,
+		gridEventCreate(_GRID_CALL_YOURSELF_EVENT, data, event_pos, 70));
 
 	gridBeaconRemove(&b1);
 	gridBeaconRemove(&b2);

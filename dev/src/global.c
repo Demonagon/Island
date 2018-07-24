@@ -10,6 +10,8 @@ void globalInit() {
 	MAIN_MEMORY = mainMemoryCreate();
 	eventGridInit(&EVENT_GRID, EVENT_GRID_WIDTH, EVENT_GRID_HEIGHT);
 	updateRegisterInit(&UPDATE_REGISTER);
+
+	randomInit();
 }
 
 void globalFree() {

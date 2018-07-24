@@ -19,6 +19,10 @@ Ajout de fonction de calculs utilisés dans la heightmap
 * Les angles sont en radians.
 */
 
+void randomInitSeed(int seed);
+
+void randomInit(void);
+
 // renvoie un rand double entre a et b inclus
 double rand_double_a_b(double a, double b);
 
@@ -76,5 +80,8 @@ double  complexAngle(Complex c);
 void complexPrint(Complex c);
 
 char isPointInCircle(Complex point, Complex centre, double radius);
+
+double randomAngle(void);
+int flipCoin(void);
 
 #endif

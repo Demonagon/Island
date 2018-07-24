@@ -4,23 +4,49 @@
 
 /***************************** UPDATE HANDLE ******************************/
 
+UpdateHandle updateHandleCreateEmpty() {
+	return (UpdateHandle) {
+		.data = NULL,
+		.declaration_function = NULL,
+		.application_function = NULL,
+		.list_link = listCreate()
+	};
+}
 
 void updateHandleInit(UpdateHandle * handle, void * data,
-												CallBack function) {
+					  CallBack declaration_function,
+					  CallBack application_function) {
 	handle->data = data;
-	handle->function = function;
+	handle->declaration_function = declaration_function;
+	handle->application_function = application_function;
 	handle->list_link = listCreate();
 	handle->list_link.data = handle;
 }
 
-void updateHandleCall(UpdateHandle handle) {
-	handle.function(handle.data);
+void updateHandleDeclarationCall(UpdateHandle handle) {
+	if( handle.declaration_function )
+		handle.declaration_function(handle.data);
+}
+
+void updateHandleApplicationCall(UpdateHandle handle) {
+	if( handle.application_function )
+		handle.application_function(handle.data);
+}
+
+void updateHandleRemove(UpdateHandle * handle) {
+	listLinkDetach(& handle->list_link);
+}
+
+void updateHandleUpdateMemoryLocation(UpdateHandle * handle, void * data) {
+	listLinkUpdateMemoryLocation(& handle->list_link);
+	handle->data = data;
 }
 
 /***************************** UPDATE REGISTER ****************************/
 
 void updateRegisterInit(UpdateRegister * update_register) {
 	update_register->current_list = 0;
+	update_register->clock = 0;
 	for(int k = 0; k < UPDATE_REGISTER_CYCLE_COUNT; k++)
 		update_register->update_lists[k] = listCreate();
 }
@@ -64,9 +90,14 @@ void updateRegisterAdd(UpdateRegister * update_register,
 * Fonction pseudo lambda utilisée par la fonction suivante
 */
 
-void updateRegisterLocalUpdateApplication(void * data) {
+void updateRegisterLocalDeclarationFunction(void * data) {
 	UpdateHandle * handle = data;
-	updateHandleCall(*handle);
+	updateHandleDeclarationCall(*handle);
+}
+
+void updateRegisterLocalApplicationFunction(void * data) {
+	UpdateHandle * handle = data;
+	updateHandleApplicationCall(*handle);
 }
 
 /**
@@ -79,7 +110,12 @@ void updateRegisterUpdate(UpdateRegister * update_register) {
 
 	updateRegisterSwitch(update_register);
 
-	listApplyAll(*list, updateRegisterLocalUpdateApplication);
+	listApplyAll(*list, updateRegisterLocalDeclarationFunction);
+	listApplyAll(*list, updateRegisterLocalApplicationFunction);
+
+	listClear( list );
+
+	update_register->clock++;
 }
 
 /**************************** TEST ********************************/
@@ -103,14 +139,14 @@ void updateTest() {
 
 	UpdateHandle A1, A2, A3, B1, B2, C1, C2, C3;
 
-	updateHandleInit(&A1, NULL, callBackA);
-	updateHandleInit(&A2, NULL, callBackA);
-	updateHandleInit(&A3, NULL, callBackA);
-	updateHandleInit(&B1, NULL, callBackB);
-	updateHandleInit(&B2, NULL, callBackB);
-	updateHandleInit(&C1, NULL, callBackC);
-	updateHandleInit(&C2, NULL, callBackC);
-	updateHandleInit(&C3, NULL, callBackC);
+	updateHandleInit(&A1, NULL, callBackA, NULL);
+	updateHandleInit(&A2, NULL, callBackA, NULL);
+	updateHandleInit(&A3, NULL, callBackA, NULL);
+	updateHandleInit(&B1, NULL, callBackB, NULL);
+	updateHandleInit(&B2, NULL, callBackB, NULL);
+	updateHandleInit(&C1, NULL, callBackC, NULL);
+	updateHandleInit(&C2, NULL, callBackC, NULL);
+	updateHandleInit(&C3, NULL, callBackC, NULL);
 
 	printf("tout en même temps\n");
 	updateRegisterAdd( &reg, &A1, 0);

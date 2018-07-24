@@ -1,0 +1,178 @@
+Starting program: /home/pacome/Documents/Developpement/Games/island/Island/dev/bin/island 
+creation d'arbre d'index 0
+Ajout de [CH] à liste 0x6114e0
+	Détachement de [CH]
+		(nil) >--< (nil)
+	[CH] >--< (nil)
+	0x6114e0 >--< [CH]
+Ajout de 0x66b160 à liste 0x611ec8
+	Détachement de 0x66b160
+		(nil) >--< (nil)
+	0x66b160 >--< (nil)
+	0x611ec8 >--< 0x66b160
+[    0] :
+Ajout de [CH] à liste 0x611570
+	Détachement de [CH]
+		0x6114e0 >--< (nil)
+	[CH] >--< (nil)
+	0x611570 >--< [CH]
+Clearing list 0x6114e0
+	0x6114e0 >--< (nil)
+
+[    1] :
+Clearing list 0x6114f8
+	0x6114f8 >--< (nil)
+
+[    2] :
+Clearing list 0x611510
+	0x611510 >--< (nil)
+
+[    3] :
+Clearing list 0x611528
+	0x611528 >--< (nil)
+
+[    4] :
+Clearing list 0x611540
+	0x611540 >--< (nil)
+
+[    5] :
+Clearing list 0x611558
+	0x611558 >--< (nil)
+
+[    6] :
+Ajout de [CH] à liste 0x611588
+	Détachement de [CH]
+		0x611570 >--< (nil)
+	[CH] >--< (nil)
+	0x611588 >--< [CH]
+Clearing list 0x611570
+	0x611570 >--< (nil)
+
+[    7] :
+creation d'arbre d'index 1
+Ajout de 0x66b1b8 à liste 0x6115a0
+	Détachement de 0x66b1b8
+		(nil) >--< (nil)
+	0x66b1b8 >--< (nil)
+	0x6115a0 >--< 0x66b1b8
+Ajout de 0x66b1e8 à liste 0x611dd8
+	Détachement de 0x66b1e8
+		(nil) >--< (nil)
+	0x66b1e8 >--< (nil)
+	0x611dd8 >--< 0x66b1e8
+creation d'arbre d'index 2
+Ajout de 0x66b240 à liste 0x6115a0
+	Détachement de 0x66b240
+		(nil) >--< (nil)
+	0x66b240 >--< 0x66b1b8
+	0x6115a0 >--< 0x66b240
+Ajout de 0x66b270 à liste 0x611dc0
+	Détachement de 0x66b270
+		(nil) >--< (nil)
+	0x66b270 >--< (nil)
+	0x611dc0 >--< 0x66b270
+Ajout de [CH] à liste 0x6115a0
+	Détachement de [CH]
+		0x611588 >--< (nil)
+	[CH] >--< 0x66b240
+	0x6115a0 >--< [CH]
+Clearing list 0x611588
+	0x611588 >--< (nil)
+
+[    8] :
+Ajout de [CH] à liste 0x611630
+	Détachement de [CH]
+		0x6115a0 >--< 0x66b240
+	[CH] >--< (nil)
+	0x611630 >--< [CH]
+Ajout de 0x66b240 à liste 0x611618
+	Détachement de 0x66b240
+		0x6115a0 >--< 0x66b1b8
+	0x66b240 >--< (nil)
+	0x611618 >--< 0x66b240
+Ajout de 0x66b1b8 à liste 0x611648
+	Détachement de 0x66b1b8
+		0x6115a0 >--< (nil)
+	0x66b1b8 >--< (nil)
+	0x611648 >--< 0x66b1b8
+Clearing list 0x6115a0
+	0x6115a0 >--< (nil)
+
+[    9] :
+Clearing list 0x6115b8
+	0x6115b8 >--< (nil)
+
+[   10] :
+Clearing list 0x6115d0
+	0x6115d0 >--< (nil)
+
+[   11] :
+Clearing list 0x6115e8
+	0x6115e8 >--< (nil)
+
+[   12] :
+Clearing list 0x611600
+	0x611600 >--< (nil)
+
+[   13] :
+Ajout de 0x66b240 à liste 0x611630
+	Détachement de 0x66b240
+		0x611618 >--< (nil)
+	0x66b240 >--< [CH]
+	0x611630 >--< 0x66b240
+Clearing list 0x611618
+	0x611618 >--< (nil)
+
+[   14] :
+creation d'arbre d'index 3
+Ajout de 0x66b2c8 à liste 0x611648
+	Détachement de 0x66b2c8
+		(nil) >--< (nil)
+	0x66b2c8 >--< 0x66b1b8
+	0x611648 >--< 0x66b2c8
+Ajout de 0x66b2f8 à liste 0x611dc0
+	Détachement de 0x66b2f8
+		(nil) >--< (nil)
+	0x66b2f8 >--< 0x66b270
+	0x611dc0 >--< 0x66b2f8
+creation d'arbre d'index 4
+Ajout de 0x66b350 à liste 0x611648
+	Détachement de 0x66b350
+		(nil) >--< (nil)
+	0x66b350 >--< 0x66b2c8
+	0x611648 >--< 0x66b350
+Ajout de 0x66b380 à liste 0x611dc0
+	Détachement de 0x66b380
+		(nil) >--< (nil)
+	0x66b380 >--< 0x66b2f8
+	0x611dc0 >--< 0x66b380
+Ajout de 0x66b240 à liste 0x611648
+	Détachement de 0x66b240
+		0x611630 >--< [CH]
+	0x66b240 >--< 0x66b350
+	0x611648 >--< 0x66b240
+Ajout de [CH] à liste 0x611648
+	Détachement de [CH]
+		0x611630 >--< (nil)
+	[CH] >--< 0x66b240
+	0x611648 >--< [CH]
+Clearing list 0x611630
+	0x611630 >--< (nil)
+
+[   15] :
+destruction d'arbre d'index 0
+Détachement de 0x66b160
+	0x611ec8 >--< (nil)
+0x66b240 >--< [CH]
+[CH] >--< 0x66b2c8
+0x611dc0 >--< 0x66b160
+0x66b160 >--< 0x66b2f8
+Ajout de 0x66b240 à liste [LST]
+	Détachement de 0x66b240
+		[CH] >--< [CH]
+(src/list.c, line 27) => A list link cannot be connected to itself. Link address : [CH]
+
+Program received signal SIGABRT, Aborted.
+0x00007ffff6f40428 in __GI_raise (sig=sig@entry=6) at ../sysdeps/unix/sysv/linux/raise.c:54
+54	../sysdeps/unix/sysv/linux/raise.c: No such file or directory.
+

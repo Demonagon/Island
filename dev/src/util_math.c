@@ -1,7 +1,16 @@
 #include "util_math.h"
 #include <math.h>
+#include <time.h>
 #include <stdio.h>
 #include <stdlib.h>
+
+void randomInitSeed(int seed) {
+	srand(seed);
+}
+
+void randomInit(void) {
+	srand(time(NULL));
+}
 
 double rand_double_a_b(double a, double b)
 {
@@ -84,4 +93,12 @@ void complexPrint(Complex c) {
 
 char isPointInCircle(Complex point, Complex centre, double radius) {
 	return complexNorm( complexRemove(centre, point) ) <= radius;
+}
+
+double randomAngle(void) {
+	return rand_double_a_b(0, MATH_2_PI);
+}
+
+int flipCoin(void) {
+	return rand() % 2;
 }

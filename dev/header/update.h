@@ -29,7 +29,7 @@
 * parallèle (mais c'est pas tout de suite).
 */
 
-#define UPDATE_REGISTER_CYCLE_COUNT 20
+#define UPDATE_REGISTER_CYCLE_COUNT 50
 
 /**
 * une instance de UpdateHandle est là pour permettre au registre d'appeler
@@ -41,20 +41,32 @@ typedef void (*CallBack)(void *);
 
 typedef struct {
 	void * data;
-	CallBack function;
+	CallBack declaration_function;
+	CallBack application_function;
 	ListLink list_link;
 } UpdateHandle;
 
-void updateHandleInit(UpdateHandle * handle, void * data,
-												CallBack function);
+UpdateHandle updateHandleCreateEmpty();
 
-void updateHandleCall(UpdateHandle handle);
+void updateHandleInit(UpdateHandle * handle, void * data,
+					  CallBack declaration_function,
+					  CallBack application_function);
+
+void updateHandleDeclarationCall(UpdateHandle handle);
+
+void updateHandleApplicationCall(UpdateHandle handle);
+
+void updateHandleRemove(UpdateHandle * handle);
+
+void updateHandleUpdateMemoryLocation(UpdateHandle * handle, void * data);
 
 /****************************** UPDATE REGISTER *******************************/
 
 typedef struct UpdateRegister {
 	List update_lists[UPDATE_REGISTER_CYCLE_COUNT];
 	int current_list;
+
+	long int clock;
 } UpdateRegister;
 
 void updateRegisterInit(UpdateRegister * update_register);

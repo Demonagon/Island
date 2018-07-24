@@ -8,7 +8,7 @@
 * ne sont plus en matrice mais positionnés librement. Ils sont tout de même
 * arrangés sur une matrice afin de gérer facilement la proximité des vecteurs.
 */
-
+/*
 typedef struct WindVector {
 	Complex position;
 	Complex intensity;
@@ -37,6 +37,6 @@ int windMatrixGetPositionCellWidth(double x);
 int windMatrixGetPositionCellHeight(double y);
 WindCell * windMatrixGetPositionCell(Complex position);
 
-void windMatrixAddVector(WindVector vector);
+void windMatrixAddVector(WindVector vector);*/
 
 #endif

@@ -34,9 +34,10 @@ int main(int argc, char **argv) {
 
 	//plot();
 	//updateTest();
-	island(argc , argv);
+	//island(argc , argv);
 	//mainListTest();
 	//mainEventGridTest();
+	mainTreeLifeCycleTest();
 	
 	/*globalInit();
 	if(argc<2)printf("t'as oublié le paramètre coco\n");

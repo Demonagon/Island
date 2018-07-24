@@ -30,6 +30,7 @@ ListLink listLinkCreate(void * data);
 void linkConnect(ListLink * a, ListLink * b);
 void listAdd(List * list, ListLink * new_link);
 void listLinkDetach(ListLink * link);
+void listLinkUpdateMemoryLocation(ListLink * link);
 void listClear(List * list);
 void listApplyAll(List list, ListApplication application);
 void listParameterizedApplyAll(List list, ParameterizedListApplication application,
