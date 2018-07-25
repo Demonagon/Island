@@ -1,178 +1,102 @@
-Starting program: /home/pacome/Documents/Developpement/Games/island/Island/dev/bin/island 
-creation d'arbre d'index 0
-Ajout de [CH] à liste 0x6114e0
-	Détachement de [CH]
-		(nil) >--< (nil)
-	[CH] >--< (nil)
-	0x6114e0 >--< [CH]
-Ajout de 0x66b160 à liste 0x611ec8
-	Détachement de 0x66b160
-		(nil) >--< (nil)
-	0x66b160 >--< (nil)
-	0x611ec8 >--< 0x66b160
-[    0] :
-Ajout de [CH] à liste 0x611570
-	Détachement de [CH]
-		0x6114e0 >--< (nil)
-	[CH] >--< (nil)
-	0x611570 >--< [CH]
-Clearing list 0x6114e0
-	0x6114e0 >--< (nil)
-
-[    1] :
-Clearing list 0x6114f8
-	0x6114f8 >--< (nil)
-
-[    2] :
-Clearing list 0x611510
-	0x611510 >--< (nil)
-
-[    3] :
-Clearing list 0x611528
-	0x611528 >--< (nil)
-
-[    4] :
-Clearing list 0x611540
-	0x611540 >--< (nil)
-
-[    5] :
-Clearing list 0x611558
-	0x611558 >--< (nil)
-
-[    6] :
-Ajout de [CH] à liste 0x611588
-	Détachement de [CH]
-		0x611570 >--< (nil)
-	[CH] >--< (nil)
-	0x611588 >--< [CH]
-Clearing list 0x611570
-	0x611570 >--< (nil)
-
-[    7] :
-creation d'arbre d'index 1
-Ajout de 0x66b1b8 à liste 0x6115a0
-	Détachement de 0x66b1b8
-		(nil) >--< (nil)
-	0x66b1b8 >--< (nil)
-	0x6115a0 >--< 0x66b1b8
-Ajout de 0x66b1e8 à liste 0x611dd8
-	Détachement de 0x66b1e8
-		(nil) >--< (nil)
-	0x66b1e8 >--< (nil)
-	0x611dd8 >--< 0x66b1e8
-creation d'arbre d'index 2
-Ajout de 0x66b240 à liste 0x6115a0
-	Détachement de 0x66b240
-		(nil) >--< (nil)
-	0x66b240 >--< 0x66b1b8
-	0x6115a0 >--< 0x66b240
-Ajout de 0x66b270 à liste 0x611dc0
-	Détachement de 0x66b270
-		(nil) >--< (nil)
-	0x66b270 >--< (nil)
-	0x611dc0 >--< 0x66b270
-Ajout de [CH] à liste 0x6115a0
-	Détachement de [CH]
-		0x611588 >--< (nil)
-	[CH] >--< 0x66b240
-	0x6115a0 >--< [CH]
-Clearing list 0x611588
-	0x611588 >--< (nil)
-
-[    8] :
-Ajout de [CH] à liste 0x611630
-	Détachement de [CH]
-		0x6115a0 >--< 0x66b240
-	[CH] >--< (nil)
-	0x611630 >--< [CH]
-Ajout de 0x66b240 à liste 0x611618
-	Détachement de 0x66b240
-		0x6115a0 >--< 0x66b1b8
-	0x66b240 >--< (nil)
-	0x611618 >--< 0x66b240
-Ajout de 0x66b1b8 à liste 0x611648
-	Détachement de 0x66b1b8
-		0x6115a0 >--< (nil)
-	0x66b1b8 >--< (nil)
-	0x611648 >--< 0x66b1b8
-Clearing list 0x6115a0
-	0x6115a0 >--< (nil)
-
-[    9] :
-Clearing list 0x6115b8
-	0x6115b8 >--< (nil)
-
-[   10] :
-Clearing list 0x6115d0
-	0x6115d0 >--< (nil)
-
-[   11] :
-Clearing list 0x6115e8
-	0x6115e8 >--< (nil)
-
-[   12] :
-Clearing list 0x611600
-	0x611600 >--< (nil)
-
-[   13] :
-Ajout de 0x66b240 à liste 0x611630
-	Détachement de 0x66b240
-		0x611618 >--< (nil)
-	0x66b240 >--< [CH]
-	0x611630 >--< 0x66b240
-Clearing list 0x611618
-	0x611618 >--< (nil)
-
-[   14] :
-creation d'arbre d'index 3
-Ajout de 0x66b2c8 à liste 0x611648
-	Détachement de 0x66b2c8
-		(nil) >--< (nil)
-	0x66b2c8 >--< 0x66b1b8
-	0x611648 >--< 0x66b2c8
-Ajout de 0x66b2f8 à liste 0x611dc0
-	Détachement de 0x66b2f8
-		(nil) >--< (nil)
-	0x66b2f8 >--< 0x66b270
-	0x611dc0 >--< 0x66b2f8
-creation d'arbre d'index 4
-Ajout de 0x66b350 à liste 0x611648
-	Détachement de 0x66b350
-		(nil) >--< (nil)
-	0x66b350 >--< 0x66b2c8
-	0x611648 >--< 0x66b350
-Ajout de 0x66b380 à liste 0x611dc0
-	Détachement de 0x66b380
-		(nil) >--< (nil)
-	0x66b380 >--< 0x66b2f8
-	0x611dc0 >--< 0x66b380
-Ajout de 0x66b240 à liste 0x611648
-	Détachement de 0x66b240
-		0x611630 >--< [CH]
-	0x66b240 >--< 0x66b350
-	0x611648 >--< 0x66b240
-Ajout de [CH] à liste 0x611648
-	Détachement de [CH]
-		0x611630 >--< (nil)
-	[CH] >--< 0x66b240
-	0x611648 >--< [CH]
-Clearing list 0x611630
-	0x611630 >--< (nil)
-
-[   15] :
-destruction d'arbre d'index 0
-Détachement de 0x66b160
-	0x611ec8 >--< (nil)
-0x66b240 >--< [CH]
-[CH] >--< 0x66b2c8
-0x611dc0 >--< 0x66b160
-0x66b160 >--< 0x66b2f8
-Ajout de 0x66b240 à liste [LST]
-	Détachement de 0x66b240
-		[CH] >--< [CH]
-(src/list.c, line 27) => A list link cannot be connected to itself. Link address : [CH]
-
-Program received signal SIGABRT, Aborted.
-0x00007ffff6f40428 in __GI_raise (sig=sig@entry=6) at ../sysdeps/unix/sysv/linux/raise.c:54
-54	../sysdeps/unix/sysv/linux/raise.c: No such file or directory.
+Updating (D) tree 15 (handle 0x66ce10)
+Updating (D) tree 18 (handle 0x66cfd8)
+Updating (D) tree 8 (handle 0x66c9e8)
+Updating (D) tree 12 (handle 0x66cc48)
+Updating (D) tree 32 (handle 0x66d828)
+Updating (D) tree 31 (handle 0x66d790)
+Updating (D) tree 29 (handle 0x66d660)
+Updating (D) tree 30 (handle 0x66d6f8)
+Updating (D) tree 47 (handle 0x66e110)
+Updating (D) tree 48 (handle 0x66e1a8)
+Updating (D) tree 20 (handle 0x66d108)
+Updating (A) tree 15 (handle 0x66ce10)
+Ajout de 0x66ce28 à liste 0x612880
+L 0x612880[0x66d2e8] <-> (0x612880) 0x66dc68[0x612880] <-> (0x66dc68) 0x66de30[0x612880] <-> (0x66de30) 0x66d2e8[0x612880] <-> (/)
+	Détachement de 0x66ce28
+		0x612860 >--< (0x612860) 0x66cff0
+	0x66d2e8 >--< (0x66d2e8) 0x66ce28
+Updating (A) tree 18 (handle 0x66cfd8)
+Ajout de 0x66cff0 à liste 0x612880
+L 0x612880[0x66ce28] <-> (0x612880) 0x66dc68[0x612880] <-> (0x66dc68) 0x66de30[0x612880] <-> (0x66de30) 0x66d2e8[0x612880] <-> (0x66d2e8) 0x66ce28[0x612880] <-> (/)
+	Détachement de 0x66cff0
+		0x612860 >--< (0x612860) 0x66ca00
+	0x66ce28 >--< (0x66ce28) 0x66cff0
+Updating (A) tree 8 (handle 0x66c9e8)
+Ajout de 0x66ca00 à liste 0x612880
+L 0x612880[0x66cff0] <-> (0x612880) 0x66dc68[0x612880] <-> (0x66dc68) 0x66de30[0x612880] <-> (0x66de30) 0x66d2e8[0x612880] <-> (0x66d2e8) 0x66ce28[0x612880] <-> (0x66ce28) 0x66cff0[0x612880] <-> (/)
+	Détachement de 0x66ca00
+		0x612860 >--< (0x612860) 0x66cc60
+	0x66cff0 >--< (0x66cff0) 0x66ca00
+Updating (A) tree 12 (handle 0x66cc48)
+Ajout de 0x66cc60 à liste 0x612920
+L 0x612920[(nil)] <-> (/)
+	Détachement de 0x66cc60
+		0x612860 >--< (0x612860) 0x66d840
+	0x612920 >--< (0x612920) 0x66cc60
+Updating (A) tree 32 (handle 0x66d828)
+Ajout de 0x66d840 à liste 0x612880
+L 0x612880[0x66ca00] <-> (0x612880) 0x66dc68[0x612880] <-> (0x66dc68) 0x66de30[0x612880] <-> (0x66de30) 0x66d2e8[0x612880] <-> (0x66d2e8) 0x66ce28[0x612880] <-> (0x66ce28) 0x66cff0[0x612880] <-> (0x66cff0) 0x66ca00[0x612880] <-> (/)
+	Détachement de 0x66d840
+		0x612860 >--< (0x612860) 0x66d7a8
+	0x66ca00 >--< (0x66ca00) 0x66d840
+Updating (A) tree 31 (handle 0x66d790)
+Ajout de 0x66d7a8 à liste 0x612920
+L 0x612920[0x66cc60] <-> (0x612920) 0x66cc60[0x612920] <-> (/)
+	Détachement de 0x66d7a8
+		0x612860 >--< (0x612860) 0x66d678
+	0x66cc60 >--< (0x66cc60) 0x66d7a8
+Updating (A) tree 29 (handle 0x66d660)
+destruction d'arbre d'index 29
+Détachement de 0x66d6b0
+	0x66d4e8 >--< (0x66d4e8) 0x66d748
+Détachement de 0x66d678
+	0x612860 >--< (0x612860) 0x66d710
+Tree 48 is moving to 29
+Détachement de 0x7fffffffd990
+	(nil) >--< ((nil)) (nil)
+Mise à jour de 0x66d678
+link = (0x66e128) 0x66d678 (0x66d120)
+erased_link = ((nil)) 0x7fffffffd990 ((nil))
+link = 0x66d678, link->next = 0x66d120, erased_link = 0x7fffffffd990, erased_link->next = (nil)
+	0x66e128 >--< (0x66e128) 0x66d678
+	0x66d678 >--< (0x66d678) 0x66d120
+Détachement de 0x7fffffffd9c8
+	(nil) >--< ((nil)) (nil)
+Mise à jour de 0x66d6b0
+link = (0x66d580) 0x66d6b0 ((nil))
+erased_link = ((nil)) 0x7fffffffd9c8 ((nil))
+link = 0x66d6b0, link->next = (nil), erased_link = 0x7fffffffd9c8, erased_link->next = (nil)
+	0x66d580 >--< (0x66d580) 0x66d6b0
+	0x66d6b0 >--< ((nil)) (nil)
+Updating (A) tree 30 (handle 0x66d6f8)
+destruction d'arbre d'index 30
+Détachement de 0x66d748
+	0x66d4e8 >--< (0x66d4e8) 0x66d7e0
+Détachement de 0x66d710
+	0x612860 >--< (0x612860) 0x66e128
+Tree 47 is moving to 30
+Détachement de 0x7fffffffd990
+	(nil) >--< ((nil)) (nil)
+Mise à jour de 0x66d710
+link = (0x612860) 0x66d710 (0x66d678)
+erased_link = ((nil)) 0x7fffffffd990 ((nil))
+link = 0x66d710, link->next = 0x66d678, erased_link = 0x7fffffffd990, erased_link->next = (nil)
+	0x612860 >--< (0x612860) 0x66d710
+	0x66d710 >--< (0x66d710) 0x66d678
+Détachement de 0x7fffffffd9c8
+	(nil) >--< ((nil)) (nil)
+Mise à jour de 0x66d748
+link = (0x66e0c8) 0x66d748 ((nil))
+erased_link = ((nil)) 0x7fffffffd9c8 ((nil))
+link = 0x66d748, link->next = (nil), erased_link = 0x7fffffffd9c8, erased_link->next = (nil)
+	0x66e0c8 >--< (0x66e0c8) 0x66d748
+	0x66d748 >--< ((nil)) (nil)
+Updating (A) tree 47 (handle 0x66e110)
+destruction d'arbre d'index 47
+Détachement de 0x66e160
+	0x66e0c8 >--< ((nil)) (nil)
+Détachement de 0x66e128
+	0x612860 >--< (0x612860) 0x66d678
+(src/main_memory.c, line 127) => Memory received a out of bounds memory index for removal (value = 47, size = 47)
+Are you sure the index you gave was properly maintained by the index updater ?
 

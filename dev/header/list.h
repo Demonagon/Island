@@ -1,6 +1,8 @@
 #ifndef LIST__H
 #define LIST__H
 
+//#define LIST_DEBUG_MODE
+
 /**
 * Fait le 9 Juillet 2018 par Pacôme
 * Code d'une simple liste chaînée. Chaque chaînon possède une information
@@ -12,10 +14,16 @@
 * quelque part.
 */
 
+typedef union ListData {
+	struct ListLink * last_link; // Utilisé par les listes pour trouver le dernier chaînon
+	struct ListLink * list; // utilisé par les chaînons pour connaître leur liste
+} ListMetaData;
+
 typedef struct ListLink {
 	void * data;
 	struct ListLink * previous;
 	struct ListLink * next;
+	ListMetaData metadata;
 } ListLink;
 
 typedef ListLink List;
@@ -30,11 +38,16 @@ ListLink listLinkCreate(void * data);
 void linkConnect(ListLink * a, ListLink * b);
 void listAdd(List * list, ListLink * new_link);
 void listLinkDetach(ListLink * link);
-void listLinkUpdateMemoryLocation(ListLink * link);
+void listLinkUpdateMemoryLocation(ListLink * link,
+								  ListLink * erased_link,
+								  void * data);
 void listClear(List * list);
 void listApplyAll(List list, ListApplication application);
 void listParameterizedApplyAll(List list, ParameterizedListApplication application,
 				  void * parameters);
+
+void listPrint(List * list);
+void listLinkPrintList(ListLink * list);
 
 void mainListTest();
 

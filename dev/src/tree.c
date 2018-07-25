@@ -27,22 +27,22 @@ Tree * treeCreate(Complex position) {
 		.grid_beacon = gridBeaconCreateEmpty()
 	};
 
-	data.tree.position = position;
-	data.tree.state = INITIAL;
-	data.tree.memory_index = 0;
-
 	GameObject tree_object = gameObjectCreate(TREE, data);
 
 	MemoryIndex index = mainMemoryAddObject(&MAIN_MEMORY, tree_object,
 		treeSetupRoutine, treeMemoryIndexUpdater);
 
+	printf("Nouvel arbre d'indice %d en position ", index);
+	complexPrint(position);
+	printf("\n");
+
 	GameObject * final_tree = mainMemoryAccessObject(&MAIN_MEMORY, index);
 
 	return & final_tree->data.tree;
 }
-
+ 
 void treeDestroy(Tree * tree) {
-	printf("destruction d'arbre d'index %d\n", tree->memory_index);
+	printf("Destruction d'arbre d'index %d\n", tree->memory_index);
 	gridBeaconRemove(&tree->grid_beacon);
 	updateHandleRemove(&tree->update_handle);
 	mainMemoryRemoveObject(&MAIN_MEMORY, tree->memory_index);
@@ -66,7 +66,7 @@ void treeUpdateDeclaration(void * data) {
 	GridEventData tree_data;
 
 	switch(tree->state) {
-		case INITIAL :
+		case INITIAL : 
 			tree_data.spawning_tree = tree;
 			eventGridBroadcast(
 				&EVENT_GRID,
@@ -86,6 +86,9 @@ void treeUpdateApplication(void * data) {
 	Tree * tree = data;
 	int sleep_time = 0;
 
+	treePrint(tree);
+	printf("\n");
+
 	switch(tree->state) {
 		case INITIAL :
 			tree->state = GROWING;
@@ -100,6 +103,7 @@ void treeUpdateApplication(void * data) {
 			tree->state = REPRODUCTION;
 			break;
 		case REPRODUCTION :
+			printf("L'arbre %d se reproduit\n", tree->memory_index);
 			treeReproduce(tree);
 			treeReproduce(tree);
 			tree->state = MATURE;
@@ -141,7 +145,7 @@ void treeHandleEvent(void * data, GridEvent event) {
 
 void treeSetupRoutine(GameObject * tree, MemoryIndex index) {
 	tree->data.tree.memory_index = index;
-	printf("creation d'arbre d'index %d\n", index);
+	printf("Creation d'arbre d'index %d\n", index);
 
 	updateHandleInit(
 		&tree->data.tree.update_handle,
@@ -156,25 +160,35 @@ void treeSetupRoutine(GameObject * tree, MemoryIndex index) {
 		&tree->data.tree.grid_beacon,
 		&tree->data.tree,
 		&tree->data.tree.position,
-		treeHandleEvent);
+		treeHandleEvent
+	);
 
 	eventGridPlaceBeacon(&EVENT_GRID, &tree->data.tree.grid_beacon);
 
 }
 
-void treeMemoryIndexUpdater(GameObject * tree, MemoryIndex index) {
+void treeMemoryIndexUpdater(struct GameObject * tree,
+							struct GameObject * old_tree,
+							unsigned int index) {
+	printf("Déplacement de l'arbre %d en indice %d\n", tree->data.tree.memory_index, index);
+
 	tree->data.tree.memory_index = index;
 
 	updateHandleUpdateMemoryLocation(
 		&tree->data.tree.update_handle,
+		&old_tree->data.tree.update_handle,
 		&tree->data.tree
 	);
 
 	gridBeaconUpdateMemoryLocation(
 		&tree->data.tree.grid_beacon,
+		&old_tree->data.tree.grid_beacon,
 		&tree->data.tree,
 		&tree->data.tree.position
 	);
+
+	//gridBeaconRemove(&old_tree->data.tree.grid_beacon);
+	//updateHandleRemove(&old_tree->data.tree.update_handle);
 }
 
 #include "string.h"

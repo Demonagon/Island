@@ -37,7 +37,8 @@
 typedef unsigned int MemoryIndex;
 
 typedef void (*SetupRoutine) (GameObject *, MemoryIndex);
-typedef void (*IndexUpdater) (GameObject *, MemoryIndex);
+// Le premier est le nouvel objet. Le second est pour l'objet effacé
+typedef void (*IndexUpdater) (GameObject *, GameObject *, MemoryIndex);
 
 typedef struct MemoryObject {
 	IndexUpdater index_updater;

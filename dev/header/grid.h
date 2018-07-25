@@ -96,7 +96,10 @@ void gridBeaconRemove(GridBeacon * beacon);
 
 void gridBeaconReceiveEvent(GridBeacon * beacon, GridEvent event);
 
-void gridBeaconUpdateMemoryLocation(GridBeacon * beacon, void * data, Complex * position);
+void gridBeaconUpdateMemoryLocation(GridBeacon * beacon,
+									GridBeacon * erased_beacon,
+									void * data,
+									Complex * position);
 
 /****************************** EVENT GRID ************************************/
 

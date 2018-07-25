@@ -11,7 +11,7 @@ void globalInit() {
 	eventGridInit(&EVENT_GRID, EVENT_GRID_WIDTH, EVENT_GRID_HEIGHT);
 	updateRegisterInit(&UPDATE_REGISTER);
 
-	randomInit();
+	randomInitSeed(1532496614);
 }
 
 void globalFree() {

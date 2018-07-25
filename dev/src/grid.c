@@ -39,8 +39,15 @@ void gridBeaconReceiveEvent(GridBeacon * beacon, GridEvent event) {
 		beacon->event_handler(beacon->data, event);
 }
 
-void gridBeaconUpdateMemoryLocation(GridBeacon * beacon, void * data, Complex * position) {
-	listLinkUpdateMemoryLocation(&beacon->list_link);
+void gridBeaconUpdateMemoryLocation(GridBeacon * beacon,
+									GridBeacon * erased_beacon,
+									void * data,
+									Complex * position) {
+	listLinkDetach(&erased_beacon->list_link);
+	listLinkUpdateMemoryLocation(
+		&beacon->list_link,
+		&erased_beacon->list_link,
+		beacon);
 	beacon->data = data;
 	beacon->position = position;
 }
@@ -63,6 +70,9 @@ void eventGridInit(EventGrid * grid, double total_width,
 void eventGridPlaceBeacon(EventGrid * grid, GridBeacon * beacon) {
 	int cell_x = (int) (beacon->position->a * GRID_WIDTH /  grid->total_width );
 	int cell_y = (int) (beacon->position->b * GRID_HEIGHT / grid->total_height);
+
+	if(cell_x < 0 || cell_x >= GRID_WIDTH ||
+	   cell_y < 0 || cell_y >= GRID_HEIGHT) return;
 
 	listAdd(eventGridGetList(grid, cell_x, cell_y), & beacon->list_link);
 }

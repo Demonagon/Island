@@ -23,22 +23,28 @@ void updateHandleInit(UpdateHandle * handle, void * data,
 	handle->list_link.data = handle;
 }
 
-void updateHandleDeclarationCall(UpdateHandle handle) {
-	if( handle.declaration_function )
-		handle.declaration_function(handle.data);
+void updateHandleDeclarationCall(UpdateHandle * handle) {
+	if( handle->declaration_function )
+		handle->declaration_function(handle->data);
 }
 
-void updateHandleApplicationCall(UpdateHandle handle) {
-	if( handle.application_function )
-		handle.application_function(handle.data);
+void updateHandleApplicationCall(UpdateHandle * handle) {
+	if( handle->application_function )
+		handle->application_function(handle->data);
 }
 
 void updateHandleRemove(UpdateHandle * handle) {
 	listLinkDetach(& handle->list_link);
 }
 
-void updateHandleUpdateMemoryLocation(UpdateHandle * handle, void * data) {
-	listLinkUpdateMemoryLocation(& handle->list_link);
+void updateHandleUpdateMemoryLocation(UpdateHandle * handle,
+									  UpdateHandle * erased_handle,
+									  void * data) {
+	//listLinkDetach(&erased_handle->list_link);
+	listLinkUpdateMemoryLocation(
+		&handle->list_link,
+		&erased_handle->list_link,
+		handle);
 	handle->data = data;
 }
 
@@ -47,6 +53,7 @@ void updateHandleUpdateMemoryLocation(UpdateHandle * handle, void * data) {
 void updateRegisterInit(UpdateRegister * update_register) {
 	update_register->current_list = 0;
 	update_register->clock = 0;
+	update_register->currently_updated_list = NULL;
 	for(int k = 0; k < UPDATE_REGISTER_CYCLE_COUNT; k++)
 		update_register->update_lists[k] = listCreate();
 }
@@ -86,18 +93,26 @@ void updateRegisterAdd(UpdateRegister * update_register,
 	listAdd(list, &handle->list_link);
 }
 
+void updateRegisterAddToCurrentUpdate(UpdateRegister * update_register,
+									  UpdateHandle * handle) {
+	if( ! update_register->currently_updated_list )
+		updateRegisterAdd(update_register, handle, 0);
+	else
+		listAdd(update_register->currently_updated_list, &handle->list_link);
+}
+
 /**
 * Fonction pseudo lambda utilisée par la fonction suivante
 */
 
 void updateRegisterLocalDeclarationFunction(void * data) {
 	UpdateHandle * handle = data;
-	updateHandleDeclarationCall(*handle);
+	updateHandleDeclarationCall(handle);
 }
 
 void updateRegisterLocalApplicationFunction(void * data) {
 	UpdateHandle * handle = data;
-	updateHandleApplicationCall(*handle);
+	updateHandleApplicationCall(handle);
 }
 
 /**
@@ -107,6 +122,9 @@ void updateRegisterLocalApplicationFunction(void * data) {
 
 void updateRegisterUpdate(UpdateRegister * update_register) {
 	List * list = updateRegisterGetCurrentList(update_register);
+	update_register->currently_updated_list = list;
+
+	listPrint(list);
 
 	updateRegisterSwitch(update_register);
 
@@ -116,6 +134,7 @@ void updateRegisterUpdate(UpdateRegister * update_register) {
 	listClear( list );
 
 	update_register->clock++;
+	update_register->currently_updated_list = NULL;
 }
 
 /**************************** TEST ********************************/

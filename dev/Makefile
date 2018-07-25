@@ -30,7 +30,7 @@ $(MAIN): $(OBJS)
 
 $(OBJ_FOLDER)/%.o : $(SRC_FOLDER)/%.c lib/libml.a
 	mkdir -p $(OBJ_FOLDER); \
-	$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@  -g # <- retirer le premier # pour débugger
+	$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@ # -g # <- retirer le premier # pour débugger
 
 ML_SRC_FOLDER = lib/ml/src
 ML_OBJ_FOLDER = lib/ml/obj
@@ -43,7 +43,7 @@ lib/libml.a : $(ML_OBJS)
 
 $(ML_OBJ_FOLDER)/%.o : $(ML_SRC_FOLDER)/%.c
 	mkdir -p $(ML_OBJ_FOLDER); \
-	$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@  -g # <- retirer le premier # pour débugger
+	$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@ # -g # <- retirer le premier # pour débugger
 
 clean:
 	$(RM) $(OBJ_FOLDER)/*.o *~ $(MAIN)

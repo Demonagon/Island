@@ -59,7 +59,9 @@ void treeHandleEvent(void * data, GridEvent event);
 
 /** Memory setup and index updating callbacks **/
 void treeSetupRoutine(struct GameObject * tree, unsigned int index);
-void treeMemoryIndexUpdater(struct GameObject * tree, unsigned int index);
+void treeMemoryIndexUpdater(struct GameObject * tree,
+							struct GameObject * old_tree,
+							unsigned int index);
 
 /** Test initialisation functions **/
 void mainTreeLifeCycleTest();

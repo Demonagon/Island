@@ -5,11 +5,12 @@
 #include <stdlib.h>
 
 void randomInitSeed(int seed) {
+	printf("Random seed %d\n", seed);
 	srand(seed);
 }
 
 void randomInit(void) {
-	srand(time(NULL));
+	randomInitSeed( time(NULL) );
 }
 
 double rand_double_a_b(double a, double b)

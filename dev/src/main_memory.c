@@ -61,8 +61,6 @@ unsigned int mainMemoryGetTotalSize(MainMemory * memory) {
 	switch ( memory->dynamical_array_size ) {
 		case 0 : return 0;
 		case 1 : return memory->last_chunk_size;
-		case 2 : return memory->before_last_chunk_size
-						+ memory->last_chunk_size;
 		default :
 			return (memory->dynamical_array_size - 2) * MAIN_MEMORY_CHUNK_SIZE
 			+ memory->before_last_chunk_size + memory->last_chunk_size;
@@ -90,8 +88,19 @@ MemoryIndex mainMemoryAddObject(MainMemory * memory, GameObject object,
 
 	MemoryIndex new_index = mainMemoryGetTotalSize(memory);
 
-	unsigned int chunk = mainMemoryGetIndexChunk(new_index);
-	unsigned int chunk_index = mainMemoryGetInChunkIndex(new_index);
+	MemoryIndex chunk = 0;
+	MemoryIndex chunk_index = 0;
+
+	if(memory->dynamical_array_size == 1) {
+		chunk = 0;
+		chunk_index = memory->last_chunk_size;
+	} else if( memory->before_last_chunk_size == MAIN_MEMORY_CHUNK_SIZE ) {
+		chunk = memory->dynamical_array_size - 1;
+		chunk_index = memory->last_chunk_size;
+	} else {
+		chunk = memory->dynamical_array_size - 2;
+		chunk_index = memory->before_last_chunk_size;
+	}
 
 	MemoryObject memory_object =
 		(MemoryObject) {.index_updater = index_updater, .object = object};
@@ -120,7 +129,7 @@ GameObject mainMemoryRemoveObject(MainMemory * memory, MemoryIndex index) {
 			index, mainMemoryGetTotalSize(memory));
 		fprintf(stderr, "Are you sure the index you gave was properly ");
 		fprintf(stderr, "maintained by the index updater ?\n");
-		exit(-1);
+		abort();
 	}
 
 	unsigned int chunk = mainMemoryGetIndexChunk(index);
@@ -145,7 +154,9 @@ GameObject mainMemoryRemoveObject(MainMemory * memory, MemoryIndex index) {
 
 	if( memory->dynamical_array[chunk][chunk_index].index_updater )
 		memory->dynamical_array[chunk][chunk_index].index_updater(
-			&memory->dynamical_array[chunk][chunk_index].object, index
+			&memory->dynamical_array[chunk][chunk_index].object, 
+			&remove_object.object,
+			index
 		);
 
 	// Applying memory size shrink
@@ -171,7 +182,7 @@ GameObject * mainMemoryAccessObject(MainMemory * memory, MemoryIndex index) {
 			index, mainMemoryGetTotalSize(memory));
 		fprintf(stderr, "Are you sure the index you gave was properly ");
 		fprintf(stderr, "maintained by the index updater ?\n");
-		exit(-1);
+		abort();
 	}
 
 	unsigned int chunk = mainMemoryGetIndexChunk(index);

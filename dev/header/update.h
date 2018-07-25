@@ -52,13 +52,15 @@ void updateHandleInit(UpdateHandle * handle, void * data,
 					  CallBack declaration_function,
 					  CallBack application_function);
 
-void updateHandleDeclarationCall(UpdateHandle handle);
+void updateHandleDeclarationCall(UpdateHandle * handle);
 
-void updateHandleApplicationCall(UpdateHandle handle);
+void updateHandleApplicationCall(UpdateHandle * handle);
 
 void updateHandleRemove(UpdateHandle * handle);
 
-void updateHandleUpdateMemoryLocation(UpdateHandle * handle, void * data);
+void updateHandleUpdateMemoryLocation(UpdateHandle * handle,
+									  UpdateHandle * erased_handle,
+									  void * data);
 
 /****************************** UPDATE REGISTER *******************************/
 
@@ -67,6 +69,8 @@ typedef struct UpdateRegister {
 	int current_list;
 
 	long int clock;
+
+	List * currently_updated_list;
 } UpdateRegister;
 
 void updateRegisterInit(UpdateRegister * update_register);
@@ -90,6 +94,9 @@ void updateRegisterSwitch(UpdateRegister * update_register);
 
 void updateRegisterAdd(UpdateRegister * update_register,
 							 UpdateHandle * handle, int delay);
+
+void updateRegisterAddToCurrentUpdate(UpdateRegister * update_register,
+									  UpdateHandle * handle);
 
 /**
 * Fonction la plus importante, qui exécute toutes les handles, et passe à la
