@@ -2,7 +2,7 @@ INCLUDES = -Iheader
 CFLAGS = -std=c99 -pedantic -Wall
 LFLAGS = -L/usr/X11/lib -L/usr/X11R6/lib -L/usr/X11R6/lib -L./lib
 LIBS = -lX11 -lXext -lpthread -lglut -lGL -lGLU -lm -lml
-DEBUG = -ggdb3
+DEBUG = -g # <- retirer le premier # pour débugger
 
 CC = gcc
 
@@ -30,7 +30,7 @@ $(MAIN): $(OBJS)
 
 $(OBJ_FOLDER)/%.o : $(SRC_FOLDER)/%.c lib/libml.a
 	mkdir -p $(OBJ_FOLDER); \
-	$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@ # -g # <- retirer le premier # pour débugger
+	$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@ $(DEBUG)
 
 ML_SRC_FOLDER = lib/ml/src
 ML_OBJ_FOLDER = lib/ml/obj
@@ -43,7 +43,7 @@ lib/libml.a : $(ML_OBJS)
 
 $(ML_OBJ_FOLDER)/%.o : $(ML_SRC_FOLDER)/%.c
 	mkdir -p $(ML_OBJ_FOLDER); \
-	$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@ # -g # <- retirer le premier # pour débugger
+	$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@ $(DEBUG)
 
 clean:
 	$(RM) $(OBJ_FOLDER)/*.o *~ $(MAIN)

@@ -32,9 +32,9 @@ Tree * treeCreate(Complex position) {
 	MemoryIndex index = mainMemoryAddObject(&MAIN_MEMORY, tree_object,
 		treeSetupRoutine, treeMemoryIndexUpdater);
 
-	printf("Nouvel arbre d'indice %d en position ", index);
-	complexPrint(position);
-	printf("\n");
+	//printf("Nouvel arbre d'indice %d en position ", index);
+	//complexPrint(position);
+	//printf("\n");
 
 	GameObject * final_tree = mainMemoryAccessObject(&MAIN_MEMORY, index);
 
@@ -42,7 +42,7 @@ Tree * treeCreate(Complex position) {
 }
  
 void treeDestroy(Tree * tree) {
-	printf("Destruction d'arbre d'index %d\n", tree->memory_index);
+	//printf("Destruction d'arbre d'index %d\n", tree->memory_index);
 	gridBeaconRemove(&tree->grid_beacon);
 	updateHandleRemove(&tree->update_handle);
 	mainMemoryRemoveObject(&MAIN_MEMORY, tree->memory_index);
@@ -67,6 +67,10 @@ void treeUpdateDeclaration(void * data) {
 
 	switch(tree->state) {
 		case INITIAL : 
+			if( ! eventGridIsPointIn(&EVENT_GRID, tree->position) ) {
+				tree->state = CANCELLED;
+				return;
+			}
 			tree_data.spawning_tree = tree;
 			eventGridBroadcast(
 				&EVENT_GRID,
@@ -95,21 +99,20 @@ void treeUpdateApplication(void * data) {
 			sleep_time = rand_int_a_b(2, 8);
 			break;
 		case CANCELLED :
-			//treePrint(tree);
-			//printf("\n");
 			treeDestroy(tree);
 			return;
 		case GROWING :
 			tree->state = REPRODUCTION;
 			break;
 		case REPRODUCTION :
-			printf("L'arbre %d se reproduit\n", tree->memory_index);
 			treeReproduce(tree);
 			treeReproduce(tree);
 			tree->state = MATURE;
 			break;
 		case MATURE :
-			if( flipCoin() )
+			/*if(tree->memory_index == 0)
+				printf("updating\n");
+			if( flipCoin() )*/
 				tree->state = DYING;
 			sleep_time = 5;
 			break;
@@ -117,14 +120,17 @@ void treeUpdateApplication(void * data) {
 			tree->state = DEAD;
 			break;
 		case DEAD :
-			//treePrint(tree);
-			//printf("\n");
+			if(tree->memory_index == 1)
+				printf("KILLING 1\n");
 			treeDestroy(tree);
 			return;
 	}
 
 	//treePrint(tree);
 	//printf("\n");
+
+	if(tree->memory_index == 0)
+		printf("Object 0 update planned in %d\n", sleep_time);
 
 	updateRegisterAdd(&UPDATE_REGISTER,
 					  &tree->update_handle, sleep_time);
@@ -138,6 +144,8 @@ void treeHandleEvent(void * data, GridEvent event) {
 
 	Tree * concurrent_tree = event.data.spawning_tree;
 
+	if( concurrent_tree->state == CANCELLED ) return;
+
 	// The tree with maximum memory index gets to live
 	if( tree->memory_index < concurrent_tree->memory_index )
 		tree->state = CANCELLED;
@@ -145,7 +153,8 @@ void treeHandleEvent(void * data, GridEvent event) {
 
 void treeSetupRoutine(GameObject * tree, MemoryIndex index) {
 	tree->data.tree.memory_index = index;
-	printf("Creation d'arbre d'index %d\n", index);
+	//printf("Creation d'arbre d'index %d (addr %p)\n", index, tree);
+	printf("setup tree %d (%p)\n", index, &tree->data.tree.update_handle.list_link);
 
 	updateHandleInit(
 		&tree->data.tree.update_handle,
@@ -170,7 +179,7 @@ void treeSetupRoutine(GameObject * tree, MemoryIndex index) {
 void treeMemoryIndexUpdater(struct GameObject * tree,
 							struct GameObject * old_tree,
 							unsigned int index) {
-	printf("Déplacement de l'arbre %d en indice %d\n", tree->data.tree.memory_index, index);
+	//printf("Déplacement de l'arbre %d en indice %d\n", tree->data.tree.memory_index, index);
 
 	tree->data.tree.memory_index = index;
 
@@ -192,6 +201,28 @@ void treeMemoryIndexUpdater(struct GameObject * tree,
 }
 
 #include "string.h"
+
+void mainTreeMemoryTest() {
+	globalInit();
+
+	for(int k = 0; k < 98; k++)
+		treeCreate( complexCreate(0, 0) );
+
+	Tree * tree98 = treeCreate( complexCreate(0, 0) );
+
+	for(int k = 0; k < 4; k++)
+		treeCreate( complexCreate(0, 0) );
+
+	Tree * tree103 = treeCreate( complexCreate(0, 0) );
+
+	for(int k = 0; k < 100; k++)
+		treeCreate( complexCreate(0, 0) );
+
+	printf("%d : %p, %d : %p\n", tree98->memory_index, tree98, tree103->memory_index, tree103);
+
+	globalFree();
+	
+}
 
 void mainTreeLifeCycleTest() {
 	globalInit();

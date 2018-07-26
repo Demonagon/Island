@@ -1,102 +1,769 @@
-Updating (D) tree 15 (handle 0x66ce10)
-Updating (D) tree 18 (handle 0x66cfd8)
-Updating (D) tree 8 (handle 0x66c9e8)
-Updating (D) tree 12 (handle 0x66cc48)
-Updating (D) tree 32 (handle 0x66d828)
-Updating (D) tree 31 (handle 0x66d790)
-Updating (D) tree 29 (handle 0x66d660)
-Updating (D) tree 30 (handle 0x66d6f8)
-Updating (D) tree 47 (handle 0x66e110)
-Updating (D) tree 48 (handle 0x66e1a8)
-Updating (D) tree 20 (handle 0x66d108)
-Updating (A) tree 15 (handle 0x66ce10)
-Ajout de 0x66ce28 à liste 0x612880
-L 0x612880[0x66d2e8] <-> (0x612880) 0x66dc68[0x612880] <-> (0x66dc68) 0x66de30[0x612880] <-> (0x66de30) 0x66d2e8[0x612880] <-> (/)
-	Détachement de 0x66ce28
-		0x612860 >--< (0x612860) 0x66cff0
-	0x66d2e8 >--< (0x66d2e8) 0x66ce28
-Updating (A) tree 18 (handle 0x66cfd8)
-Ajout de 0x66cff0 à liste 0x612880
-L 0x612880[0x66ce28] <-> (0x612880) 0x66dc68[0x612880] <-> (0x66dc68) 0x66de30[0x612880] <-> (0x66de30) 0x66d2e8[0x612880] <-> (0x66d2e8) 0x66ce28[0x612880] <-> (/)
-	Détachement de 0x66cff0
-		0x612860 >--< (0x612860) 0x66ca00
-	0x66ce28 >--< (0x66ce28) 0x66cff0
-Updating (A) tree 8 (handle 0x66c9e8)
-Ajout de 0x66ca00 à liste 0x612880
-L 0x612880[0x66cff0] <-> (0x612880) 0x66dc68[0x612880] <-> (0x66dc68) 0x66de30[0x612880] <-> (0x66de30) 0x66d2e8[0x612880] <-> (0x66d2e8) 0x66ce28[0x612880] <-> (0x66ce28) 0x66cff0[0x612880] <-> (/)
-	Détachement de 0x66ca00
-		0x612860 >--< (0x612860) 0x66cc60
-	0x66cff0 >--< (0x66cff0) 0x66ca00
-Updating (A) tree 12 (handle 0x66cc48)
-Ajout de 0x66cc60 à liste 0x612920
-L 0x612920[(nil)] <-> (/)
-	Détachement de 0x66cc60
-		0x612860 >--< (0x612860) 0x66d840
-	0x612920 >--< (0x612920) 0x66cc60
-Updating (A) tree 32 (handle 0x66d828)
-Ajout de 0x66d840 à liste 0x612880
-L 0x612880[0x66ca00] <-> (0x612880) 0x66dc68[0x612880] <-> (0x66dc68) 0x66de30[0x612880] <-> (0x66de30) 0x66d2e8[0x612880] <-> (0x66d2e8) 0x66ce28[0x612880] <-> (0x66ce28) 0x66cff0[0x612880] <-> (0x66cff0) 0x66ca00[0x612880] <-> (/)
-	Détachement de 0x66d840
-		0x612860 >--< (0x612860) 0x66d7a8
-	0x66ca00 >--< (0x66ca00) 0x66d840
-Updating (A) tree 31 (handle 0x66d790)
-Ajout de 0x66d7a8 à liste 0x612920
-L 0x612920[0x66cc60] <-> (0x612920) 0x66cc60[0x612920] <-> (/)
-	Détachement de 0x66d7a8
-		0x612860 >--< (0x612860) 0x66d678
-	0x66cc60 >--< (0x66cc60) 0x66d7a8
-Updating (A) tree 29 (handle 0x66d660)
-destruction d'arbre d'index 29
-Détachement de 0x66d6b0
-	0x66d4e8 >--< (0x66d4e8) 0x66d748
-Détachement de 0x66d678
-	0x612860 >--< (0x612860) 0x66d710
-Tree 48 is moving to 29
-Détachement de 0x7fffffffd990
+Random seed 1532496614
+setup tree 0 ({UPD0})
+Ajout de {UPD0} à liste 0x6124e0
+	Détachement de ((nil)) {UPD0} ((nil))
+		(nil) >--< ((nil)) (nil)
+	0x6124e0 >--< (0x6124e0) {UPD0}
+Ajout de 0xa63760 à liste 0x613578
+	Détachement de ((nil)) 0xa63760 ((nil))
+		(nil) >--< ((nil)) (nil)
+	0x613578 >--< (0x613578) 0xa63760
+[    0] :
+L 0x6124e0[{UPD0}] <-> (0x6124e0) {UPD0}[0x6124e0] <-> (/)
+(50.000000, 50.000000)[   0] -> INITIAL
+Object 0 update planned in 4
+Ajout de {UPD0} à liste 0x6125a8
+	Détachement de (0x6124e0) {UPD0} ((nil))
+		0x6124e0 >--< ((nil)) (nil)
+	0x6125a8 >--< (0x6125a8) {UPD0}
+Clearing list 0x6124e0
+	0x6124e0 >--< ((nil)) (nil)
+Original :
+(50.000000, 50.000000)[   0] -> GROWING
+[    1] :
+L 0x612508[(nil)] <-> (/)
+Clearing list 0x612508
+	0x612508 >--< ((nil)) (nil)
+Original :
+(50.000000, 50.000000)[   0] -> GROWING
+[    2] :
+L 0x612530[(nil)] <-> (/)
+Clearing list 0x612530
+	0x612530 >--< ((nil)) (nil)
+Original :
+(50.000000, 50.000000)[   0] -> GROWING
+[    3] :
+L 0x612558[(nil)] <-> (/)
+Clearing list 0x612558
+	0x612558 >--< ((nil)) (nil)
+Original :
+(50.000000, 50.000000)[   0] -> GROWING
+[    4] :
+L 0x612580[(nil)] <-> (/)
+Clearing list 0x612580
+	0x612580 >--< ((nil)) (nil)
+Original :
+(50.000000, 50.000000)[   0] -> GROWING
+[    5] :
+L 0x6125a8[{UPD0}] <-> (0x6125a8) {UPD0}[0x6125a8] <-> (/)
+(50.000000, 50.000000)[   0] -> GROWING
+Object 0 update planned in 0
+Ajout de {UPD0} à liste 0x6125d0
+	Détachement de (0x6125a8) {UPD0} ((nil))
+		0x6125a8 >--< ((nil)) (nil)
+	0x6125d0 >--< (0x6125d0) {UPD0}
+Clearing list 0x6125a8
+	0x6125a8 >--< ((nil)) (nil)
+Original :
+(50.000000, 50.000000)[   0] -> REPRODUCTION
+[    6] :
+L 0x6125d0[{UPD0}] <-> (0x6125d0) {UPD0}[0x6125d0] <-> (/)
+(50.000000, 50.000000)[   0] -> REPRODUCTION
+setup tree 1 ({UPD1})
+Ajout de {UPD1} à liste 0x6125f8
+	Détachement de ((nil)) {UPD1} ((nil))
+		(nil) >--< ((nil)) (nil)
+	0x6125f8 >--< (0x6125f8) {UPD1}
+Ajout de 0xa63808 à liste 0x613578
+	Détachement de ((nil)) 0xa63808 ((nil))
+		(nil) >--< ((nil)) (nil)
+	0xa63760 >--< (0xa63760) 0xa63808
+setup tree 2 ({UPD2})
+Ajout de {UPD2} à liste 0x6125f8
+	Détachement de ((nil)) {UPD2} ((nil))
+		(nil) >--< ((nil)) (nil)
+	{UPD1} >--< ({UPD1}) {UPD2}
+Ajout de 0xa638b0 à liste 0x613550
+	Détachement de ((nil)) 0xa638b0 ((nil))
+		(nil) >--< ((nil)) (nil)
+	0x613550 >--< (0x613550) 0xa638b0
+Object 0 update planned in 0
+Ajout de {UPD0} à liste 0x6125f8
+	Détachement de (0x6125d0) {UPD0} ((nil))
+		0x6125d0 >--< ((nil)) (nil)
+	{UPD2} >--< ({UPD2}) {UPD0}
+Clearing list 0x6125d0
+	0x6125d0 >--< ((nil)) (nil)
+Original :
+(50.000000, 50.000000)[   0] -> MATURE
+[    7] :
+L 0x6125f8[{UPD0}] <-> (0x6125f8) {UPD1}[0x6125f8] <-> ({UPD1}) {UPD2}[0x6125f8] <-> ({UPD2}) {UPD0}[0x6125f8] <-> (/)
+(53.076308, 53.941615)[   1] -> INITIAL
+Ajout de {UPD1} à liste 0x612670
+	Détachement de (0x6125f8) {UPD1} ({UPD2})
+		0x6125f8 >--< (0x6125f8) {UPD2}
+	0x612670 >--< (0x612670) {UPD1}
+(53.660463, 46.593974)[   2] -> INITIAL
+Ajout de {UPD2} à liste 0x612738
+	Détachement de (0x6125f8) {UPD2} ({UPD0})
+		0x6125f8 >--< (0x6125f8) {UPD0}
+	0x612738 >--< (0x612738) {UPD2}
+(50.000000, 50.000000)[   0] -> MATURE
+Object 0 update planned in 5
+Ajout de {UPD0} à liste 0x6126e8
+	Détachement de (0x6125f8) {UPD0} ((nil))
+		0x6125f8 >--< ((nil)) (nil)
+	0x6126e8 >--< (0x6126e8) {UPD0}
+Clearing list 0x6125f8
+	0x6125f8 >--< ((nil)) (nil)
+Original :
+(50.000000, 50.000000)[   0] -> DYING
+[    8] :
+L 0x612620[(nil)] <-> (/)
+Clearing list 0x612620
+	0x612620 >--< ((nil)) (nil)
+Original :
+(50.000000, 50.000000)[   0] -> DYING
+[    9] :
+L 0x612648[(nil)] <-> (/)
+Clearing list 0x612648
+	0x612648 >--< ((nil)) (nil)
+Original :
+(50.000000, 50.000000)[   0] -> DYING
+[   10] :
+L 0x612670[{UPD1}] <-> (0x612670) {UPD1}[0x612670] <-> (/)
+(53.076308, 53.941615)[   1] -> GROWING
+Ajout de {UPD1} à liste 0x612698
+	Détachement de (0x612670) {UPD1} ((nil))
+		0x612670 >--< ((nil)) (nil)
+	0x612698 >--< (0x612698) {UPD1}
+Clearing list 0x612670
+	0x612670 >--< ((nil)) (nil)
+Original :
+(50.000000, 50.000000)[   0] -> DYING
+[   11] :
+L 0x612698[{UPD1}] <-> (0x612698) {UPD1}[0x612698] <-> (/)
+(53.076308, 53.941615)[   1] -> REPRODUCTION
+setup tree 3 ({UPD3})
+Ajout de {UPD3} à liste 0x6126c0
+	Détachement de ((nil)) {UPD3} ((nil))
+		(nil) >--< ((nil)) (nil)
+	0x6126c0 >--< (0x6126c0) {UPD3}
+Ajout de 0xa63958 à liste 0x613578
+	Détachement de ((nil)) 0xa63958 ((nil))
+		(nil) >--< ((nil)) (nil)
+	0xa63808 >--< (0xa63808) 0xa63958
+setup tree 4 ({UPD4})
+Ajout de {UPD4} à liste 0x6126c0
+	Détachement de ((nil)) {UPD4} ((nil))
+		(nil) >--< ((nil)) (nil)
+	{UPD3} >--< ({UPD3}) {UPD4}
+Ajout de 0xa63a00 à liste 0x613550
+	Détachement de ((nil)) 0xa63a00 ((nil))
+		(nil) >--< ((nil)) (nil)
+	0xa638b0 >--< (0xa638b0) 0xa63a00
+Ajout de {UPD1} à liste 0x6126c0
+	Détachement de (0x612698) {UPD1} ((nil))
+		0x612698 >--< ((nil)) (nil)
+	{UPD4} >--< ({UPD4}) {UPD1}
+Clearing list 0x612698
+	0x612698 >--< ((nil)) (nil)
+Original :
+(50.000000, 50.000000)[   0] -> DYING
+[   12] :
+L 0x6126c0[{UPD1}] <-> (0x6126c0) {UPD3}[0x6126c0] <-> ({UPD3}) {UPD4}[0x6126c0] <-> ({UPD4}) {UPD1}[0x6126c0] <-> (/)
+(58.052214, 53.451348)[   3] -> INITIAL
+Ajout de {UPD3} à liste 0x6127b0
+	Détachement de (0x6126c0) {UPD3} ({UPD4})
+		0x6126c0 >--< (0x6126c0) {UPD4}
+	0x6127b0 >--< (0x6127b0) {UPD3}
+(50.581688, 49.608387)[   4] -> INITIAL
+Ajout de {UPD4} à liste 0x6127b0
+	Détachement de (0x6126c0) {UPD4} ({UPD1})
+		0x6126c0 >--< (0x6126c0) {UPD1}
+	{UPD3} >--< ({UPD3}) {UPD4}
+(53.076308, 53.941615)[   1] -> MATURE
+Ajout de {UPD1} à liste 0x6127b0
+	Détachement de (0x6126c0) {UPD1} ((nil))
+		0x6126c0 >--< ((nil)) (nil)
+	{UPD4} >--< ({UPD4}) {UPD1}
+Clearing list 0x6126c0
+	0x6126c0 >--< ((nil)) (nil)
+Original :
+(50.000000, 50.000000)[   0] -> DYING
+[   13] :
+L 0x6126e8[{UPD0}] <-> (0x6126e8) {UPD0}[0x6126e8] <-> (/)
+(50.000000, 50.000000)[   0] -> DYING
+Object 0 update planned in 0
+Ajout de {UPD0} à liste 0x612710
+	Détachement de (0x6126e8) {UPD0} ((nil))
+		0x6126e8 >--< ((nil)) (nil)
+	0x612710 >--< (0x612710) {UPD0}
+Clearing list 0x6126e8
+	0x6126e8 >--< ((nil)) (nil)
+Original :
+(50.000000, 50.000000)[   0] -> DEAD
+[   14] :
+L 0x612710[{UPD0}] <-> (0x612710) {UPD0}[0x612710] <-> (/)
+(50.000000, 50.000000)[   0] -> DEAD
+Détachement de (0x613578) 0xa63760 (0xa63808)
+	0x613578 >--< (0x613578) 0xa63808
+Détachement de (0x612710) {UPD0} ((nil))
+	0x612710 >--< ((nil)) (nil)
+0 <- 4
+Mise à jour de ({UPD3}) {UPD0} ({UPD1})
+	{UPD3} >--< ({UPD3}) {UPD0}
+	{UPD0} >--< ({UPD0}) {UPD1}
+Détachement de ((nil)) 0x7ffead39abc0 ((nil))
 	(nil) >--< ((nil)) (nil)
-Mise à jour de 0x66d678
-link = (0x66e128) 0x66d678 (0x66d120)
-erased_link = ((nil)) 0x7fffffffd990 ((nil))
-link = 0x66d678, link->next = 0x66d120, erased_link = 0x7fffffffd990, erased_link->next = (nil)
-	0x66e128 >--< (0x66e128) 0x66d678
-	0x66d678 >--< (0x66d678) 0x66d120
-Détachement de 0x7fffffffd9c8
+Mise à jour de (0xa638b0) 0xa63760 ((nil))
+	0xa638b0 >--< (0xa638b0) 0xa63760
+	0xa63760 >--< ((nil)) (nil)
+Clearing list 0x612710
+	0x612710 >--< ((nil)) (nil)
+Original :
+(50.581688, 49.608387)[   0] -> GROWING
+[   15] :
+L 0x612738[{UPD2}] <-> (0x612738) {UPD2}[0x612738] <-> (/)
+(53.660463, 46.593974)[   2] -> GROWING
+Ajout de {UPD2} à liste 0x612760
+	Détachement de (0x612738) {UPD2} ((nil))
+		0x612738 >--< ((nil)) (nil)
+	0x612760 >--< (0x612760) {UPD2}
+Clearing list 0x612738
+	0x612738 >--< ((nil)) (nil)
+Original :
+(50.581688, 49.608387)[   0] -> GROWING
+[   16] :
+L 0x612760[{UPD2}] <-> (0x612760) {UPD2}[0x612760] <-> (/)
+(53.660463, 46.593974)[   2] -> REPRODUCTION
+setup tree 4 ({UPD4})
+Ajout de {UPD4} à liste 0x612788
+	Détachement de ((nil)) {UPD4} ((nil))
+		(nil) >--< ((nil)) (nil)
+	0x612788 >--< (0x612788) {UPD4}
+Ajout de 0xa63a00 à liste 0x613578
+	Détachement de ((nil)) 0xa63a00 ((nil))
+		(nil) >--< ((nil)) (nil)
+	0xa63958 >--< (0xa63958) 0xa63a00
+setup tree 5 (0xa63a68)
+Ajout de 0xa63a68 à liste 0x612788
+	Détachement de ((nil)) 0xa63a68 ((nil))
+		(nil) >--< ((nil)) (nil)
+	{UPD4} >--< ({UPD4}) 0xa63a68
+Ajout de 0xa63aa8 à liste 0x6133c0
+	Détachement de ((nil)) 0xa63aa8 ((nil))
+		(nil) >--< ((nil)) (nil)
+	0x6133c0 >--< (0x6133c0) 0xa63aa8
+Ajout de {UPD2} à liste 0x612788
+	Détachement de (0x612760) {UPD2} ((nil))
+		0x612760 >--< ((nil)) (nil)
+	0xa63a68 >--< (0xa63a68) {UPD2}
+Clearing list 0x612760
+	0x612760 >--< ((nil)) (nil)
+Original :
+(50.581688, 49.608387)[   0] -> GROWING
+[   17] :
+L 0x612788[{UPD2}] <-> (0x612788) {UPD4}[0x612788] <-> ({UPD4}) 0xa63a68[0x612788] <-> (0xa63a68) {UPD2}[0x612788] <-> (/)
+(50.112777, 50.117314)[   4] -> CANCELLED
+Détachement de (0xa63958) 0xa63a00 ((nil))
+	0xa63958 >--< ((nil)) (nil)
+Détachement de (0x612788) {UPD4} (0xa63a68)
+	0x612788 >--< (0x612788) 0xa63a68
+4 <- 5
+Mise à jour de (0x612788) {UPD4} ({UPD2})
+	0x612788 >--< (0x612788) {UPD4}
+	{UPD4} >--< ({UPD4}) {UPD2}
+Détachement de ((nil)) 0x7ffead39abc0 ((nil))
 	(nil) >--< ((nil)) (nil)
-Mise à jour de 0x66d6b0
-link = (0x66d580) 0x66d6b0 ((nil))
-erased_link = ((nil)) 0x7fffffffd9c8 ((nil))
-link = 0x66d6b0, link->next = (nil), erased_link = 0x7fffffffd9c8, erased_link->next = (nil)
-	0x66d580 >--< (0x66d580) 0x66d6b0
-	0x66d6b0 >--< ((nil)) (nil)
-Updating (A) tree 30 (handle 0x66d6f8)
-destruction d'arbre d'index 30
-Détachement de 0x66d748
-	0x66d4e8 >--< (0x66d4e8) 0x66d7e0
-Détachement de 0x66d710
-	0x612860 >--< (0x612860) 0x66e128
-Tree 47 is moving to 30
-Détachement de 0x7fffffffd990
+Mise à jour de (0x6133c0) 0xa63a00 ((nil))
+	0x6133c0 >--< (0x6133c0) 0xa63a00
+	0xa63a00 >--< ((nil)) (nil)
+(48.686877, 47.107237)[   5] -> INITIAL
+Ajout de 0xa63a68 à liste 0x612850
+	Détachement de (0x612788) 0xa63a68 ({UPD2})
+		0x612788 >--< (0x612788) {UPD2}
+	0x612850 >--< (0x612850) 0xa63a68
+(53.660463, 46.593974)[   2] -> MATURE
+Ajout de {UPD2} à liste 0x612878
+	Détachement de (0x612788) {UPD2} ((nil))
+		0x612788 >--< ((nil)) (nil)
+	0x612878 >--< (0x612878) {UPD2}
+Clearing list 0x612788
+	0x612788 >--< ((nil)) (nil)
+Original :
+(50.581688, 49.608387)[   0] -> GROWING
+[   18] :
+L 0x6127b0[{UPD1}] <-> (0x6127b0) {UPD3}[0x6127b0] <-> ({UPD3}) {UPD0}[0x6127b0] <-> ({UPD0}) {UPD1}[0x6127b0] <-> (/)
+(58.052214, 53.451348)[   3] -> GROWING
+Ajout de {UPD3} à liste 0x6127d8
+	Détachement de (0x6127b0) {UPD3} ({UPD0})
+		0x6127b0 >--< (0x6127b0) {UPD0}
+	0x6127d8 >--< (0x6127d8) {UPD3}
+(50.581688, 49.608387)[   0] -> GROWING
+Object 0 update planned in 0
+Ajout de {UPD0} à liste 0x6127d8
+	Détachement de (0x6127b0) {UPD0} ({UPD1})
+		0x6127b0 >--< (0x6127b0) {UPD1}
+	{UPD3} >--< ({UPD3}) {UPD0}
+(53.076308, 53.941615)[   1] -> DYING
+Ajout de {UPD1} à liste 0x6127d8
+	Détachement de (0x6127b0) {UPD1} ((nil))
+		0x6127b0 >--< ((nil)) (nil)
+	{UPD0} >--< ({UPD0}) {UPD1}
+Clearing list 0x6127b0
+	0x6127b0 >--< ((nil)) (nil)
+Original :
+(50.581688, 49.608387)[   0] -> REPRODUCTION
+[   19] :
+L 0x6127d8[{UPD1}] <-> (0x6127d8) {UPD3}[0x6127d8] <-> ({UPD3}) {UPD0}[0x6127d8] <-> ({UPD0}) {UPD1}[0x6127d8] <-> (/)
+(58.052214, 53.451348)[   3] -> REPRODUCTION
+setup tree 5 (0xa63a68)
+Ajout de 0xa63a68 à liste 0x612800
+	Détachement de ((nil)) 0xa63a68 ((nil))
+		(nil) >--< ((nil)) (nil)
+	0x612800 >--< (0x612800) 0xa63a68
+Ajout de 0xa63aa8 à liste 0x6136e0
+	Détachement de ((nil)) 0xa63aa8 ((nil))
+		(nil) >--< ((nil)) (nil)
+	0x6136e0 >--< (0x6136e0) 0xa63aa8
+setup tree 6 (0xa63b10)
+Ajout de 0xa63b10 à liste 0x612800
+	Détachement de ((nil)) 0xa63b10 ((nil))
+		(nil) >--< ((nil)) (nil)
+	0xa63a68 >--< (0xa63a68) 0xa63b10
+Ajout de 0xa63b50 à liste 0x613578
+	Détachement de ((nil)) 0xa63b50 ((nil))
+		(nil) >--< ((nil)) (nil)
+	0xa63958 >--< (0xa63958) 0xa63b50
+Ajout de {UPD3} à liste 0x612800
+	Détachement de (0x6127d8) {UPD3} ({UPD0})
+		0x6127d8 >--< (0x6127d8) {UPD0}
+	0xa63b10 >--< (0xa63b10) {UPD3}
+(50.581688, 49.608387)[   0] -> REPRODUCTION
+setup tree 7 ({UPD7})
+Ajout de {UPD7} à liste 0x612800
+	Détachement de ((nil)) {UPD7} ((nil))
+		(nil) >--< ((nil)) (nil)
+	{UPD3} >--< ({UPD3}) {UPD7}
+Ajout de 0xa63bf8 à liste 0x613550
+	Détachement de ((nil)) 0xa63bf8 ((nil))
+		(nil) >--< ((nil)) (nil)
+	0xa63760 >--< (0xa63760) 0xa63bf8
+setup tree 8 (0xa63c60)
+Ajout de 0xa63c60 à liste 0x612800
+	Détachement de ((nil)) 0xa63c60 ((nil))
+		(nil) >--< ((nil)) (nil)
+	{UPD7} >--< ({UPD7}) 0xa63c60
+Ajout de 0xa63ca0 à liste 0x6133e8
+	Détachement de ((nil)) 0xa63ca0 ((nil))
+		(nil) >--< ((nil)) (nil)
+	0x6133e8 >--< (0x6133e8) 0xa63ca0
+Object 0 update planned in 0
+Ajout de {UPD0} à liste 0x612800
+	Détachement de (0x6127d8) {UPD0} ({UPD1})
+		0x6127d8 >--< (0x6127d8) {UPD1}
+	0xa63c60 >--< (0xa63c60) {UPD0}
+(53.076308, 53.941615)[   1] -> DEAD
+KILLING 1
+Détachement de (0x613578) 0xa63808 (0xa63958)
+	0x613578 >--< (0x613578) 0xa63958
+Détachement de (0x6127d8) {UPD1} ((nil))
+	0x6127d8 >--< ((nil)) (nil)
+1 <- 8
+Mise à jour de ({UPD7}) {UPD1} ({UPD0})
+	{UPD7} >--< ({UPD7}) {UPD1}
+	{UPD1} >--< ({UPD1}) {UPD0}
+Détachement de ((nil)) 0x7ffead39abc0 ((nil))
 	(nil) >--< ((nil)) (nil)
-Mise à jour de 0x66d710
-link = (0x612860) 0x66d710 (0x66d678)
-erased_link = ((nil)) 0x7fffffffd990 ((nil))
-link = 0x66d710, link->next = 0x66d678, erased_link = 0x7fffffffd990, erased_link->next = (nil)
-	0x612860 >--< (0x612860) 0x66d710
-	0x66d710 >--< (0x66d710) 0x66d678
-Détachement de 0x7fffffffd9c8
+Mise à jour de (0x6133e8) 0xa63808 ((nil))
+	0x6133e8 >--< (0x6133e8) 0xa63808
+	0xa63808 >--< ((nil)) (nil)
+Clearing list 0x6127d8
+	0x6127d8 >--< ((nil)) (nil)
+Original :
+(50.581688, 49.608387)[   0] -> MATURE
+[   20] :
+L 0x612800[{UPD0}] <-> (0x612800) 0xa63a68[0x612800] <-> (0xa63a68) 0xa63b10[0x612800] <-> (0xa63b10) {UPD3}[0x612800] <-> ({UPD3}) {UPD7}[0x612800] <-> ({UPD7}) {UPD1}[0x612800] <-> ({UPD1}) {UPD0}[0x612800] <-> (/)
+(60.931741, 49.363765)[   5] -> INITIAL
+Ajout de 0xa63a68 à liste 0x612918
+	Détachement de (0x612800) 0xa63a68 (0xa63b10)
+		0x612800 >--< (0x612800) 0xa63b10
+	0x612918 >--< (0x612918) 0xa63a68
+(53.617322, 55.760402)[   6] -> INITIAL
+Ajout de 0xa63b10 à liste 0x612918
+	Détachement de (0x612800) 0xa63b10 ({UPD3})
+		0x612800 >--< (0x612800) {UPD3}
+	0xa63a68 >--< (0xa63a68) 0xa63b10
+(58.052214, 53.451348)[   3] -> MATURE
+Ajout de {UPD3} à liste 0x6128f0
+	Détachement de (0x612800) {UPD3} ({UPD7})
+		0x612800 >--< (0x612800) {UPD7}
+	0x6128f0 >--< (0x6128f0) {UPD3}
+(50.142268, 44.627733)[   7] -> INITIAL
+Ajout de {UPD7} à liste 0x6128c8
+	Détachement de (0x612800) {UPD7} ({UPD1})
+		0x612800 >--< (0x612800) {UPD1}
+	0x6128c8 >--< (0x6128c8) {UPD7}
+(49.643180, 54.519517)[   1] -> INITIAL
+Ajout de {UPD1} à liste 0x612968
+	Détachement de (0x612800) {UPD1} ({UPD0})
+		0x612800 >--< (0x612800) {UPD0}
+	0x612968 >--< (0x612968) {UPD1}
+(50.581688, 49.608387)[   0] -> MATURE
+Object 0 update planned in 5
+Ajout de {UPD0} à liste 0x6128f0
+	Détachement de (0x612800) {UPD0} ((nil))
+		0x612800 >--< ((nil)) (nil)
+	{UPD3} >--< ({UPD3}) {UPD0}
+Clearing list 0x612800
+	0x612800 >--< ((nil)) (nil)
+Original :
+(50.581688, 49.608387)[   0] -> DYING
+[   21] :
+L 0x612828[(nil)] <-> (/)
+Clearing list 0x612828
+	0x612828 >--< ((nil)) (nil)
+Original :
+(50.581688, 49.608387)[   0] -> DYING
+[   22] :
+L 0x612850[0xa63a68] <-> (0x612918) 0xa63a68[0x612918] <-> (0xa63a68) 0xa63b10[0x612918] <-> (/)
+(60.931741, 49.363765)[   5] -> GROWING
+Ajout de 0xa63a68 à liste 0x612878
+	Détachement de (0x612918) 0xa63a68 (0xa63b10)
+		0x612918 >--< (0x612918) 0xa63b10
+	{UPD2} >--< ({UPD2}) 0xa63a68
+(53.617322, 55.760402)[   6] -> GROWING
+Ajout de 0xa63b10 à liste 0x612878
+	Détachement de (0x612918) 0xa63b10 ((nil))
+		0x612918 >--< ((nil)) (nil)
+	0xa63a68 >--< (0xa63a68) 0xa63b10
+Clearing list 0x612850
+	Détachement de ({UPD2}) 0xa63a68 (0xa63b10)
+		{UPD2} >--< ({UPD2}) 0xa63b10
+	Détachement de ({UPD2}) 0xa63b10 ((nil))
+		{UPD2} >--< ((nil)) (nil)
+	0x612850 >--< ((nil)) (nil)
+Original :
+(50.581688, 49.608387)[   0] -> DYING
+[   23] :
+L 0x612878[{UPD2}] <-> (0x612878) {UPD2}[0x612878] <-> (/)
+(53.660463, 46.593974)[   2] -> DYING
+Ajout de {UPD2} à liste 0x6128a0
+	Détachement de (0x612878) {UPD2} ((nil))
+		0x612878 >--< ((nil)) (nil)
+	0x6128a0 >--< (0x6128a0) {UPD2}
+Clearing list 0x612878
+	0x612878 >--< ((nil)) (nil)
+Original :
+(50.581688, 49.608387)[   0] -> DYING
+[   24] :
+L 0x6128a0[{UPD2}] <-> (0x6128a0) {UPD2}[0x6128a0] <-> (/)
+(53.660463, 46.593974)[   2] -> DEAD
+Détachement de (0x613550) 0xa638b0 (0xa63760)
+	0x613550 >--< (0x613550) 0xa63760
+Détachement de (0x6128a0) {UPD2} ((nil))
+	0x6128a0 >--< ((nil)) (nil)
+2 <- 7
+Mise à jour de (0x6128c8) {UPD2} ((nil))
+	0x6128c8 >--< (0x6128c8) {UPD2}
+	{UPD2} >--< ((nil)) (nil)
+Détachement de ((nil)) 0x7ffead39abc0 ((nil))
 	(nil) >--< ((nil)) (nil)
-Mise à jour de 0x66d748
-link = (0x66e0c8) 0x66d748 ((nil))
-erased_link = ((nil)) 0x7fffffffd9c8 ((nil))
-link = 0x66d748, link->next = (nil), erased_link = 0x7fffffffd9c8, erased_link->next = (nil)
-	0x66e0c8 >--< (0x66e0c8) 0x66d748
-	0x66d748 >--< ((nil)) (nil)
-Updating (A) tree 47 (handle 0x66e110)
-destruction d'arbre d'index 47
-Détachement de 0x66e160
-	0x66e0c8 >--< ((nil)) (nil)
-Détachement de 0x66e128
-	0x612860 >--< (0x612860) 0x66d678
-(src/main_memory.c, line 127) => Memory received a out of bounds memory index for removal (value = 47, size = 47)
-Are you sure the index you gave was properly maintained by the index updater ?
-
+Mise à jour de (0xa63760) 0xa638b0 ((nil))
+	0xa63760 >--< (0xa63760) 0xa638b0
+	0xa638b0 >--< ((nil)) (nil)
+Clearing list 0x6128a0
+	0x6128a0 >--< ((nil)) (nil)
+Original :
+(50.581688, 49.608387)[   0] -> DYING
+[   25] :
+L 0x6128c8[{UPD2}] <-> (0x6128c8) {UPD2}[0x6128c8] <-> (/)
+(50.142268, 44.627733)[   2] -> GROWING
+Ajout de {UPD2} à liste 0x6128f0
+	Détachement de (0x6128c8) {UPD2} ((nil))
+		0x6128c8 >--< ((nil)) (nil)
+	{UPD0} >--< ({UPD0}) {UPD2}
+Clearing list 0x6128c8
+	0x6128c8 >--< ((nil)) (nil)
+Original :
+(50.581688, 49.608387)[   0] -> DYING
+[   26] :
+L 0x6128f0[{UPD2}] <-> (0x6128f0) {UPD3}[0x6128f0] <-> ({UPD3}) {UPD0}[0x6128f0] <-> ({UPD0}) {UPD2}[0x6128f0] <-> (/)
+(58.052214, 53.451348)[   3] -> DYING
+Ajout de {UPD3} à liste 0x612918
+	Détachement de (0x6128f0) {UPD3} ({UPD0})
+		0x6128f0 >--< (0x6128f0) {UPD0}
+	0x612918 >--< (0x612918) {UPD3}
+(50.581688, 49.608387)[   0] -> DYING
+Object 0 update planned in 0
+Ajout de {UPD0} à liste 0x612918
+	Détachement de (0x6128f0) {UPD0} ({UPD2})
+		0x6128f0 >--< (0x6128f0) {UPD2}
+	{UPD3} >--< ({UPD3}) {UPD0}
+(50.142268, 44.627733)[   2] -> REPRODUCTION
+setup tree 7 ({UPD7})
+Ajout de {UPD7} à liste 0x612918
+	Détachement de ((nil)) {UPD7} ((nil))
+		(nil) >--< ((nil)) (nil)
+	{UPD0} >--< ({UPD0}) {UPD7}
+Ajout de 0xa63bf8 à liste 0x6133c0
+	Détachement de ((nil)) 0xa63bf8 ((nil))
+		(nil) >--< ((nil)) (nil)
+	0xa63a00 >--< (0xa63a00) 0xa63bf8
+setup tree 8 (0xa63c60)
+Ajout de 0xa63c60 à liste 0x612918
+	Détachement de ((nil)) 0xa63c60 ((nil))
+		(nil) >--< ((nil)) (nil)
+	{UPD7} >--< ({UPD7}) 0xa63c60
+Ajout de 0xa63ca0 à liste 0x613550
+	Détachement de ((nil)) 0xa63ca0 ((nil))
+		(nil) >--< ((nil)) (nil)
+	0xa638b0 >--< (0xa638b0) 0xa63ca0
+Ajout de {UPD2} à liste 0x612918
+	Détachement de (0x6128f0) {UPD2} ((nil))
+		0x6128f0 >--< ((nil)) (nil)
+	0xa63c60 >--< (0xa63c60) {UPD2}
+Clearing list 0x6128f0
+	0x6128f0 >--< ((nil)) (nil)
+Original :
+(50.581688, 49.608387)[   0] -> DEAD
+[   27] :
+L 0x612918[{UPD2}] <-> (0x612918) {UPD3}[0x612918] <-> ({UPD3}) {UPD0}[0x612918] <-> ({UPD0}) {UPD7}[0x612918] <-> ({UPD7}) 0xa63c60[0x612918] <-> (0xa63c60) {UPD2}[0x612918] <-> (/)
+(58.052214, 53.451348)[   3] -> DEAD
+Détachement de (0x613578) 0xa63958 (0xa63b50)
+	0x613578 >--< (0x613578) 0xa63b50
+Détachement de (0x612918) {UPD3} ({UPD0})
+	0x612918 >--< (0x612918) {UPD0}
+3 <- 8
+Mise à jour de ({UPD7}) {UPD3} ({UPD2})
+	{UPD7} >--< ({UPD7}) {UPD3}
+	{UPD3} >--< ({UPD3}) {UPD2}
+Détachement de ((nil)) 0x7ffead39abc0 ((nil))
+	(nil) >--< ((nil)) (nil)
+Mise à jour de (0xa638b0) 0xa63958 ((nil))
+	0xa638b0 >--< (0xa638b0) 0xa63958
+	0xa63958 >--< ((nil)) (nil)
+(50.581688, 49.608387)[   0] -> DEAD
+Détachement de (0x613550) 0xa63760 (0xa638b0)
+	0x613550 >--< (0x613550) 0xa638b0
+Détachement de (0x612918) {UPD0} ({UPD7})
+	0x612918 >--< (0x612918) {UPD7}
+0 <- 7
+Mise à jour de (0x612918) {UPD0} ({UPD3})
+	0x612918 >--< (0x612918) {UPD0}
+	{UPD0} >--< ({UPD0}) {UPD3}
+Détachement de ((nil)) 0x7ffead39abc0 ((nil))
+	(nil) >--< ((nil)) (nil)
+Mise à jour de (0xa63a00) 0xa63760 ((nil))
+	0xa63a00 >--< (0xa63a00) 0xa63760
+	0xa63760 >--< ((nil)) (nil)
+(46.057448, 47.511176)[   7] -> INITIAL
+Ajout de {UPD7} à liste 0x612990
+	Détachement de (0x612918) {UPD7} ({UPD3})
+		0x612918 >--< (0x612918) {UPD3}
+	0x612990 >--< (0x612990) {UPD7}
+(52.839711, 40.417768)[   3] -> INITIAL
+Ajout de {UPD3} à liste 0x612990
+	Détachement de (0x612918) {UPD3} ({UPD2})
+		0x612918 >--< (0x612918) {UPD2}
+	{UPD7} >--< ({UPD7}) {UPD3}
+(50.142268, 44.627733)[   2] -> MATURE
+Ajout de {UPD2} à liste 0x612a08
+	Détachement de (0x612918) {UPD2} ((nil))
+		0x612918 >--< ((nil)) (nil)
+	0x612a08 >--< (0x612a08) {UPD2}
+Clearing list 0x612918
+	0x612918 >--< ((nil)) (nil)
+Original :
+(46.057448, 47.511176)[   0] -> INITIAL
+[   28] :
+L 0x612940[(nil)] <-> (/)
+Clearing list 0x612940
+	0x612940 >--< ((nil)) (nil)
+Original :
+(46.057448, 47.511176)[   0] -> INITIAL
+[   29] :
+L 0x612968[{UPD1}] <-> (0x612968) {UPD1}[0x612968] <-> (/)
+(49.643180, 54.519517)[   1] -> GROWING
+Ajout de {UPD1} à liste 0x612990
+	Détachement de (0x612968) {UPD1} ((nil))
+		0x612968 >--< ((nil)) (nil)
+	{UPD3} >--< ({UPD3}) {UPD1}
+Clearing list 0x612968
+	0x612968 >--< ((nil)) (nil)
+Original :
+(46.057448, 47.511176)[   0] -> INITIAL
+[   30] :
+L 0x612990[{UPD1}] <-> (0x612990) {UPD7}[0x612990] <-> ({UPD7}) {UPD3}[0x612990] <-> ({UPD3}) {UPD1}[0x612990] <-> (/)
+(46.057448, 47.511176)[   7] -> GROWING
+Ajout de {UPD7} à liste 0x6129b8
+	Détachement de (0x612990) {UPD7} ({UPD3})
+		0x612990 >--< (0x612990) {UPD3}
+	0x6129b8 >--< (0x6129b8) {UPD7}
+(52.839711, 40.417768)[   3] -> GROWING
+Ajout de {UPD3} à liste 0x6129b8
+	Détachement de (0x612990) {UPD3} ({UPD1})
+		0x612990 >--< (0x612990) {UPD1}
+	{UPD7} >--< ({UPD7}) {UPD3}
+(49.643180, 54.519517)[   1] -> REPRODUCTION
+setup tree 7 ({UPD7})
+Ajout de {UPD7} à liste 0x6129b8
+	Détachement de ((nil)) {UPD7} ((nil))
+		(nil) >--< ((nil)) (nil)
+	{UPD3} >--< ({UPD3}) {UPD7}
+Ajout de 0xa63bf8 à liste 0x6133e8
+	Détachement de ((nil)) 0xa63bf8 ((nil))
+		(nil) >--< ((nil)) (nil)
+	0xa63808 >--< (0xa63808) 0xa63bf8
+setup tree 8 (0xa63c60)
+Ajout de 0xa63c60 à liste 0x6129b8
+	Détachement de ((nil)) 0xa63c60 ((nil))
+		(nil) >--< ((nil)) (nil)
+	{UPD7} >--< ({UPD7}) 0xa63c60
+Ajout de 0xa63ca0 à liste 0x6133c0
+	Détachement de ((nil)) 0xa63ca0 ((nil))
+		(nil) >--< ((nil)) (nil)
+	0xa63760 >--< (0xa63760) 0xa63ca0
+Ajout de {UPD1} à liste 0x6129b8
+	Détachement de (0x612990) {UPD1} ((nil))
+		0x612990 >--< ((nil)) (nil)
+	0xa63c60 >--< (0xa63c60) {UPD1}
+Clearing list 0x612990
+	0x612990 >--< ((nil)) (nil)
+Original :
+(46.057448, 47.511176)[   0] -> INITIAL
+[   31] :
+L 0x6129b8[{UPD1}] <-> ({UPD3}) {UPD7}[0x6129b8] <-> ({UPD7}) 0xa63c60[0x6129b8] <-> (0xa63c60) {UPD1}[0x6129b8] <-> (/)
+(47.277526, 58.924478)[   7] -> INITIAL
+Ajout de {UPD7} à liste 0x612aa8
+	Détachement de ({UPD3}) {UPD7} (0xa63c60)
+		{UPD3} >--< ({UPD3}) 0xa63c60
+	0x612aa8 >--< (0x612aa8) {UPD7}
+(49.932890, 49.527917)[   8] -> INITIAL
+Ajout de 0xa63c60 à liste 0x612a80
+	Détachement de ({UPD3}) 0xa63c60 ({UPD1})
+		{UPD3} >--< ({UPD3}) {UPD1}
+	0x612a80 >--< (0x612a80) 0xa63c60
+(49.643180, 54.519517)[   1] -> MATURE
+Ajout de {UPD1} à liste 0x612aa8
+	Détachement de ({UPD3}) {UPD1} ((nil))
+		{UPD3} >--< ((nil)) (nil)
+	{UPD7} >--< ({UPD7}) {UPD1}
+Clearing list 0x6129b8
+	Détachement de (0x612aa8) {UPD7} ({UPD1})
+		0x612aa8 >--< (0x612aa8) {UPD1}
+	Détachement de (0x612aa8) {UPD1} ((nil))
+		0x612aa8 >--< ((nil)) (nil)
+	0x6129b8 >--< ((nil)) (nil)
+Original :
+(46.057448, 47.511176)[   0] -> CANCELLED
+[   32] :
+L 0x6129e0[(nil)] <-> (/)
+Clearing list 0x6129e0
+	0x6129e0 >--< ((nil)) (nil)
+Original :
+(46.057448, 47.511176)[   0] -> CANCELLED
+[   33] :
+L 0x612a08[{UPD2}] <-> (0x612a08) {UPD2}[0x612a08] <-> (/)
+(50.142268, 44.627733)[   2] -> DYING
+Ajout de {UPD2} à liste 0x612a30
+	Détachement de (0x612a08) {UPD2} ((nil))
+		0x612a08 >--< ((nil)) (nil)
+	0x612a30 >--< (0x612a30) {UPD2}
+Clearing list 0x612a08
+	0x612a08 >--< ((nil)) (nil)
+Original :
+(46.057448, 47.511176)[   0] -> CANCELLED
+[   34] :
+L 0x612a30[{UPD2}] <-> (0x612a30) {UPD2}[0x612a30] <-> (/)
+(50.142268, 44.627733)[   2] -> DEAD
+Détachement de (0x613550) 0xa638b0 (0xa63958)
+	0x613550 >--< (0x613550) 0xa63958
+Détachement de (0x612a30) {UPD2} ((nil))
+	0x612a30 >--< ((nil)) (nil)
+2 <- 8
+Mise à jour de (0x612a80) {UPD2} ((nil))
+	0x612a80 >--< (0x612a80) {UPD2}
+	{UPD2} >--< ((nil)) (nil)
+Détachement de ((nil)) 0x7ffead39abc0 ((nil))
+	(nil) >--< ((nil)) (nil)
+Mise à jour de (0xa63760) 0xa638b0 ((nil))
+	0xa63760 >--< (0xa63760) 0xa638b0
+	0xa638b0 >--< ((nil)) (nil)
+Clearing list 0x612a30
+	0x612a30 >--< ((nil)) (nil)
+Original :
+(46.057448, 47.511176)[   0] -> CANCELLED
+[   35] :
+L 0x612a58[(nil)] <-> (/)
+Clearing list 0x612a58
+	0x612a58 >--< ((nil)) (nil)
+Original :
+(46.057448, 47.511176)[   0] -> CANCELLED
+[   36] :
+L 0x612a80[{UPD2}] <-> (0x612a80) {UPD2}[0x612a80] <-> (/)
+(49.932890, 49.527917)[   2] -> GROWING
+Ajout de {UPD2} à liste 0x612aa8
+	Détachement de (0x612a80) {UPD2} ((nil))
+		0x612a80 >--< ((nil)) (nil)
+	0x612aa8 >--< (0x612aa8) {UPD2}
+Clearing list 0x612a80
+	0x612a80 >--< ((nil)) (nil)
+Original :
+(46.057448, 47.511176)[   0] -> CANCELLED
+[   37] :
+L 0x612aa8[{UPD2}] <-> (0x612aa8) {UPD2}[0x612aa8] <-> (/)
+(49.932890, 49.527917)[   2] -> REPRODUCTION
+setup tree 8 (0xa63c60)
+Ajout de 0xa63c60 à liste 0x612ad0
+	Détachement de ((nil)) 0xa63c60 ((nil))
+		(nil) >--< ((nil)) (nil)
+	0x612ad0 >--< (0x612ad0) 0xa63c60
+Ajout de 0xa63ca0 à liste 0x6133e8
+	Détachement de ((nil)) 0xa63ca0 ((nil))
+		(nil) >--< ((nil)) (nil)
+	0xa63bf8 >--< (0xa63bf8) 0xa63ca0
+setup tree 9 (0xa63d08)
+Ajout de 0xa63d08 à liste 0x612ad0
+	Détachement de ((nil)) 0xa63d08 ((nil))
+		(nil) >--< ((nil)) (nil)
+	0xa63c60 >--< (0xa63c60) 0xa63d08
+Ajout de 0xa63d48 à liste 0x6133e8
+	Détachement de ((nil)) 0xa63d48 ((nil))
+		(nil) >--< ((nil)) (nil)
+	0xa63ca0 >--< (0xa63ca0) 0xa63d48
+Ajout de {UPD2} à liste 0x612ad0
+	Détachement de (0x612aa8) {UPD2} ((nil))
+		0x612aa8 >--< ((nil)) (nil)
+	0xa63d08 >--< (0xa63d08) {UPD2}
+Clearing list 0x612aa8
+	0x612aa8 >--< ((nil)) (nil)
+Original :
+(46.057448, 47.511176)[   0] -> CANCELLED
+[   38] :
+L 0x612ad0[{UPD2}] <-> (0x612ad0) 0xa63c60[0x612ad0] <-> (0xa63c60) 0xa63d08[0x612ad0] <-> (0xa63d08) {UPD2}[0x612ad0] <-> (/)
+(48.857115, 54.410817)[   8] -> CANCELLED
+Détachement de (0xa63bf8) 0xa63ca0 (0xa63d48)
+	0xa63bf8 >--< (0xa63bf8) 0xa63d48
+Détachement de (0x612ad0) 0xa63c60 (0xa63d08)
+	0x612ad0 >--< (0x612ad0) 0xa63d08
+8 <- 9
+Mise à jour de (0x612ad0) 0xa63c60 ({UPD2})
+	0x612ad0 >--< (0x612ad0) 0xa63c60
+	0xa63c60 >--< (0xa63c60) {UPD2}
+Détachement de ((nil)) 0x7ffead39abc0 ((nil))
+	(nil) >--< ((nil)) (nil)
+Mise à jour de (0xa63bf8) 0xa63ca0 ((nil))
+	0xa63bf8 >--< (0xa63bf8) 0xa63ca0
+	0xa63ca0 >--< ((nil)) (nil)
+(46.315507, 52.979661)[   9] -> INITIAL
+Ajout de 0xa63d08 à liste 0x612be8
+	Détachement de (0x612ad0) 0xa63d08 ({UPD2})
+		0x612ad0 >--< (0x612ad0) {UPD2}
+	0x612be8 >--< (0x612be8) 0xa63d08
+(49.932890, 49.527917)[   2] -> MATURE
+Ajout de {UPD2} à liste 0x612bc0
+	Détachement de (0x612ad0) {UPD2} ((nil))
+		0x612ad0 >--< ((nil)) (nil)
+	0x612bc0 >--< (0x612bc0) {UPD2}
+Clearing list 0x612ad0
+	0x612ad0 >--< ((nil)) (nil)
+Original :
+(46.057448, 47.511176)[   0] -> CANCELLED
+[   39] :
+L 0x612af8[(nil)] <-> (/)
+Clearing list 0x612af8
+	0x612af8 >--< ((nil)) (nil)
+Original :
+(46.057448, 47.511176)[   0] -> CANCELLED

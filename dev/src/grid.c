@@ -67,6 +67,11 @@ void eventGridInit(EventGrid * grid, double total_width,
 			(*eventGridGetList(grid, x, y)) = listCreate();
 }
 
+char eventGridIsPointIn(EventGrid * grid, Complex point) {
+	return (point.a >= 0 && point.b >= 0 &&
+			point.a <= grid->total_width && point.b <= grid->total_height);
+}
+
 void eventGridPlaceBeacon(EventGrid * grid, GridBeacon * beacon) {
 	int cell_x = (int) (beacon->position->a * GRID_WIDTH /  grid->total_width );
 	int cell_y = (int) (beacon->position->b * GRID_HEIGHT / grid->total_height);

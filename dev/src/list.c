@@ -8,12 +8,14 @@
 
 List listCreate() {
 	return (List) {.data = NULL, .previous = NULL,
-				   .next = NULL, .metadata.last_link = NULL};
+				   .next = NULL, .metadata.last_link = NULL,
+				   .flag.value = 0};
 }
 
 ListLink listLinkCreate(void * data) {
 	return (ListLink) {.data = data, .previous = NULL, 
-					   .next = NULL, .metadata.list = NULL};
+					   .next = NULL, .metadata.list = NULL,
+					   .flag.value = 0};
 }
 
 void linkConnect(ListLink * a, ListLink * b) {
@@ -68,13 +70,18 @@ void listAdd(List * list, ListLink * new_link) {
 
 }
 
+
 void listLinkDetach(ListLink * link) {
 	if(! link) return;
 
 	#ifdef LIST_DEBUG_MODE
 		printIndent();
-		void * p = link;
-		printf("Détachement de %p\n", p);
+		void * p = link->previous;
+		printf("Détachement de (%p) ", p);
+		p = link;
+		printf("%p (", p);
+		p = link->next;
+		printf("%p)\n", p);
 		indent++;
 	#endif
 
@@ -95,21 +102,23 @@ void listLinkDetach(ListLink * link) {
 	#endif
 }
 
+char listLinkIsAttached(ListLink * link) {
+	if( ! link ) return 0;
+	return !! link->previous;
+}
+
 void listLinkUpdateMemoryLocation(ListLink * link,
 								  ListLink * erased_link,
 								  void * data) {
+	if( ! link ) return;
+
 	#ifdef LIST_DEBUG_MODE
 		printIndent();
-		printf("Mise à jour de %p\n", link);
+		printf("Mise à jour de (%p) %p (%p)\n", link->previous, link, link->next);
 		indent++;
 	#endif
 
-	List * old_link =
-		link->previous ? link->previous->next :
-		link->next ? link->next->previous : NULL;
-
 	link->data = data;
-
 
 	// Gestion du cas rare où le remplaçant est demandé de se placer juste à
 	// coté de son ancienne position, ce qui entraînerait une erreur
@@ -136,7 +145,16 @@ void listLinkUpdateMemoryLocation(ListLink * link,
 	if( ! link->next )
 		link->metadata.list->metadata.last_link = link;
 
-	listLinkDetach(old_link);
+	/*if( old_link ) {
+		if( old_link->previous )
+			if( old_link->previous->next == old_link )
+				old_link->previous->next = link;
+		old_link->previous = NULL;
+		old_link->next = NULL;
+	}*/
+
+	link->flag.value = 1;
+	//listLinkDetach(old_link);
 }
 
 void listClear(List * list) {
@@ -161,30 +179,33 @@ void listClear(List * list) {
 }
 
 void listApplyAll(List list, ListApplication application) {
-	ListLink * current_link = list.next;
+	ListLink * previous_link = &list;
+	ListLink * current_link = previous_link->next;
 	
 	//ListLink * previous_link = &list;
 
 	while(current_link) {
 		ListLink * next_link = current_link->next;
-		ListLink * next_next_link = next_link ? next_link->next : NULL;
+		/*if( next_link )
+			next_link->flag.value = 0;*/
 		application(current_link->data);
-		/*if(previous_link == next_link) {
-			printf("BOUCLE INFINIE : %p (%p) <-> (%p) %p (%p) <-> (%p) %p\n",
-			previous_link, previous_link->next, current_link->previous, current_link, current_link->next, next_link->previous, next_link);
-			abort();
-		}*/
-		//previous_link = current_link;
 
 		//Cas particuler où l'avant dernier chaînon se détruit, se voit
 		//remplacé par le dernier chaînon, qui n'est donc plus valide
 		//mais stocké dans next_link.
-		/*if( next_link &&
-			! current_link->previous && ! current_link->next &&
+		/*if( ! current_link->previous && ! current_link->next &&
 			! next_link->previous    && ! next_link->next )
 			next_link = next_next_link;*/
 
-		current_link = next_link;
+
+		// Dans le cas où le noeud courant à été mis à jour pendant l'appel
+		// à l'application, on refait une passe.
+		/*if(next_link && next_link->flag.value)
+			printf("2nd pass\n");*/
+
+		//current_link = next_link && next_link->flag.value ? current_link : next_link;
+		if( ! next_link ) break;
+		current_link = listLinkIsAttached(next_link) ? next_link : current_link;
 	}
 }
 
@@ -194,7 +215,8 @@ void listParameterizedApplyAll(List list,
 
 	while(current_link) {
 		ListLink * next_link = current_link->next;
-		ListLink * next_next_link = next_link ? next_link->next : NULL;
+		/*if( next_link )
+			next_link->flag.value = 0;*/
 		application(current_link->data, parameters);
 
 		//Cas particuler où l'avant dernier chaînon se détruit, se voit
@@ -204,7 +226,15 @@ void listParameterizedApplyAll(List list,
 			! next_link->previous    && ! next_link->next )
 			next_link = next_next_link;*/
 
-		current_link = next_link;
+
+		// Dans le cas où le noeud courant à été mis à jour pendant l'appel
+		// à l'application, on refait une passe.
+		/*if(next_link && next_link->flag.value)
+			printf("2nd pass\n");*/
+
+		//current_link = next_link && next_link->flag.value ? current_link : next_link;
+		if( ! next_link ) break;
+		current_link = next_link && listLinkIsAttached(next_link) ? next_link : current_link;
 	}
 }
 

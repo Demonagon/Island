@@ -64,6 +64,7 @@ void treeMemoryIndexUpdater(struct GameObject * tree,
 							unsigned int index);
 
 /** Test initialisation functions **/
+void mainTreeMemoryTest();
 void mainTreeLifeCycleTest();
 void mainTreeStressTest(int stress_level);
 

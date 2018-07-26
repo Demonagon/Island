@@ -3,14 +3,17 @@
 
 /* TODO */
 /** -- INCLUDE OBJECTS CODE FILES HERE -- **/
+#include "test.h"
 #include "tree.h"
 /** -- *-* *-* *-* *-* *-* *-* *-* *-* -- **/
 
 typedef enum GameObjectType {
+	TEST_OBJECT,
 	TREE
 } GameObjectType;
 
 typedef union GameObjectData {
+	TestObject test_object;
 	Tree tree;
 } GameObjectData;
 

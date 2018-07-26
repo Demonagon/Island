@@ -141,6 +141,8 @@ GameObject mainMemoryRemoveObject(MainMemory * memory, MemoryIndex index) {
 	// Taking the last objet in memory
 	unsigned int last_object_index = mainMemoryGetTotalSize(memory) - 1;
 
+	printf("%d <- %d\n", index, last_object_index);
+
 	unsigned int last_chunk = mainMemoryGetIndexChunk(last_object_index);
 	unsigned int last_chunk_index = mainMemoryGetInChunkIndex(last_object_index);
 
@@ -160,9 +162,9 @@ GameObject mainMemoryRemoveObject(MainMemory * memory, MemoryIndex index) {
 		);
 
 	// Applying memory size shrink
-	if(chunk == memory->dynamical_array_size - 1)
+	if( memory->last_chunk_size )
 		memory->last_chunk_size--;
-	else if(chunk == memory->dynamical_array_size - 2)
+	else
 		memory->before_last_chunk_size--;
 
 	// If there is enought room open, remove the last chunk

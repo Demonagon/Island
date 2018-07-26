@@ -114,6 +114,8 @@ List * eventGridGetList(EventGrid * grid, int x, int y);
 void eventGridInit(EventGrid * grid, double total_width,
 									 double total_height);
 
+char eventGridIsPointIn(EventGrid * grid, Complex point);
+
 void eventGridPlaceBeacon(EventGrid * grid, GridBeacon * beacon);
 void eventGridReplaceAllBeacons(EventGrid * grid);
 void eventGridResize(EventGrid * grid, double total_width, double total_height);
