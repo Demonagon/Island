@@ -58,10 +58,6 @@ void updateHandleApplicationCall(UpdateHandle * handle);
 
 void updateHandleRemove(UpdateHandle * handle);
 
-void updateHandleUpdateMemoryLocation(UpdateHandle * handle,
-									  UpdateHandle * erased_handle,
-									  void * data);
-
 /****************************** UPDATE REGISTER *******************************/
 
 typedef struct UpdateRegister {

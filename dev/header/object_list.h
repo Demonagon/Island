@@ -6,7 +6,7 @@
 /**
 * Fait le 9 Juillet 2018 par Pacôme
 * Code d'une simple liste chaînée. Chaque chaînon possède une information
-* sous la forme d'un void *. Pour des liste chaînées dont l'information
+* sous la forme d'un GameObject. Pour des liste chaînées dont l'information
 * ne doit pas être contenue sous pointeurs, écrire sa propre copie de
 * ce code, en remplaçant GameObject par le type désiré. (en gros.)
 * Afin de prévenir toute boucle d'information dans la mémoire, un chaînon
@@ -15,7 +15,7 @@
 */
 
 typedef struct GameObjectListLink {
-	GameObject data;
+	GameObject object;
 	struct GameObjectListLink * previous;
 	struct GameObjectListLink * next;
 } GameObjectListLink;
@@ -27,6 +27,8 @@ typedef void (*GameObjectListApplication) (GameObject *);
 // S'applique sur le premier argument avec le second comme paramètre
 typedef void (*ParameterizedGameObjectListApplication) (GameObject *, void *);
 
+GameObjectListLink * objectListLinkAllocate(GameObject data);
+void objectListLinkDestroy(GameObjectListLink * link);
 GameObjectList objectListCreate();
 GameObjectListLink objectListLinkCreate(GameObject data);
 void objectLinkConnect(GameObjectListLink * a, GameObjectListLink * b);

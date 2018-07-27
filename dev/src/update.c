@@ -37,17 +37,6 @@ void updateHandleRemove(UpdateHandle * handle) {
 	listLinkDetach(& handle->list_link);
 }
 
-void updateHandleUpdateMemoryLocation(UpdateHandle * handle,
-									  UpdateHandle * erased_handle,
-									  void * data) {
-	//listLinkDetach(&erased_handle->list_link);
-	listLinkUpdateMemoryLocation(
-		&handle->list_link,
-		&erased_handle->list_link,
-		handle);
-	handle->data = data;
-}
-
 /***************************** UPDATE REGISTER ****************************/
 
 void updateRegisterInit(UpdateRegister * update_register) {
@@ -123,9 +112,6 @@ void updateRegisterLocalApplicationFunction(void * data) {
 void updateRegisterUpdate(UpdateRegister * update_register) {
 	List * list = updateRegisterGetCurrentList(update_register);
 	update_register->currently_updated_list = list;
-
-	listPrint(list);
-
 	updateRegisterSwitch(update_register);
 
 	listApplyAll(*list, updateRegisterLocalDeclarationFunction);

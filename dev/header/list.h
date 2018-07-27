@@ -19,16 +19,11 @@ typedef union ListData {
 	struct ListLink * list; // utilisé par les chaînons pour connaître leur liste
 } ListMetaData;
 
-typedef struct MemoryUpdateFlag {
-	unsigned int value : 1;
-} MemoryUpdateFlag;
-
 typedef struct ListLink {
 	void * data;
 	struct ListLink * previous;
 	struct ListLink * next;
 	ListMetaData metadata;
-	MemoryUpdateFlag flag;
 } ListLink;
 
 typedef ListLink List;
@@ -44,9 +39,6 @@ void linkConnect(ListLink * a, ListLink * b);
 void listAdd(List * list, ListLink * new_link);
 void listLinkDetach(ListLink * link);
 char listLinkIsAttached(ListLink * link);
-void listLinkUpdateMemoryLocation(ListLink * link,
-								  ListLink * erased_link,
-								  void * data);
 void listClear(List * list);
 void listApplyAll(List list, ListApplication application);
 void listParameterizedApplyAll(List list, ParameterizedListApplication application,

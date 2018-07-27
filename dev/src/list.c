@@ -8,14 +8,12 @@
 
 List listCreate() {
 	return (List) {.data = NULL, .previous = NULL,
-				   .next = NULL, .metadata.last_link = NULL,
-				   .flag.value = 0};
+				   .next = NULL, .metadata.last_link = NULL};
 }
 
 ListLink listLinkCreate(void * data) {
 	return (ListLink) {.data = data, .previous = NULL, 
-					   .next = NULL, .metadata.list = NULL,
-					   .flag.value = 0};
+					   .next = NULL, .metadata.list = NULL};
 }
 
 void linkConnect(ListLink * a, ListLink * b) {
@@ -107,56 +105,6 @@ char listLinkIsAttached(ListLink * link) {
 	return !! link->previous;
 }
 
-void listLinkUpdateMemoryLocation(ListLink * link,
-								  ListLink * erased_link,
-								  void * data) {
-	if( ! link ) return;
-
-	#ifdef LIST_DEBUG_MODE
-		printIndent();
-		printf("Mise à jour de (%p) %p (%p)\n", link->previous, link, link->next);
-		indent++;
-	#endif
-
-	link->data = data;
-
-	// Gestion du cas rare où le remplaçant est demandé de se placer juste à
-	// coté de son ancienne position, ce qui entraînerait une erreur
-	if(link == link->next)
-		link->next = erased_link->next;
-	if(link == link->previous)
-		link->previous = erased_link->previous;
-
-	linkConnect(link->previous, link);
-	linkConnect(link, link->next);
-
-	#ifdef LIST_DEBUG_MODE
-		indent--;
-	#endif
-
-	if( ! link->previous )
-		return;
-
-	if( ! link->previous->previous )
-		link->metadata.list = link->previous;
-	else
-		link->metadata.list = link->previous->metadata.list;
-
-	if( ! link->next )
-		link->metadata.list->metadata.last_link = link;
-
-	/*if( old_link ) {
-		if( old_link->previous )
-			if( old_link->previous->next == old_link )
-				old_link->previous->next = link;
-		old_link->previous = NULL;
-		old_link->next = NULL;
-	}*/
-
-	link->flag.value = 1;
-	//listLinkDetach(old_link);
-}
-
 void listClear(List * list) {
 	ListLink * current_link = list->next;
 
@@ -179,33 +127,14 @@ void listClear(List * list) {
 }
 
 void listApplyAll(List list, ListApplication application) {
-	ListLink * previous_link = &list;
-	ListLink * current_link = previous_link->next;
-	
-	//ListLink * previous_link = &list;
+	ListLink * current_link = list.next;
 
 	while(current_link) {
 		ListLink * next_link = current_link->next;
-		/*if( next_link )
-			next_link->flag.value = 0;*/
+
 		application(current_link->data);
 
-		//Cas particuler où l'avant dernier chaînon se détruit, se voit
-		//remplacé par le dernier chaînon, qui n'est donc plus valide
-		//mais stocké dans next_link.
-		/*if( ! current_link->previous && ! current_link->next &&
-			! next_link->previous    && ! next_link->next )
-			next_link = next_next_link;*/
-
-
-		// Dans le cas où le noeud courant à été mis à jour pendant l'appel
-		// à l'application, on refait une passe.
-		/*if(next_link && next_link->flag.value)
-			printf("2nd pass\n");*/
-
-		//current_link = next_link && next_link->flag.value ? current_link : next_link;
-		if( ! next_link ) break;
-		current_link = listLinkIsAttached(next_link) ? next_link : current_link;
+		current_link = next_link;
 	}
 }
 
@@ -215,26 +144,10 @@ void listParameterizedApplyAll(List list,
 
 	while(current_link) {
 		ListLink * next_link = current_link->next;
-		/*if( next_link )
-			next_link->flag.value = 0;*/
+
 		application(current_link->data, parameters);
 
-		//Cas particuler où l'avant dernier chaînon se détruit, se voit
-		//remplacé par le dernier chaînon, qui n'est donc plus valide
-		//mais stocké dans next_link.
-		/*if( ! current_link->previous && ! current_link->next &&
-			! next_link->previous    && ! next_link->next )
-			next_link = next_next_link;*/
-
-
-		// Dans le cas où le noeud courant à été mis à jour pendant l'appel
-		// à l'application, on refait une passe.
-		/*if(next_link && next_link->flag.value)
-			printf("2nd pass\n");*/
-
-		//current_link = next_link && next_link->flag.value ? current_link : next_link;
-		if( ! next_link ) break;
-		current_link = next_link && listLinkIsAttached(next_link) ? next_link : current_link;
+		current_link = next_link;
 	}
 }
 

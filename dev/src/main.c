@@ -36,20 +36,13 @@ void mainTreeLifeCycleMainTest() {
 
 	treeCreate( complexCreate(EVENT_GRID_WIDTH / 2, EVENT_GRID_HEIGHT / 2) );
 
-	//char input;
-	for(int k; k < 40; k++) {
-	//for(;;) {
+	//for(int k; k < 40; k++) {
+	for(;;) {
 		printf("[%5ld] :\n", UPDATE_REGISTER.clock);
 		updateRegisterUpdate(&UPDATE_REGISTER);
 
-		GameObject * first_object = mainMemoryAccessObject(&MAIN_MEMORY, 0);
-		Tree * first_tree = &first_object->data.tree;
-
-		printf("Original :\n");
-		treePrint(first_tree);
-		printf("\n");
-
-		/*
+		//*
+		char input;
 		input = getc(stdin);
 		if(input == 'x') break;
 		if(input == '\n') continue;
@@ -67,9 +60,9 @@ int main(int argc, char **argv) {
 	//island(argc , argv);
 	//mainListTest();
 	//mainEventGridTest();
-	//mainTreeLifeCycleMainTest();
+	mainTreeLifeCycleMainTest();
 	//mainTreeMemoryTest();
-	testListManipulationMain();
+	//testListManipulationMain();
 	
 	/*globalInit();
 	if(argc<2)printf("t'as oublié le paramètre coco\n");

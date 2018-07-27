@@ -1,6 +1,18 @@
 #include "object_list.h"
 #include <stddef.h>
 #include <stdio.h>
+#include <stdlib.h>
+
+GameObjectListLink * objectListLinkAllocate(GameObject object) {
+	GameObjectListLink * link = malloc( sizeof( GameObjectListLink ) );
+	(*link) = objectListLinkCreate(object);
+	return link;
+}
+
+void objectListLinkDestroy(GameObjectListLink * link) {
+	objectListLinkDetach(link);
+	free(link);
+}
 
 GameObjectList objectListCreate() {
 	GameObjectList list;
@@ -9,8 +21,12 @@ GameObjectList objectListCreate() {
 	return list;
 }
 
-GameObjectListLink objectListLinkCreate(GameObject data) {
-	return (GameObjectListLink) {.data = data, .previous = NULL, .next = NULL};
+GameObjectListLink objectListLinkCreate(GameObject object) {
+	return (GameObjectListLink) {
+		.object = object,
+		.previous = NULL,
+		.next = NULL
+	};
 }
 
 void objectLinkConnect(GameObjectListLink * a, GameObjectListLink * b) {
@@ -39,17 +55,24 @@ void objectListLinkDetach(GameObjectListLink * link) {
 }
 
 void objectListClear(GameObjectList * objectList) {
-	if(objectList)
-		objectLinkConnect(NULL, objectList->next);
-	objectLinkConnect(objectList, NULL);
+	if( ! objectList ) return;
+	
+	GameObjectListLink * current_link = objectList->next;
+
+	while(current_link) {
+		GameObjectListLink * next_link = current_link->next;
+		objectListLinkDestroy(current_link);
+		current_link = next_link;
+	}
 }
 
 void objectListApplyAll(GameObjectList objectList, GameObjectListApplication application) {
 	GameObjectListLink * current_link = objectList.next;
 
 	while(current_link) {
-		application(&current_link->data);
-		current_link = current_link->next;
+		GameObjectListLink * next_link = current_link->next;
+		application(&current_link->object);
+		current_link = next_link;
 	}
 }
 
@@ -58,8 +81,9 @@ void objectListParameterizedApplyAll(GameObjectList objectList,
 	GameObjectListLink * current_link = objectList.next;
 
 	while(current_link) {
-		application(&current_link->data, parameters);
-		current_link = current_link->next;
+		GameObjectListLink * next_link = current_link->next;
+		application(&current_link->object, parameters);
+		current_link = next_link;
 	}
 }
 

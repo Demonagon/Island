@@ -15,5 +15,5 @@ void globalInit() {
 }
 
 void globalFree() {
-	mainMemoryFree(&MAIN_MEMORY);
+	mainMemoryClear(&MAIN_MEMORY);
 }

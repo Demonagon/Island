@@ -13,7 +13,7 @@
 * Un arbre. C'est un objet qui a la particularité de pouvoir se reproduire.
 */
 
-struct GameObject;
+struct GameObjectListLink;
 
 typedef enum TreeState {
 	INITIAL,
@@ -33,7 +33,7 @@ typedef struct Tree {
 	TreeState state;
 
 	/** Memory related data **/
-	unsigned int memory_index;
+	struct GameObjectListLink * memory_link;
 
 	/** Updating related data **/
 	UpdateHandle update_handle;
@@ -58,10 +58,7 @@ void treeUpdateApplication(void * data);
 void treeHandleEvent(void * data, GridEvent event);
 
 /** Memory setup and index updating callbacks **/
-void treeSetupRoutine(struct GameObject * tree, unsigned int index);
-void treeMemoryIndexUpdater(struct GameObject * tree,
-							struct GameObject * old_tree,
-							unsigned int index);
+void treeSetupRoutine(struct GameObjectListLink * link);
 
 /** Test initialisation functions **/
 void mainTreeMemoryTest();

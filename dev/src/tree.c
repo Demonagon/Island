@@ -22,35 +22,30 @@ Tree * treeCreate(Complex position) {
 	data.tree = (Tree) {
 		.position = position,
 		.state = INITIAL,
-		.memory_index = 0,
+		.memory_link = NULL,
 		.update_handle = updateHandleCreateEmpty(),
 		.grid_beacon = gridBeaconCreateEmpty()
 	};
 
 	GameObject tree_object = gameObjectCreate(TREE, data);
 
-	MemoryIndex index = mainMemoryAddObject(&MAIN_MEMORY, tree_object,
-		treeSetupRoutine, treeMemoryIndexUpdater);
+	GameObjectListLink * link = mainMemoryAddObject(&MAIN_MEMORY, tree_object);
 
-	//printf("Nouvel arbre d'indice %d en position ", index);
-	//complexPrint(position);
-	//printf("\n");
+	treeSetupRoutine(link);
 
-	GameObject * final_tree = mainMemoryAccessObject(&MAIN_MEMORY, index);
-
-	return & final_tree->data.tree;
+	return &link->object.data.tree;
 }
  
 void treeDestroy(Tree * tree) {
 	//printf("Destruction d'arbre d'index %d\n", tree->memory_index);
 	gridBeaconRemove(&tree->grid_beacon);
 	updateHandleRemove(&tree->update_handle);
-	mainMemoryRemoveObject(&MAIN_MEMORY, tree->memory_index);
+	mainMemoryRemoveObject(&MAIN_MEMORY, tree->memory_link);
 }
 
 void treePrint(Tree * tree) {
 	complexPrint(tree->position);
-	printf("[%4d] -> ", tree->memory_index);
+	printf("[%8p] -> ", (void *) tree->memory_link);
 	treeStatePrint(tree->state);
 }
 
@@ -120,17 +115,9 @@ void treeUpdateApplication(void * data) {
 			tree->state = DEAD;
 			break;
 		case DEAD :
-			if(tree->memory_index == 1)
-				printf("KILLING 1\n");
 			treeDestroy(tree);
 			return;
 	}
-
-	//treePrint(tree);
-	//printf("\n");
-
-	if(tree->memory_index == 0)
-		printf("Object 0 update planned in %d\n", sleep_time);
 
 	updateRegisterAdd(&UPDATE_REGISTER,
 					  &tree->update_handle, sleep_time);
@@ -147,57 +134,31 @@ void treeHandleEvent(void * data, GridEvent event) {
 	if( concurrent_tree->state == CANCELLED ) return;
 
 	// The tree with maximum memory index gets to live
-	if( tree->memory_index < concurrent_tree->memory_index )
+	if( tree->memory_link < concurrent_tree->memory_link )
 		tree->state = CANCELLED;
 }
 
-void treeSetupRoutine(GameObject * tree, MemoryIndex index) {
-	tree->data.tree.memory_index = index;
-	//printf("Creation d'arbre d'index %d (addr %p)\n", index, tree);
-	printf("setup tree %d (%p)\n", index, &tree->data.tree.update_handle.list_link);
+void treeSetupRoutine(GameObjectListLink * link) {
+	Tree * tree = &link->object.data.tree;
+	tree->memory_link = link;
 
 	updateHandleInit(
-		&tree->data.tree.update_handle,
-		&tree->data.tree,
+		&tree->update_handle,
+		 tree,
 		treeUpdateDeclaration,
 		treeUpdateApplication);
 
-	updateRegisterAdd(&UPDATE_REGISTER,
-					  &tree->data.tree.update_handle, 0);
+	updateRegisterAdd(&UPDATE_REGISTER, &tree->update_handle, 0);
 
 	gridBeaconInit(
-		&tree->data.tree.grid_beacon,
-		&tree->data.tree,
-		&tree->data.tree.position,
+		&tree->grid_beacon,
+		 tree,
+		&tree->position,
 		treeHandleEvent
 	);
 
-	eventGridPlaceBeacon(&EVENT_GRID, &tree->data.tree.grid_beacon);
+	eventGridPlaceBeacon(&EVENT_GRID, &tree->grid_beacon);
 
-}
-
-void treeMemoryIndexUpdater(struct GameObject * tree,
-							struct GameObject * old_tree,
-							unsigned int index) {
-	//printf("Déplacement de l'arbre %d en indice %d\n", tree->data.tree.memory_index, index);
-
-	tree->data.tree.memory_index = index;
-
-	updateHandleUpdateMemoryLocation(
-		&tree->data.tree.update_handle,
-		&old_tree->data.tree.update_handle,
-		&tree->data.tree
-	);
-
-	gridBeaconUpdateMemoryLocation(
-		&tree->data.tree.grid_beacon,
-		&old_tree->data.tree.grid_beacon,
-		&tree->data.tree,
-		&tree->data.tree.position
-	);
-
-	//gridBeaconRemove(&old_tree->data.tree.grid_beacon);
-	//updateHandleRemove(&old_tree->data.tree.update_handle);
 }
 
 #include "string.h"
@@ -208,17 +169,17 @@ void mainTreeMemoryTest() {
 	for(int k = 0; k < 98; k++)
 		treeCreate( complexCreate(0, 0) );
 
-	Tree * tree98 = treeCreate( complexCreate(0, 0) );
+	//Tree * tree98 = treeCreate( complexCreate(0, 0) );
 
 	for(int k = 0; k < 4; k++)
 		treeCreate( complexCreate(0, 0) );
 
-	Tree * tree103 = treeCreate( complexCreate(0, 0) );
+	//Tree * tree103 = treeCreate( complexCreate(0, 0) );
 
 	for(int k = 0; k < 100; k++)
 		treeCreate( complexCreate(0, 0) );
 
-	printf("%d : %p, %d : %p\n", tree98->memory_index, tree98, tree103->memory_index, tree103);
+	//printf("%d : %p, %d : %p\n", tree98->memory_index, tree98, tree103->memory_index, tree103);
 
 	globalFree();
 	

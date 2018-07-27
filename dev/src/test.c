@@ -8,23 +8,22 @@ TestObject * testCreate(void) {
 	GameObjectData data;
 
 	data.test_object = (TestObject) {
-		.memory_index = 0,
+		.memory_link = NULL,
 		.update_handle = updateHandleCreateEmpty()
 	};
 
 	GameObject test_object = gameObjectCreate(TEST_OBJECT, data);
 
-	MemoryIndex index = mainMemoryAddObject(&MAIN_MEMORY, test_object,
-		testSetupRoutine, testMemoryIndexUpdater);
+	GameObjectListLink * link = mainMemoryAddObject(&MAIN_MEMORY, test_object);
 
-	GameObject * final_object = mainMemoryAccessObject(&MAIN_MEMORY, index);
+	testSetupRoutine(link);
 
-	return & final_object->data.test_object;
+	return & link->object.data.test_object;
 }
 
 void testDestroy(TestObject * object) {
 	updateHandleRemove(&object->update_handle);
-	mainMemoryRemoveObject(&MAIN_MEMORY, object->memory_index);
+	mainMemoryRemoveObject(&MAIN_MEMORY, object->memory_link);
 }
 
 /** Updating callbacks **/
@@ -32,7 +31,7 @@ void testUpdateDeclaration(void * data) {}
 void testUpdateApplication(void * data) {
 	TestObject * object = data;
 	char input = 'n';
-	printf("Objet %d : dois-je mourir ? (o/n)\n", object->memory_index);
+	printf("Objet %4p : dois-je mourir ? (o/n)\n", (void *) object->memory_link);
 	input = getc(stdin);
 	getc(stdin);
 	if( input == 'o' || input == 'O' || input == 'y' || input == 'Y' )
@@ -41,30 +40,18 @@ void testUpdateApplication(void * data) {
 		updateRegisterAdd(&UPDATE_REGISTER, &object->update_handle, 0);
 }
 
-/** Memory setup and index updating callbacks **/
-void testSetupRoutine(struct GameObject * test_object, unsigned int index) {
-	test_object->data.test_object.memory_index = index;
+/** Memory setup function **/
+void testSetupRoutine(GameObjectListLink * link) {
+	TestObject * test_object = &link->object.data.test_object;
+	test_object->memory_link = link;
 
 	updateHandleInit(
-		&test_object->data.test_object.update_handle,
-		&test_object->data.test_object,
+		&test_object->update_handle,
+		 test_object,
 		testUpdateDeclaration,
 		testUpdateApplication);
 
-	updateRegisterAdd(&UPDATE_REGISTER,
-					  &test_object->data.test_object.update_handle, 0);
-}
-
-void testMemoryIndexUpdater(struct GameObject * object,
-							struct GameObject * old_object,
-							unsigned int index) {
-	object->data.test_object.memory_index = index;
-
-	updateHandleUpdateMemoryLocation(
-		&object->data.test_object.update_handle,
-		&old_object->data.test_object.update_handle,
-		&object->data.test_object
-	);
+	updateRegisterAdd(&UPDATE_REGISTER, &test_object->update_handle, 0);
 }
 
 /** Test initialisation functions **/
