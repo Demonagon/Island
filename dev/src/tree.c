@@ -105,11 +105,11 @@ void treeUpdateApplication(void * data) {
 			tree->state = MATURE;
 			break;
 		case MATURE :
-			/*if(tree->memory_index == 0)
-				printf("updating\n");
-			if( flipCoin() )*/
-				tree->state = DYING;
-			sleep_time = 5;
+			//* Immortality 
+			return;
+			//*/
+			tree->state = DYING;
+			sleep_time = 50;
 			break;
 		case DYING :
 			tree->state = DEAD;
