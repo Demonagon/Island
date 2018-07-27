@@ -1,6 +1,8 @@
 #ifndef OBJECT__H
 #define OBJECT__H
 
+#include "graphics.h"
+
 /* TODO */
 /** -- INCLUDE OBJECTS CODE FILES HERE -- **/
 #include "test.h"
@@ -20,8 +22,10 @@ typedef union GameObjectData {
 typedef struct GameObject {
 	GameObjectType type;
 	GameObjectData data;
+	GraphicalObject graphics;
 } GameObject;
 
-GameObject gameObjectCreate(GameObjectType type, GameObjectData data);
+GameObject gameObjectCreate(GameObjectType type,
+							GameObjectData data);
 
 #endif

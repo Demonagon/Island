@@ -1,7 +1,11 @@
 #include "main_memory.h"
 
-MainMemory mainMemoryCreate(void) {
-	return (MainMemory) { .object_list = objectListCreate(), .size = 0 };
+MainMemory mainMemoryCreate(GraphicFactory factory) {
+	return (MainMemory) {
+		.object_list = objectListCreate(),
+		.size = 0,
+		.graphic_factory = factory
+	};
 }
 void mainMemoryClear(MainMemory * memory) {
 	objectListClear(&memory->object_list);
@@ -13,6 +17,9 @@ GameObjectListLink * mainMemoryAddObject(MainMemory * memory,
 	GameObjectListLink * link = objectListLinkAllocate(object);
 	objectListAdd( &memory->object_list, link );
 	memory->size++;
+
+	link->object.graphics = memory->graphic_factory(&link->object);
+
 	return link;
 }
 

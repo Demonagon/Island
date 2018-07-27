@@ -1,6 +1,7 @@
 #ifndef GRAPHICS__H
 #define GRAPHICS__H
 
+struct GameObject;
 struct GameObjectListLink;
 
 typedef void (*GraphicUpdateCallback) (struct GameObjectListLink *);
@@ -14,6 +15,6 @@ GraphicalObject graphicalObjectCreate(
 				GraphicUpdateCallback call_back,
 				void * data);
 
-
+typedef GraphicalObject (*GraphicFactory) (struct GameObject *);
 
 #endif

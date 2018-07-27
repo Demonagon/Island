@@ -10,13 +10,15 @@
 
 #include "object.h"
 #include "object_list.h"
+#include "graphics.h"
 
 typedef struct MainMemory {
 	GameObjectList object_list;
 	unsigned int size;
+	GraphicFactory graphic_factory;
 } MainMemory;
 
-MainMemory mainMemoryCreate(void);
+MainMemory mainMemoryCreate(GraphicFactory factory);
 void mainMemoryClear(MainMemory * memory);
 GameObjectListLink * mainMemoryAddObject(MainMemory * memory,
 										 GameObject object);
