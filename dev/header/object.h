@@ -3,6 +3,8 @@
 
 #include "graphics.h"
 
+struct GameObjectListLink;
+
 /* TODO */
 /** -- INCLUDE OBJECTS CODE FILES HERE -- **/
 #include "test.h"
@@ -27,5 +29,7 @@ typedef struct GameObject {
 
 GameObject gameObjectCreate(GameObjectType type,
 							GameObjectData data);
+
+void gameObjectUpdateGraphics(struct GameObjectListLink * object_link);
 
 #endif

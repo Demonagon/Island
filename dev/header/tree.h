@@ -7,7 +7,7 @@
 #include "update.h"
 #include "grid.h"
 
-#define TREE_SPAWN_RADIUS 10
+#define TREE_SPAWN_RADIUS 5
 
 /**
 * Un arbre. C'est un objet qui a la particularité de pouvoir se reproduire.

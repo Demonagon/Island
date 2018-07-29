@@ -37,7 +37,6 @@ Tree * treeCreate(Complex position) {
 }
  
 void treeDestroy(Tree * tree) {
-	//printf("Destruction d'arbre d'index %d\n", tree->memory_index);
 	gridBeaconRemove(&tree->grid_beacon);
 	updateHandleRemove(&tree->update_handle);
 	mainMemoryRemoveObject(&MAIN_MEMORY, tree->memory_link);
@@ -73,7 +72,7 @@ void treeUpdateDeclaration(void * data) {
 					TREE_SPAWNING_COLISION_CHECK_EVENT,
 					tree_data,
 					tree->position,
-					TREE_SPAWN_RADIUS + 0.1
+					TREE_SPAWN_RADIUS * 0.9
 				)
 			);
 			break;
@@ -85,8 +84,8 @@ void treeUpdateApplication(void * data) {
 	Tree * tree = data;
 	int sleep_time = 0;
 
-	treePrint(tree);
-	printf("\n");
+	//treePrint(tree);
+	//printf("\n");
 
 	switch(tree->state) {
 		case INITIAL :
@@ -94,6 +93,7 @@ void treeUpdateApplication(void * data) {
 			sleep_time = rand_int_a_b(2, 8);
 			break;
 		case CANCELLED :
+			gameObjectUpdateGraphics(tree->memory_link);
 			treeDestroy(tree);
 			return;
 		case GROWING :
@@ -103,21 +103,24 @@ void treeUpdateApplication(void * data) {
 			treeReproduce(tree);
 			treeReproduce(tree);
 			tree->state = MATURE;
+			sleep_time = 20;
 			break;
 		case MATURE :
 			//* Immortality 
-			return;
+			//return;
 			//*/
 			tree->state = DYING;
-			sleep_time = 50;
 			break;
 		case DYING :
 			tree->state = DEAD;
+			gameObjectUpdateGraphics(tree->memory_link);
 			break;
 		case DEAD :
 			treeDestroy(tree);
 			return;
 	}
+
+	gameObjectUpdateGraphics(tree->memory_link);
 
 	updateRegisterAdd(&UPDATE_REGISTER,
 					  &tree->update_handle, sleep_time);
@@ -126,16 +129,16 @@ void treeUpdateApplication(void * data) {
 void treeHandleEvent(void * data, GridEvent event) {
 	Tree * tree = data;
 
-	if( tree->state != INITIAL ) return;
+	//if( tree->state != INITIAL ) return;
 	if( event.type != TREE_SPAWNING_COLISION_CHECK_EVENT ) return;
 
 	Tree * concurrent_tree = event.data.spawning_tree;
 
-	if( concurrent_tree->state == CANCELLED ) return;
+	if( concurrent_tree->state != INITIAL ) return;
 
 	// The tree with maximum memory index gets to live
-	if( tree->memory_link < concurrent_tree->memory_link )
-		tree->state = CANCELLED;
+	if( tree->memory_link > concurrent_tree->memory_link )
+		concurrent_tree->state = CANCELLED;
 }
 
 void treeSetupRoutine(GameObjectListLink * link) {
@@ -158,7 +161,8 @@ void treeSetupRoutine(GameObjectListLink * link) {
 	);
 
 	eventGridPlaceBeacon(&EVENT_GRID, &tree->grid_beacon);
-
+	
+	gameObjectUpdateGraphics(link);
 }
 
 #include "string.h"

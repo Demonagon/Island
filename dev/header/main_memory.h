@@ -15,10 +15,12 @@
 typedef struct MainMemory {
 	GameObjectList object_list;
 	unsigned int size;
+
 	GraphicFactory graphic_factory;
+	void * graphic_data;
 } MainMemory;
 
-MainMemory mainMemoryCreate(GraphicFactory factory);
+MainMemory mainMemoryCreate(void * graphic_data, GraphicFactory factory);
 void mainMemoryClear(MainMemory * memory);
 GameObjectListLink * mainMemoryAddObject(MainMemory * memory,
 										 GameObject object);

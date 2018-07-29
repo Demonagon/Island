@@ -15,6 +15,6 @@ GraphicalObject graphicalObjectCreate(
 				GraphicUpdateCallback call_back,
 				void * data);
 
-typedef GraphicalObject (*GraphicFactory) (struct GameObject *);
+typedef GraphicalObject (*GraphicFactory) (void *, struct GameObject *);
 
 #endif

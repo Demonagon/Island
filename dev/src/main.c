@@ -10,6 +10,7 @@
 #include "main_memory.h"
 #include "fluid.h"
 #include "test.h"
+#include "test_graphics.h"
 
 void plot() {
 	#define PLOT_SIZE 80
@@ -32,22 +33,36 @@ void plot() {
 }
 
 void mainTreeLifeCycleMainTest() {
-	globalInit();
+	TestGraphicsMatrix matrix = testMatrixCreate(100, 50, EVENT_GRID_WIDTH, EVENT_GRID_HEIGHT);
 
-	treeCreate( complexCreate(EVENT_GRID_WIDTH / 2, EVENT_GRID_HEIGHT / 2) );
+	globalInit(&matrix, testGraphicsFactory);
+
+	Tree * tree = treeCreate(
+		complexCreate(
+			EVENT_GRID_WIDTH / 2,
+			EVENT_GRID_HEIGHT / 2
+		)
+	);
 
 	//for(int k; k < 40; k++) {
 	for(;;) {
-		printf("[%5ld] :\n", UPDATE_REGISTER.clock);
-		updateRegisterUpdate(&UPDATE_REGISTER);
 
+		printf("\033[s");
+
+		testGraphicsPrint(&matrix);
+		//printf("[%5ld] :\n", UPDATE_REGISTER.clock);
+
+		//printf("tree state = %d\n", tree->state);
 		//*
 		char input;
 		input = getc(stdin);
 		if(input == 'x') break;
-		if(input == '\n') continue;
-		else while(getc(stdin) != '\n');
+		if(input != '\n') while(getc(stdin) != '\n');
 		//*/
+
+		printf("\033[u");
+
+		updateRegisterUpdate(&UPDATE_REGISTER);
 	}
 
 	globalFree();

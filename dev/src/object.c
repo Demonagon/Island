@@ -1,4 +1,5 @@
 #include "object.h"
+#include "object_list.h"
 
 GameObject gameObjectCreate(GameObjectType type,
 							GameObjectData data) {
@@ -7,4 +8,9 @@ GameObject gameObjectCreate(GameObjectType type,
 		.data = data,
 		.graphics = graphicalObjectCreate(0, 0)
 	};
+}
+
+void gameObjectUpdateGraphics(GameObjectListLink * object_link) {
+	if( object_link->object.graphics.update_call_back )
+		object_link->object.graphics.update_call_back(object_link);
 }

@@ -7,12 +7,12 @@ EventGrid EVENT_GRID;
 
 UpdateRegister UPDATE_REGISTER;
 
-GraphicalObject defaultGraphicFactory(GameObject * object) {
+GraphicalObject defaultGraphicFactory(void * data, GameObject * object) {
 	return graphicalObjectCreate(0, 0);
 }
 
-void globalInit() {
-	MAIN_MEMORY = mainMemoryCreate(defaultGraphicFactory);
+void globalInit(void * graphic_data, GraphicFactory factory) {
+	MAIN_MEMORY = mainMemoryCreate(graphic_data, factory);
 	eventGridInit(&EVENT_GRID, EVENT_GRID_WIDTH, EVENT_GRID_HEIGHT);
 	updateRegisterInit(&UPDATE_REGISTER);
 
