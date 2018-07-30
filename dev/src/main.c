@@ -32,12 +32,46 @@ void plot() {
 	printf("\n");
 }
 
-void mainTreeLifeCycleMainTest() {
-	TestGraphicsMatrix matrix = testMatrixCreate(100, 50, EVENT_GRID_WIDTH, EVENT_GRID_HEIGHT);
+void mainGridTest() {
+	TestGraphicsMatrix matrix = testMatrixCreate(
+		2, testGraphicsTestStatePrint, testGraphicsTestUpdate,
+		100, 50, EVENT_GRID_WIDTH, EVENT_GRID_HEIGHT);
 
 	globalInit(&matrix, testGraphicsFactory);
 
-	Tree * tree = treeCreate(
+	//TestObject * object = NULL;
+
+	int f = 1; // factor
+
+	for(int x = 0; x < EVENT_GRID_WIDTH / f; x++)
+		for(int y = 0; y < EVENT_GRID_HEIGHT / f; y++)
+			/*if(x == EVENT_GRID_WIDTH / (2*f) + mx && y == EVENT_GRID_HEIGHT / (2*f) + my)
+				object = testCreate( complexCreate(x*f + 0.5, y*f + 0.5) );
+			else*/
+				testCreate( complexCreate(x*f + 0.5, y*f + 0.5) );
+
+	/*if( object )
+		object->activating_flag = 1;*/
+
+	updateRegisterUpdate(&UPDATE_REGISTER);
+	printf("\n");
+	testGraphicsPrint(&matrix);
+
+	globalFree();
+}
+
+void mainTreeLifeCycleMainTest() {
+	TestGraphicsMatrix matrix = testMatrixCreate(
+		TREE_DEAD, testGraphicsTreeStatePrint, testGraphicsTreeUpdate,
+		100, 50, EVENT_GRID_WIDTH, EVENT_GRID_HEIGHT);
+
+	globalInit(&matrix, testGraphicsFactory);
+
+	/*int f = 1; // factor
+	for(int x = 0; x < EVENT_GRID_WIDTH / f; x++)
+		for(int y = 0; y < EVENT_GRID_HEIGHT / f; y++)
+				treeCreate( complexCreate(x*f + 0.5, y*f + 0.5) );*/
+	treeCreate(
 		complexCreate(
 			EVENT_GRID_WIDTH / 2,
 			EVENT_GRID_HEIGHT / 2
@@ -76,6 +110,7 @@ int main(int argc, char **argv) {
 	//mainListTest();
 	//mainEventGridTest();
 	mainTreeLifeCycleMainTest();
+	//mainGridTest();
 	//mainTreeMemoryTest();
 	//testListManipulationMain();
 	

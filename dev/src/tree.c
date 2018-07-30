@@ -6,13 +6,13 @@
 
 void treeStatePrint(TreeState state) {
 	switch(state) {
-		case INITIAL : 		printf("INITIAL"); 		break;
-		case CANCELLED : 	printf("CANCELLED"); 	break;
-		case GROWING : 		printf("GROWING"); 		break;
-		case REPRODUCTION : printf("REPRODUCTION"); break;
-		case MATURE : 		printf("MATURE"); 		break;
-		case DYING : 		printf("DYING"); 		break;
-		case DEAD : 		printf("DEAD"); 		break;
+		case TREE_INITIAL : 		printf("TREE_INITIAL"); 		break;
+		case TREE_CANCELLED : 		printf("TREE_CANCELLED"); 		break;
+		case TREE_GROWING : 		printf("TREE_GROWING"); 		break;
+		case TREE_REPRODUCTION : 	printf("TREE_REPRODUCTION"); 	break;
+		case TREE_MATURE : 			printf("TREE_MATURE"); 			break;
+		case TREE_DYING : 			printf("TREE_DYING"); 			break;
+		case TREE_DEAD : 			printf("TREE_DEAD"); 			break;
 	}
 }
 
@@ -21,7 +21,7 @@ Tree * treeCreate(Complex position) {
 
 	data.tree = (Tree) {
 		.position = position,
-		.state = INITIAL,
+		.state = TREE_INITIAL,
 		.memory_link = NULL,
 		.update_handle = updateHandleCreateEmpty(),
 		.grid_beacon = gridBeaconCreateEmpty()
@@ -59,13 +59,14 @@ void treeUpdateDeclaration(void * data) {
 	Tree * tree = data;
 	GridEventData tree_data;
 
-	switch(tree->state) {
-		case INITIAL : 
+	if(tree->state == TREE_INITIAL || tree->state == TREE_CANCELLED ) { 
 			if( ! eventGridIsPointIn(&EVENT_GRID, tree->position) ) {
-				tree->state = CANCELLED;
+				//printf("out of bound check\n");
+				tree->state = TREE_CANCELLED;
 				return;
 			}
 			tree_data.spawning_tree = tree;
+			//printf("(%p) launching event (%lf)\n", data, TREE_SPAWN_RADIUS * 0.9);
 			eventGridBroadcast(
 				&EVENT_GRID,
 				gridEventCreate(
@@ -75,8 +76,6 @@ void treeUpdateDeclaration(void * data) {
 					TREE_SPAWN_RADIUS * 0.9
 				)
 			);
-			break;
-		default : break;
 	}
 }
 
@@ -88,34 +87,35 @@ void treeUpdateApplication(void * data) {
 	//printf("\n");
 
 	switch(tree->state) {
-		case INITIAL :
-			tree->state = GROWING;
+		case TREE_INITIAL :
+			tree->state = TREE_GROWING;
 			sleep_time = rand_int_a_b(2, 8);
 			break;
-		case CANCELLED :
+		case TREE_CANCELLED :
 			gameObjectUpdateGraphics(tree->memory_link);
 			treeDestroy(tree);
 			return;
-		case GROWING :
-			tree->state = REPRODUCTION;
+		case TREE_GROWING :
+			tree->state = TREE_REPRODUCTION;
 			break;
-		case REPRODUCTION :
+		case TREE_REPRODUCTION :
 			treeReproduce(tree);
 			treeReproduce(tree);
-			tree->state = MATURE;
+			treeReproduce(tree);
+			tree->state = TREE_MATURE;
 			sleep_time = 20;
 			break;
-		case MATURE :
+		case TREE_MATURE :
 			//* Immortality 
-			//return;
+			return;
 			//*/
-			tree->state = DYING;
+			tree->state = TREE_DYING;
 			break;
-		case DYING :
-			tree->state = DEAD;
+		case TREE_DYING :
+			tree->state = TREE_DEAD;
 			gameObjectUpdateGraphics(tree->memory_link);
 			break;
-		case DEAD :
+		case TREE_DEAD :
 			treeDestroy(tree);
 			return;
 	}
@@ -129,16 +129,26 @@ void treeUpdateApplication(void * data) {
 void treeHandleEvent(void * data, GridEvent event) {
 	Tree * tree = data;
 
-	//if( tree->state != INITIAL ) return;
+	//printf("catching event\n");
+
 	if( event.type != TREE_SPAWNING_COLISION_CHECK_EVENT ) return;
 
 	Tree * concurrent_tree = event.data.spawning_tree;
 
-	if( concurrent_tree->state != INITIAL ) return;
+	if( tree == concurrent_tree ) return;
 
-	// The tree with maximum memory index gets to live
-	if( tree->memory_link > concurrent_tree->memory_link )
-		concurrent_tree->state = CANCELLED;
+	//if( concurrent_tree->state == TREE_CANCELLED ) return;
+	//if( tree->state == TREE_CANCELLED ) return;
+
+	if( tree->state != TREE_INITIAL &&
+		tree->state != TREE_CANCELLED )
+		concurrent_tree->state = TREE_CANCELLED;
+	else if( concurrent_tree->state != TREE_INITIAL &&
+			 concurrent_tree->state != TREE_CANCELLED )
+		return;
+	else if( tree->memory_link > concurrent_tree->memory_link )
+		concurrent_tree->state = TREE_CANCELLED;
+	else tree->state = TREE_CANCELLED;
 }
 
 void treeSetupRoutine(GameObjectListLink * link) {

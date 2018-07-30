@@ -16,13 +16,13 @@
 struct GameObjectListLink;
 
 typedef enum TreeState {
-	INITIAL,
-	CANCELLED,
-	GROWING,
-	REPRODUCTION,
-	MATURE,
-	DYING,
-	DEAD
+	TREE_INITIAL,
+	TREE_CANCELLED,
+	TREE_GROWING,
+	TREE_REPRODUCTION,
+	TREE_MATURE,
+	TREE_DYING,
+	TREE_DEAD
 } TreeState;
 
 void treeStatePrint(TreeState state);
@@ -57,7 +57,7 @@ void treeUpdateApplication(void * data);
 /** Event managing callback **/
 void treeHandleEvent(void * data, GridEvent event);
 
-/** Memory setup and index updating callbacks **/
+/** Memory setup callback **/
 void treeSetupRoutine(struct GameObjectListLink * link);
 
 /** Test initialisation functions **/

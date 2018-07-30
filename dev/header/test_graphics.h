@@ -2,25 +2,40 @@
 #define TEST_GRAPHICS__H
 #include "graphics.h"
 #include "tree.h"
+#include "test.h"
 #include "object_list.h"
 
+typedef char (*StatePrinter) (int);
+typedef void (*ObjectGraphicalUpdater) (GameObjectListLink *);
+
 typedef struct TestGraphicsMatrix {
-	int *** entity_count;
+	int size;
+	StatePrinter state_printer;
+	ObjectGraphicalUpdater graphical_updater;
+
 	int width;
 	int height;
 	double real_width;
 	double real_height;
+
+	int *** entity_count;
 } TestGraphicsMatrix;
 
-TestGraphicsMatrix testMatrixCreate(int width, int height,
+TestGraphicsMatrix testMatrixCreate(int size, StatePrinter state_printer,
+									ObjectGraphicalUpdater graphical_updater,
+									int width, int height,
 									double real_width, double real_height);
-
-char testGraphicsGetStateChar(TreeState state);
 
 void testGraphicsPrint(TestGraphicsMatrix * matrix);
 
-void testGraphicsTreeUpdate (GameObjectListLink * tree_link);
-
 GraphicalObject testGraphicsFactory (void * graphical_data, GameObject * object);
+
+/** Printing trees **/
+char testGraphicsTreeStatePrint(int state);
+void testGraphicsTreeUpdate(GameObjectListLink * link);
+
+/** Printing test objects **/
+char testGraphicsTestStatePrint(int state);
+void testGraphicsTestUpdate(GameObjectListLink * link);
 
 #endif

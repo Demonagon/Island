@@ -115,22 +115,38 @@ char eventGridIsCircleInCell(EventGrid * grid, int x, int y,
 	double cell_width = grid->total_width / GRID_WIDTH;
 	double cell_height = grid->total_height / GRID_HEIGHT;
 
-	Complex upper_left_corner  = 
-		complexCreate( (x + 0) * cell_width, (y + 0) * cell_height );
-	if( isPointInCircle( upper_left_corner, center, radius) )
+
+	// checking if the center is in the cell
+	double cell_x = x * cell_width;
+	double cell_y = y * cell_height;
+
+	if( center.a >= cell_x && center.a <= cell_x + cell_width &&
+		center.b >= cell_y && center.b <= cell_y + cell_height )
 		return 1;
-	Complex upper_right_corner = 
-		complexCreate( (x + 1) * cell_width, (y + 0) * cell_height );
-	if( isPointInCircle(upper_right_corner, center, radius) )
-		return 1;
+
+	// check if one of the borders is in range of the center
+	if( center.a < cell_x && center.a + radius >= cell_x ) return 1;
+	if( center.a > cell_x + cell_width && center.a - radius <=
+			cell_x + cell_width ) return 1;
+	if( center.b < cell_y && center.b + radius >= cell_y ) return 1;
+	if( center.b > cell_y + cell_height && center.b - radius <=
+			cell_y + cell_height ) return 1;
+
+	// check if one of the corner is in range of the center
 	Complex down_left_corner   = 
-		complexCreate( (x + 0) * cell_width, (y + 1) * cell_height );
-	if( isPointInCircle(  down_left_corner, center, radius) )
-		return 1;
+		complexCreate( (x + 0) * cell_width, (y + 0) * cell_height );
 	Complex down_right_corner  = 
+		complexCreate( (x + 1) * cell_width, (y + 0) * cell_height );
+	Complex upper_left_corner  = 
+		complexCreate( (x + 0) * cell_width, (y + 1) * cell_height );
+	Complex upper_right_corner = 
 		complexCreate( (x + 1) * cell_width, (y + 1) * cell_height );
-	if( isPointInCircle( down_right_corner, center, radius) )
-		return 1;
+
+
+	if( isPointInCircle( upper_left_corner, center, radius) ) return 1;
+	if( isPointInCircle(upper_right_corner, center, radius) ) return 1;
+	if( isPointInCircle(  down_left_corner, center, radius) ) return 1;
+	if( isPointInCircle( down_right_corner, center, radius) ) return 1;
 
 	return 0;
 }
@@ -138,17 +154,13 @@ char eventGridIsCircleInCell(EventGrid * grid, int x, int y,
 void eventGridBroadcast(EventGrid * grid, GridEvent event)  {
 	for(int x = 0; x < GRID_WIDTH; x++)
 		for(int y = 0; y < GRID_HEIGHT; y++) {
-			//printf("x = %d, y = %d\n", x, y);
 			List * list = eventGridGetList(grid, x, y);
-			//printf("a\n");
-			if( eventGridIsCircleInCell(grid, x, y, 
-					  event.position, event.range) ) {
-			//printf("b\n");
+			if( eventGridIsCircleInCell(
+				grid, 
+				x, y, 
+				event.position, event.range) )
 				listParameterizedApplyAll(*list, eventGridEventCallApplication,
 				  						  &event);
-			//printf("c\n");
-			}
-			//printf("d\n");
 		}				
 }
 
