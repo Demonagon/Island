@@ -16,8 +16,8 @@ void globalInit(void * graphic_data, GraphicFactory factory) {
 	eventGridInit(&EVENT_GRID, EVENT_GRID_WIDTH, EVENT_GRID_HEIGHT);
 	updateRegisterInit(&UPDATE_REGISTER);
 
-	//randomInit();
-	randomInitSeed(1532951520);
+	randomInit();
+	//randomInitSeed(1532951520);
 }
 
 void globalFree() {

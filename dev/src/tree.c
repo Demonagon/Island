@@ -107,7 +107,7 @@ void treeUpdateApplication(void * data) {
 			break;
 		case TREE_MATURE :
 			//* Immortality 
-			return;
+			//return;
 			//*/
 			tree->state = TREE_DYING;
 			break;
