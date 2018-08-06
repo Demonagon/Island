@@ -59,17 +59,22 @@ void mindMemoryProcessToken(MindMemory * memory, void * token) {
 
 void mindMemoryRemoveToken(MindMemory * memory, void * token) {
 	TreeNode * node = sortedTreeSearchData(&memory->memory_tree, token);
-	if( ! node ) return;
 
-	if(memory->on_deleted_memory_callback)
-		memory->on_deleted_memory_callback(memory->data, token, node->value);
-	sortedTreeRemoveNode(&memory->memory_tree, node);
+	mindMemoryRemoveNode(memory, node);
 }
 
 void mindMemoryUpdateToken(MindMemory * memory, void * token) {
 	TreeNode * node = sortedTreeSearchData(&memory->memory_tree, token);
 	if( ! node ) return;
 	sortedTreeUpdateNode(&memory->memory_tree, node);
+}
+
+void mindMemoryRemoveNode(MindMemory * memory, TreeNode * node) {
+	if( ! node ) return;
+
+	if(memory->on_deleted_memory_callback)
+		memory->on_deleted_memory_callback(memory->data, node->data, node->value);
+	sortedTreeRemoveNode(&memory->memory_tree, node);
 }
 
 void mindMemoryCopyNodeApplication(void * data, TreeNode * node) {

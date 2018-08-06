@@ -1,4 +1,14 @@
 #include "mind_node.h"
+#include <stdlib.h>
+
+MindNodeIngredientProcessor mindNodeIngredientProcessorCreate(
+	MindNodeIngredientProcessorFunction on_new,
+	MindNodeIngredientCheckFunction ingredient_checker) {
+	return (MindNodeIngredientProcessor) {
+		.on_new = on_new,
+		.ingredient_checker = ingredient_checker
+	};
+}
 
 /** ---------------------- MIND NODE PARENT ------------------------ **/
 
@@ -14,12 +24,13 @@ MindNodeParent mindNodeParentOutputCreate(void * data,
 
 void MindNodeDefaultNewOutputCallback(void * data, void * solution, int value) {
 	MindNode * node = data;
-	node->ingredient_processor.on_new(node, solution, value);
+	if(node->ingredient_processor.on_new)
+		node->ingredient_processor.on_new(node, solution, value);
 }
 
 void MindNodeDefaultDeletedOutputCallback(void * data, void * solution, int value) {
 	MindNode * node = data;
-	node->ingredient_processor.on_deleted(node, solution, value);
+	MindNodeOnDeletedIngredient(node, solution);
 }
 
 MindNodeParent mindNodeParentNodeCreate(MindNode * node) {
@@ -65,7 +76,14 @@ void mindChildNodeInit(
 	MindNode * parent_node,
 	MindNodeIngredientProcessor ingredient_processor,
 	int max_products,
-	MindProductEvaluator memory_evaluator);
+	MindProductEvaluator memory_evaluator) {
+	mindNodeInit(
+		node,
+		mindNodeParentNodeCreate(parent_node),
+		ingredient_processor,
+		max_products,
+		memory_evaluator);
+}
 
 void mindNodeAddProduct(MindNode * node, void * product) {
 	mindMemoryProcessToken(&node->product_memory, product);
@@ -73,4 +91,49 @@ void mindNodeAddProduct(MindNode * node, void * product) {
 
 void mindNodeForgetHalf(MindNode * node) {
 	mindMemoryForgetHalf(&node->product_memory);
+}
+
+typedef struct {
+	void * ingredient;
+	TreeNode ** array;
+	MindNode * node;
+} IngredientDeletingData;
+
+void ingredientDeletingApplication(void * data, TreeNode * node) {
+	IngredientDeletingData * d_data = data;
+	if( d_data->node->ingredient_processor.ingredient_checker
+	 && d_data->node->ingredient_processor.ingredient_checker(
+			node->data,
+			d_data->ingredient)
+	) {
+		d_data->array[0] = node;
+		d_data->array++;
+		d_data->array[0] = NULL;
+	}
+}
+
+void MindNodeOnDeletedIngredient(MindNode * node, void * ingredient) {
+	TreeNode ** treeNodeToDelete =
+		malloc( sizeof(TreeNode *) *
+				node->product_memory.memory_tree.size + 1);
+	treeNodeToDelete[0] = NULL;
+
+	IngredientDeletingData data = (IngredientDeletingData) {
+		.ingredient = ingredient,
+		.array = treeNodeToDelete,
+		.node = node
+	};
+
+	sortedTreeParameterApplyAll(
+		&node->product_memory.memory_tree,
+		ingredientDeletingApplication,
+		&data
+	);
+
+	while( treeNodeToDelete[0] ) {
+		mindMemoryRemoveNode(&node->product_memory, treeNodeToDelete[0]);
+		treeNodeToDelete++;
+	}
+
+	free(treeNodeToDelete);
 }

@@ -38,6 +38,7 @@ void mindMemoryForgetUpToNumber(MindMemory * memory, int target_size);
 void mindMemoryProcessToken(MindMemory * memory, void * token);
 void mindMemoryRemoveToken(MindMemory * memory, void * token);
 void mindMemoryUpdateToken(MindMemory * memory, void * token);
+void mindMemoryRemoveNode(MindMemory * memory, TreeNode * node);
 
 void * mindMemoryGetMaxToken(MindMemory * memory);
 /* Return the number of tokens successfully recovered */

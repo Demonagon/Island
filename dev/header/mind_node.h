@@ -38,11 +38,18 @@ typedef MemoryTokenEvaluator MindProductEvaluator;
 typedef void (*MindNodeOutputCallback) (void *, void *, int);
 // 1 : node, 2 : ingredient, 3 : ingredient value
 typedef void (*MindNodeIngredientProcessorFunction) (struct MindNode *, void *, int);
+// Indicates if the ingredient is used in the product
+// 1 : product, 2 : ingredient
+typedef char (*MindNodeIngredientCheckFunction) (void *, void *);
 
 typedef struct MindNodeIngredientProcessor {
 	MindNodeIngredientProcessorFunction on_new;
-	MindNodeIngredientProcessorFunction on_deleted;
+	MindNodeIngredientCheckFunction ingredient_checker;
 } MindNodeIngredientProcessor;
+
+MindNodeIngredientProcessor mindNodeIngredientProcessorCreate(
+	MindNodeIngredientProcessorFunction on_new,
+	MindNodeIngredientCheckFunction ingredient_checker);
 
 typedef struct MindNodeParent {
 	void * data;
@@ -69,7 +76,7 @@ void mindNodeInit(
 	MindProductEvaluator memory_evaluator);
 
 void mindChildNodeInit(
-	MindNode * node, 
+	MindNode * node,
 	MindNode * parent_node,
 	MindNodeIngredientProcessor ingredient_processor,
 	int max_products,
@@ -77,5 +84,7 @@ void mindChildNodeInit(
 
 void mindNodeAddProduct(MindNode * node, void * product);
 void mindNodeForgetHalf(MindNode * node);
+
+void MindNodeOnDeletedIngredient(MindNode * node, void * ingredient);
 
 #endif
