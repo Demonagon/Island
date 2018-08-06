@@ -124,7 +124,7 @@ TreeNode * treeNodeDetach(TreeNode * node) {
 SortedTree sortedTreeCreate(TreeDataEvaluator evaluator) {
 	return (SortedTree) {
 		.root = NULL, .min_node = NULL, .max_node = NULL,
-		.evaluator = evaluator
+		.evaluator = evaluator, .size = 0
 	};
 }
 
@@ -148,6 +148,8 @@ void sortedTreeAddNode(SortedTree * tree, TreeNode * node) {
 		else if ( node-> value > tree->max_node->value )
 			tree->max_node = node;
 	}
+
+	tree->size++;
 }
 
 TreeNode * sortedTreeSearchData(SortedTree * tree, void * data) {
@@ -173,6 +175,8 @@ void sortedTreeRemoveNode(SortedTree * tree, TreeNode * node) {
 	if( node == tree->root )
 		tree->root = treeNodeDetach(node);
 	else treeNodeDetach(node);
+
+	tree->size--;
 }
 
 void sortedTreeUpdateNode(SortedTree * tree, TreeNode * node) {
@@ -184,16 +188,38 @@ void sortedTreeUpdateNode(SortedTree * tree, TreeNode * node) {
 	sortedTreeAddNode(tree, node);
 }
 
+void sortedTreeRemoveMin(SortedTree * tree) {
+	sortedTreeRemoveNode(tree, tree->min_node);
+}
+
+TreeNode * sortedTreeGetMax(SortedTree * tree) {
+	return tree->max_node;
+}
+
 void treeNodeApplyAll(TreeNode * node, TreeNodeApplication application) {
 	if( ! node ) return;
 
-	application(node);
 	treeNodeApplyAll(node->left_child, application);
+	application(node);
 	treeNodeApplyAll(node->right_child, application);
+}
+
+void treeNodeParameterApplyAll(TreeNode * node,
+	TreeNodeParametrisedApplication application, void * parameter) {
+	if( ! node ) return;
+
+	treeNodeParameterApplyAll(node->left_child, application, parameter);
+	application(node, parameter);
+	treeNodeParameterApplyAll(node->right_child, application, parameter);
 }
 
 void sortedTreeApplyAll(SortedTree * tree, TreeNodeApplication application) {
 	treeNodeApplyAll(tree->root, application);
+}
+
+void sortedTreeParameterApplyAll(SortedTree * tree,
+	TreeNodeParametrisedApplication application, void * parameter) {
+	treeNodeParameterApplyAll(tree->root, application, parameter);
 }
 
 void treeNodeFreeApplication(TreeNode * node) {
@@ -205,6 +231,7 @@ void sortedTreeDestroy(SortedTree * tree) {
 	tree->root = NULL;
 	tree->min_node = NULL;
 	tree->max_node = NULL;
+	tree->size = 0;
 }
 
 #include <stdio.h>

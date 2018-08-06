@@ -8,13 +8,43 @@
 * Des callbacks d'ajout et de retrait de souvenirs sont disponibles.
 */
 
-typedef void (*MemoryCallback) (void * memory);
+/** le premier paramètre est l'information globale, et le second l'information
+* locale du souvenir en question. **/
+typedef void (*MemoryTokenCallback) (void *, void *);
+typedef TreeDataEvaluator MemoryTokenEvaluator;
 
 typedef struct MindMemory {
 	SortedTree memory_tree;
 
-	MemoryCallback on_new_memory_callback;
-	MemoryCallback on_deleted_memory_callback;
+	int max_size;
+
+	void * data;
+	MemoryTokenCallback on_new_memory_callback;
+	MemoryTokenCallback on_deleted_memory_callback;
 } MindMemory;
+
+MindMemory mindMemoryCreate(void * data, int max_size,
+	MemoryTokenCallback on_new_memory_callback,
+	MemoryTokenCallback on_deleted_memory_callback,
+	MemoryTokenEvaluator memory_evaluator);
+
+void mindMemoryDestroy(MindMemory * memory);
+
+void mindMemoryForgetOne(MindMemory * memory);
+void mindMemoryForget(MindMemory * memory, int to_forget);
+void mindMemoryForgetHalf(MindMemory * memory);
+void mindMemoryForgetUpToNumber(MindMemory * memory, int target_size);
+
+void mindMemoryProcessToken(MindMemory * memory, void * token);
+void mindMemoryRemoveToken(MindMemory * memory, void * token);
+void mindMemoryUpdateToken(MindMemory * memory, void * token);
+
+void * mindMemoryGetMaxToken(MindMemory * memory);
+/* Return the number of tokens successfully recovered */
+int mindMemoryGetNMaxToken(MindMemory * memory, int n, void * result);
+
+/* Implies to resort the entire sorted tree */
+void mindMemoryChangeTokenEvaluator(MindMemory * memory, 
+	MemoryTokenEvaluator evaluator);
 
 #endif

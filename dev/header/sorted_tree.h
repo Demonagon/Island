@@ -29,6 +29,8 @@ typedef struct SortedTree {
 	TreeNode * max_node;
 
 	TreeDataEvaluator evaluator;
+
+	int size;
 } SortedTree;
 
 SortedTree sortedTreeCreate(TreeDataEvaluator evaluator);
@@ -38,9 +40,15 @@ TreeNode * sortedTreeSearchData(SortedTree * tree, void * data);
 void sortedTreeRemoveNode(SortedTree * tree, TreeNode * node);
 void sortedTreeUpdateNode(SortedTree * tree, TreeNode * node);
 
+void sortedTreeRemoveMin(SortedTree * tree);
+TreeNode * sortedTreeGetMax(SortedTree * tree);
+
 typedef void (*TreeNodeApplication) (TreeNode *);
+typedef void (*TreeNodeParametrisedApplication) (void *, TreeNode *);
 
 void sortedTreeApplyAll(SortedTree * tree, TreeNodeApplication application);
+void sortedTreeParameterApplyAll(SortedTree * tree,
+	TreeNodeParametrisedApplication application, void * parameter);
 void sortedTreeDestroy(SortedTree * tree);
 
 
