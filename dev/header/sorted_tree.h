@@ -34,7 +34,7 @@ typedef struct SortedTree {
 } SortedTree;
 
 SortedTree sortedTreeCreate(TreeDataEvaluator evaluator);
-void sortedTreeAddData(SortedTree * tree, void * data);
+TreeNode * sortedTreeAddData(SortedTree * tree, void * data);
 void sortedTreeAddNode(SortedTree * tree, TreeNode * node);
 TreeNode * sortedTreeSearchData(SortedTree * tree, void * data);
 void sortedTreeRemoveNode(SortedTree * tree, TreeNode * node);

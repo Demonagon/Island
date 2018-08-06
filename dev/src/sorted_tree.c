@@ -128,11 +128,12 @@ SortedTree sortedTreeCreate(TreeDataEvaluator evaluator) {
 	};
 }
 
-void sortedTreeAddData(SortedTree * tree, void * data) {
+TreeNode *  sortedTreeAddData(SortedTree * tree, void * data) {
 	TreeNode * node = malloc(sizeof(TreeNode));
 	(*node) = treeNodeCreate(data, tree->evaluator);
 
 	sortedTreeAddNode(tree, node);
+	return node;
 }
 
 void sortedTreeAddNode(SortedTree * tree, TreeNode * node) {

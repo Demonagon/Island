@@ -29,30 +29,53 @@
 * Chaque noeud possède une "destination" : qui va généralement être soit un
 * autre noeud, soit une destination finale comme l'action qui sera effectuée
 * par un animal.
-* Pour cette raison, et parce que le nombre de solutions maximal qu'un noeud
-* voudra présenter va varier en fonction du noeud, un noeud possède un
-* paramètre qui représente le nombre de solutions que le noeud va présenter.
 */
 
-typedef void (MaxSolutionUpdateCallback) (void **, int);
+struct MindNode;
+
 typedef MemoryTokenEvaluator MindProductEvaluator;
+// 1 : data, 2 : solution, 3 : solution value
+typedef void (*MindNodeOutputCallback) (void *, void *, int);
+// 1 : node, 2 : ingredient, 3 : ingredient value
+typedef void (*MindNodeIngredientProcessorFunction) (struct MindNode *, void *, int);
+
+typedef struct MindNodeIngredientProcessor {
+	MindNodeIngredientProcessorFunction on_new;
+	MindNodeIngredientProcessorFunction on_deleted;
+} MindNodeIngredientProcessor;
+
+typedef struct MindNodeParent {
+	void * data;
+	MindNodeOutputCallback on_new_solution;
+	MindNodeOutputCallback on_deleted_solution;
+} MindNodeParent;
+
+MindNodeParent mindNodeParentOutputCreate(void * data,
+	MindNodeOutputCallback on_new_solution,
+	MindNodeOutputCallback on_deleted_solution);
+MindNodeParent mindNodeParentNodeCreate(struct MindNode * node);
 
 typedef struct MindNode {
-	void * upward_data;
-	int max_solutions;
-	MaxSolutionUpdateCallback update_callback;
-	
+	MindNodeParent parent;
+	MindNodeIngredientProcessor ingredient_processor;
 	MindMemory product_memory;
 } MindNode;
 
-MindNode mindNodeCreate(
-	void * updward_link,
-	int max_solutions, int max_products,
-	MaxSolutionUpdateCallback update_callback,
+void mindNodeInit(
+	MindNode * node, 
+	MindNodeParent parent,
+	MindNodeIngredientProcessor ingredient_processor,
+	int max_products,
+	MindProductEvaluator memory_evaluator);
+
+void mindChildNodeInit(
+	MindNode * node, 
+	MindNode * parent_node,
+	MindNodeIngredientProcessor ingredient_processor,
+	int max_products,
 	MindProductEvaluator memory_evaluator);
 
 void mindNodeAddProduct(MindNode * node, void * product);
-int mindNodeSelectSolutions(MindNode * node, void ** solutions);
 void mindNodeForgetHalf(MindNode * node);
 
 #endif

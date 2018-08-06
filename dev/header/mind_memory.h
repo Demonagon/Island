@@ -8,9 +8,9 @@
 * Des callbacks d'ajout et de retrait de souvenirs sont disponibles.
 */
 
-/** le premier paramètre est l'information globale, et le second l'information
-* locale du souvenir en question. **/
-typedef void (*MemoryTokenCallback) (void *, void *);
+/** le premier paramètre est l'information globale, le second l'information
+* locale du souvenir en question, le troisième pour l'évaluation du souvenir **/
+typedef void (*MemoryTokenCallback) (void *, void *, int);
 typedef TreeDataEvaluator MemoryTokenEvaluator;
 
 typedef struct MindMemory {
@@ -41,7 +41,7 @@ void mindMemoryUpdateToken(MindMemory * memory, void * token);
 
 void * mindMemoryGetMaxToken(MindMemory * memory);
 /* Return the number of tokens successfully recovered */
-int mindMemoryGetNMaxToken(MindMemory * memory, int n, void * result);
+//int mindMemoryGetNMaxToken(MindMemory * memory, int n, void * result);
 
 /* Implies to resort the entire sorted tree */
 void mindMemoryChangeTokenEvaluator(MindMemory * memory, 

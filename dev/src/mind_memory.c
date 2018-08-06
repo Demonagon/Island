@@ -20,9 +20,11 @@ void mindMemoryDestroy(MindMemory * memory) {
 void mindMemoryForgetOne(MindMemory * memory) {
 	if( ! memory->memory_tree.size ) return;
 	
-	memory->on_deleted_memory_callback(
-		memory->data,
-		memory->memory_tree.min_node->data);
+	if(memory->on_deleted_memory_callback)
+		memory->on_deleted_memory_callback(
+			memory->data,
+			memory->memory_tree.min_node->data,
+			memory->memory_tree.min_node->value);
 	sortedTreeRemoveMin(&memory->memory_tree);
 }
 
@@ -50,15 +52,17 @@ void mindMemoryProcessToken(MindMemory * memory, void * token) {
 			sortedTreeRemoveMin(&memory->memory_tree);
 	}
 
-	sortedTreeAddData(&memory->memory_tree, token);
-	memory->on_new_memory_callback(memory->data, token);
+	TreeNode * node = sortedTreeAddData(&memory->memory_tree, token);
+	if(memory->on_new_memory_callback)
+		memory->on_new_memory_callback(memory->data, token, node->value);
 }
 
 void mindMemoryRemoveToken(MindMemory * memory, void * token) {
 	TreeNode * node = sortedTreeSearchData(&memory->memory_tree, token);
 	if( ! node ) return;
 
-	memory->on_deleted_memory_callback(memory->data, token);
+	if(memory->on_deleted_memory_callback)
+		memory->on_deleted_memory_callback(memory->data, token, node->value);
 	sortedTreeRemoveNode(&memory->memory_tree, node);
 }
 
@@ -77,7 +81,7 @@ void * mindMemoryGetMaxToken(MindMemory * memory) {
 	return memory->memory_tree.max_node->data;
 }
 
-int mindMemoryGetNMaxToken(MindMemory * memory, int n, void * result) {
+/*int mindMemoryGetNMaxToken(MindMemory * memory, int n, void * result) {
 	if( n <= 0 ) return 0;
 	TreeNode * max_node = memory->memory_tree.max_node->data;
 
@@ -94,7 +98,7 @@ int mindMemoryGetNMaxToken(MindMemory * memory, int n, void * result) {
 	}
 
 	return k;
-}
+}*/
 
 void mindMemoryChangeTokenEvaluator(MindMemory * memory, 
 	MemoryTokenEvaluator evaluator) {
