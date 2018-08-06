@@ -11,6 +11,7 @@
 #include "fluid.h"
 #include "test.h"
 #include "test_graphics.h"
+#include "sorted_tree.h"
 
 void plot() {
 	#define PLOT_SIZE 80
@@ -109,10 +110,13 @@ int main(int argc, char **argv) {
 	//island(argc , argv);
 	//mainListTest();
 	//mainEventGridTest();
-	mainTreeLifeCycleMainTest();
+	//mainTreeLifeCycleMainTest();
 	//mainGridTest();
 	//mainTreeMemoryTest();
 	//testListManipulationMain();
+	/*randomInit();
+	for(;;)
+		sortedTreeMainTest();*/
 	
 	/*globalInit();
 	if(argc<2)printf("t'as oublié le paramètre coco\n");

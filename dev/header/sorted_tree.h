@@ -19,7 +19,8 @@ typedef int (*TreeDataEvaluator) (void *);
 TreeNode treeNodeCreate(void * data, TreeDataEvaluator evaluator);
 void treeNodeAdd(TreeNode * root, TreeNode * node);
 TreeNode * treeNodeSearch(TreeNode * root, void * data, int value);
-void treeNodeDetach(TreeNode * node);
+// Renvoie le noeux qui remplace le noeud enlevé s'il y a lieu
+TreeNode * treeNodeDetach(TreeNode * node);
 
 typedef struct SortedTree {
 	TreeNode * root;
@@ -37,4 +38,11 @@ TreeNode * sortedTreeSearchData(SortedTree * tree, void * data);
 void sortedTreeRemoveNode(SortedTree * tree, TreeNode * node);
 void sortedTreeUpdateNode(SortedTree * tree, TreeNode * node);
 
+typedef void (*TreeNodeApplication) (TreeNode *);
+
+void sortedTreeApplyAll(SortedTree * tree, TreeNodeApplication application);
+void sortedTreeDestroy(SortedTree * tree);
+
+
+void sortedTreeMainTest(void);
 #endif
