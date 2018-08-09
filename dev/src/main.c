@@ -107,7 +107,7 @@ int main(int argc, char **argv) {
 
 	//plot();
 	//updateTest();
-	//island(argc , argv);
+	island(argc , argv);
 	//mainListTest();
 	//mainEventGridTest();
 	//mainTreeLifeCycleMainTest();
