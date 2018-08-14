@@ -3,9 +3,10 @@
 MindMemory mindMemoryCreate(void * data, int max_size,
 	MemoryTokenCallback on_new_memory_callback,
 	MemoryTokenCallback on_deleted_memory_callback,
-	MemoryTokenEvaluator memory_evaluator) {
+	MemoryTokenEvaluator memory_evaluator,
+	void * context_data) {
 	return (MindMemory) {
-		.memory_tree = sortedTreeCreate(memory_evaluator),
+		.memory_tree = sortedTreeCreate(memory_evaluator, context_data),
 		.max_size = max_size,
 		.data = data,
 		.on_new_memory_callback = on_new_memory_callback,
@@ -46,7 +47,7 @@ void mindMemoryForgetUpToNumber(MindMemory * memory, int target_size) {
 
 void mindMemoryProcessToken(MindMemory * memory, void * token) {
 	if( memory->memory_tree.size >= memory->max_size ) {
-		int value = memory->memory_tree.evaluator(token);
+		int value = memory->memory_tree.evaluator(memory->memory_tree.data, token);
 		if( value <= memory->memory_tree.min_node->value ) return;
 		else while( memory->memory_tree.size >= memory->max_size )
 			sortedTreeRemoveMin(&memory->memory_tree);
@@ -107,7 +108,7 @@ void * mindMemoryGetMaxToken(MindMemory * memory) {
 
 void mindMemoryChangeTokenEvaluator(MindMemory * memory, 
 	MemoryTokenEvaluator evaluator) {
-	SortedTree new_tree = sortedTreeCreate(evaluator);
+	SortedTree new_tree = sortedTreeCreate(evaluator, memory->memory_tree.data);
 	sortedTreeParameterApplyAll(&memory->memory_tree,
 		mindMemoryCopyNodeApplication, &new_tree);
 	sortedTreeDestroy(&memory->memory_tree);

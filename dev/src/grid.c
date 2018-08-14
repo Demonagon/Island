@@ -164,6 +164,25 @@ void eventGridBroadcast(EventGrid * grid, GridEvent event)  {
 		}				
 }
 
+void eventGridDeclareBeacon(EventGrid * grid, GridBeacon * beacon, double range, int object_type) {
+	GridEventData event_data;
+	GridDeclarationEventData data = (GridDeclarationEventData) {
+		.data = beacon->data,
+		.type = object_type
+	};
+	event_data.declarating_object = data;
+
+	eventGridBroadcast(
+		grid,
+		gridEventCreate(
+			OBJECT_SELF_DECLARATION_EVENT,
+			event_data,
+			*(beacon->position),
+			range
+		)
+	);			
+}
+
 /******************************** TEST ****************************************/
 
 void mainEventGridTest() {

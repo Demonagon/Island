@@ -14,9 +14,10 @@ typedef struct TreeNode {
 	struct TreeNode * right_child;
 } TreeNode;
 
-typedef int (*TreeDataEvaluator) (void *);
+//first : context, second : data to evaluate
+typedef int (*TreeDataEvaluator) (void *, void *);
 
-TreeNode treeNodeCreate(void * data, TreeDataEvaluator evaluator);
+TreeNode treeNodeCreate(void * data, TreeDataEvaluator evaluator, void * context_data);
 void treeNodeAdd(TreeNode * root, TreeNode * node);
 TreeNode * treeNodeSearch(TreeNode * root, void * data, int value);
 // Renvoie le noeux qui remplace le noeud enlevé s'il y a lieu
@@ -29,11 +30,12 @@ typedef struct SortedTree {
 	TreeNode * max_node;
 
 	TreeDataEvaluator evaluator;
+	void * data;
 
 	int size;
 } SortedTree;
 
-SortedTree sortedTreeCreate(TreeDataEvaluator evaluator);
+SortedTree sortedTreeCreate(TreeDataEvaluator evaluator, void * data);
 TreeNode * sortedTreeAddData(SortedTree * tree, void * data);
 void sortedTreeAddNode(SortedTree * tree, TreeNode * node);
 TreeNode * sortedTreeSearchData(SortedTree * tree, void * data);

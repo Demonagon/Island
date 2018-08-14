@@ -3,7 +3,7 @@
 
 /** ------------------------------- TREE NODE ------------------------------ **/
 
-TreeNode treeNodeCreate(void * data, TreeDataEvaluator evaluator) {
+TreeNode treeNodeCreate(void * data, TreeDataEvaluator evaluator, void * context_data) {
 	TreeNode node = (TreeNode) {
 		.data = data,
 		.value = 0,
@@ -11,7 +11,7 @@ TreeNode treeNodeCreate(void * data, TreeDataEvaluator evaluator) {
 		.left_child = NULL,
 		.right_child = NULL };
 
-	node.value = evaluator(data);
+	node.value = evaluator(context_data, data);
 	return node;
 }
 
@@ -121,16 +121,16 @@ TreeNode * treeNodeDetach(TreeNode * node) {
 
 /** ------------------------- SORTED TREE ---------------------------------- **/
 
-SortedTree sortedTreeCreate(TreeDataEvaluator evaluator) {
+SortedTree sortedTreeCreate(TreeDataEvaluator evaluator, void * data) {
 	return (SortedTree) {
 		.root = NULL, .min_node = NULL, .max_node = NULL,
-		.evaluator = evaluator, .size = 0
+		.evaluator = evaluator, .data = data, .size = 0
 	};
 }
 
 TreeNode *  sortedTreeAddData(SortedTree * tree, void * data) {
 	TreeNode * node = malloc(sizeof(TreeNode));
-	(*node) = treeNodeCreate(data, tree->evaluator);
+	(*node) = treeNodeCreate(data, tree->evaluator, tree->data);
 
 	sortedTreeAddNode(tree, node);
 	return node;
@@ -154,7 +154,7 @@ void sortedTreeAddNode(SortedTree * tree, TreeNode * node) {
 }
 
 TreeNode * sortedTreeSearchData(SortedTree * tree, void * data) {
-	return treeNodeSearch(tree->root, data, tree->evaluator(data));
+	return treeNodeSearch(tree->root, data, tree->evaluator(tree->data, data));
 }
 
 void sortedTreeRemoveNode(SortedTree * tree, TreeNode * node) {
@@ -182,7 +182,7 @@ void sortedTreeRemoveNode(SortedTree * tree, TreeNode * node) {
 
 void sortedTreeUpdateNode(SortedTree * tree, TreeNode * node) {
 	int old_value = node->value;
-	node->value = tree->evaluator(node->data);
+	node->value = tree->evaluator(tree->data, node->data);
 	if( node->value == old_value ) return;
 
 	sortedTreeRemoveNode(tree, node);
@@ -238,7 +238,7 @@ void sortedTreeDestroy(SortedTree * tree) {
 #include <stdio.h>
 #include "util_math.h"
 
-int testTreeDataEvaluator(void * data) {
+int testTreeDataEvaluator(void * context, void * data) {
 	return data ? * ( (int *) data ) : -1;
 }
 
@@ -250,11 +250,11 @@ void testTreeNodeApplication(TreeNode * node) {
 	counter++;
 	if(counter >= 3 * SIZE)
 		abort();
-	int pvalue = node->parent ? testTreeDataEvaluator(node->parent->data) : -1;
-	int value = testTreeDataEvaluator(node->data);
-	int lvalue = node->left_child ? testTreeDataEvaluator(node->left_child->data)
+	int pvalue = node->parent ? testTreeDataEvaluator(NULL, node->parent->data) : -1;
+	int value = testTreeDataEvaluator(NULL, node->data);
+	int lvalue = node->left_child ? testTreeDataEvaluator(NULL, node->left_child->data)
 					: -2;
-	int rvalue = node->right_child ? testTreeDataEvaluator(node->right_child->data)
+	int rvalue = node->right_child ? testTreeDataEvaluator(NULL, node->right_child->data)
 					: -2;
 	printf(" (%d)%d", pvalue, value);
 	if( lvalue >= 0 && rvalue >= 0 )
@@ -269,7 +269,7 @@ void sortedTreeMainTest(void) {
 	//randomInitSeed(1533548688);
 	int n = SIZE;
 	int values[n];
-	SortedTree tree = sortedTreeCreate( testTreeDataEvaluator );
+	SortedTree tree = sortedTreeCreate( testTreeDataEvaluator, NULL );
 
 	printf("Raw :");
 

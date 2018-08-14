@@ -9,16 +9,19 @@ struct GameObjectListLink;
 /** -- INCLUDE OBJECTS CODE FILES HERE -- **/
 #include "test.h"
 #include "tree.h"
+#include "bird.h"
 /** -- *-* *-* *-* *-* *-* *-* *-* *-* -- **/
 
 typedef enum GameObjectType {
 	TEST_OBJECT,
-	TREE
+	TREE,
+	BIRD
 } GameObjectType;
 
 typedef union GameObjectData {
 	TestObject test_object;
 	Tree tree;
+	Bird bird;
 } GameObjectData;
 
 typedef struct GameObject {

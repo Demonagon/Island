@@ -77,6 +77,7 @@ double  complexNorm(Complex c);
 Complex complexScale(Complex c, double scale);
 Complex complexNormalize(Complex c);
 double  complexAngle(Complex c);
+double  complexDistance(Complex a, Complex b);
 void complexPrint(Complex c);
 
 char isPointInCircle(Complex point, Complex centre, double radius);

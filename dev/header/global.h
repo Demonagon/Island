@@ -12,7 +12,7 @@ EventGrid EVENT_GRID;
 #include "update.h"
 UpdateRegister UPDATE_REGISTER;
 
-void globalInit();
+void globalInit(void * graphic_data, GraphicFactory factory);
 void globalFree();
 
 #endif

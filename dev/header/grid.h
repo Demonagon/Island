@@ -39,10 +39,16 @@
 	gère normalement les évènements (event.event_handler, voir GridBeacon).
 */
 
+typedef struct GridDeclarationEventData {
+	void * data;
+	int type;
+} GridDeclarationEventData;
+
 typedef enum GridEventType {
 	_GRID_CALL_YOURSELF_EVENT,
 
-	/* TODO */
+	OBJECT_SELF_DECLARATION_EVENT,
+
 	/** CUSTOM EVENTS HERE **/
 	TREE_SPAWNING_COLISION_CHECK_EVENT,
 
@@ -51,7 +57,8 @@ typedef enum GridEventType {
 } GridEventType;
 
 typedef union GridEventData {
-	/* TODO */
+	GridDeclarationEventData declarating_object; // -> OBJECT_SELF_DECLARATION_EVENT
+
 	/** CUSTOM DATA HERE **/
 	void * spawning_tree; // -> TREE_SPAWNING_COLISION_CHECK_EVENT
 
@@ -123,6 +130,8 @@ void eventGridEventCallApplication(void * data, void * parameter);
 char eventGridIsCircleInCell(EventGrid * grid, int x, int y, Complex c, double radius);
 
 void eventGridBroadcast(EventGrid * grid, GridEvent event);
+
+void eventGridDeclareBeacon(EventGrid * grid, GridBeacon * beacon, double range, int object_type);
 
 /********************************* TEST ***************************************/
 

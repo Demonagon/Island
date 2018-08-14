@@ -88,6 +88,10 @@ double complexAngle(Complex c) {
 	return ( !c.a && !c.b ) ? 0 : atan2(c.b, c.a);
 }
 
+double  complexDistance(Complex a, Complex b) {
+	return complexNorm( complexRemove(a, b) );
+}
+
 void complexPrint(Complex c) {
 	printf("(%3lf, %3lf)", c.a, c.b);
 }

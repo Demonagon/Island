@@ -10,7 +10,7 @@
 #include "main_memory.h"
 #include "fluid.h"
 #include "test.h"
-#include "test_graphics.h"
+#include "test_graphics_2.h"
 #include "sorted_tree.h"
 
 void plot() {
@@ -34,11 +34,12 @@ void plot() {
 }
 
 void mainGridTest() {
-	TestGraphicsMatrix matrix = testMatrixCreate(
+	/*TestGraphicsMatrix matrix = testMatrixCreate(
 		2, testGraphicsTestStatePrint, testGraphicsTestUpdate,
 		100, 50, EVENT_GRID_WIDTH, EVENT_GRID_HEIGHT);
 
-	globalInit(&matrix, testGraphicsFactory);
+	globalInit(&matrix, testGraphicsFactory);*/
+	testGraphics2GlobalInit();
 
 	//TestObject * object = NULL;
 
@@ -56,17 +57,19 @@ void mainGridTest() {
 
 	updateRegisterUpdate(&UPDATE_REGISTER);
 	printf("\n");
-	testGraphicsPrint(&matrix);
+	//testGraphicsPrint(&matrix);
+	printList(&TEST_GRAPHICS_2_LIST);
 
 	globalFree();
 }
 
 void mainTreeLifeCycleMainTest() {
-	TestGraphicsMatrix matrix = testMatrixCreate(
+	/*TestGraphicsMatrix matrix = testMatrixCreate(
 		TREE_DEAD, testGraphicsTreeStatePrint, testGraphicsTreeUpdate,
 		100, 50, EVENT_GRID_WIDTH, EVENT_GRID_HEIGHT);
 
-	globalInit(&matrix, testGraphicsFactory);
+	globalInit(&matrix, testGraphicsFactory);*/
+	testGraphics2GlobalInit();
 
 	/*int f = 1; // factor
 	for(int x = 0; x < EVENT_GRID_WIDTH / f; x++)
@@ -82,9 +85,18 @@ void mainTreeLifeCycleMainTest() {
 	//for(int k; k < 40; k++) {
 	for(;;) {
 
+		if(UPDATE_REGISTER.clock == 10)
+			birdCreate(
+				complexCreate(
+					EVENT_GRID_WIDTH / 2,
+					EVENT_GRID_HEIGHT / 2
+				)
+			);
+
 		printf("\033[s");
 
-		testGraphicsPrint(&matrix);
+		//testGraphicsPrint(&matrix);
+		printList(&TEST_GRAPHICS_2_LIST);
 		//printf("[%5ld] :\n", UPDATE_REGISTER.clock);
 
 		//printf("tree state = %d\n", tree->state);
@@ -107,10 +119,10 @@ int main(int argc, char **argv) {
 
 	//plot();
 	//updateTest();
-	island(argc , argv);
+	//island(argc , argv);
 	//mainListTest();
 	//mainEventGridTest();
-	//mainTreeLifeCycleMainTest();
+	mainTreeLifeCycleMainTest();
 	//mainGridTest();
 	//mainTreeMemoryTest();
 	//testListManipulationMain();

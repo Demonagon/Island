@@ -25,7 +25,7 @@ MindNodeParent mindNodeParentOutputCreate(void * data,
 void MindNodeDefaultNewOutputCallback(void * data, void * solution, int value) {
 	MindNode * node = data;
 	if(node->ingredient_processor.on_new)
-		node->ingredient_processor.on_new(node, solution, value);
+		node->ingredient_processor.on_new(node, solution);
 }
 
 void MindNodeDefaultDeletedOutputCallback(void * data, void * solution, int value) {
@@ -43,6 +43,20 @@ MindNodeParent mindNodeParentNodeCreate(MindNode * node) {
 
 /** ------------------------ MIND NODE ----------------------------- **/
 
+MindNode MindNodeCreateEmpty() {
+	return (MindNode) {
+		.parent = mindNodeParentNodeCreate(NULL),
+		.ingredient_processor = mindNodeIngredientProcessorCreate(NULL, NULL),
+		.product_memory = mindMemoryCreate(
+			NULL,
+			0,
+			NULL,
+			NULL,
+			NULL,
+			NULL)
+	};
+}
+
 void MindNodeDefaultNewTokenCallback(void * data, void * token, int value) {
 	MindNode * node = data;
 	node->parent.on_new_solution(data, token, value);
@@ -58,7 +72,8 @@ void mindNodeInit(
 	MindNodeParent parent,
 	MindNodeIngredientProcessor ingredient_processor,
 	int max_products,
-	MindProductEvaluator memory_evaluator) {
+	MindProductEvaluator memory_evaluator,
+	void * data) {
 	*node = (MindNode) {
 		.parent = parent,
 		.ingredient_processor = ingredient_processor,
@@ -67,7 +82,7 @@ void mindNodeInit(
 			max_products,
 			MindNodeDefaultNewTokenCallback,
 			MindNodeDefaultDeletedTokenCallback,
-			memory_evaluator)
+			memory_evaluator, data)
 	};
 }
 
@@ -76,17 +91,29 @@ void mindChildNodeInit(
 	MindNode * parent_node,
 	MindNodeIngredientProcessor ingredient_processor,
 	int max_products,
-	MindProductEvaluator memory_evaluator) {
+	MindProductEvaluator memory_evaluator,
+	void * data) {
 	mindNodeInit(
 		node,
 		mindNodeParentNodeCreate(parent_node),
 		ingredient_processor,
 		max_products,
-		memory_evaluator);
+		memory_evaluator, data);
+}
+
+void mindNodeDestroy(MindNode * node) {
+	sortedTreeDestroy(&node->product_memory.memory_tree);
 }
 
 void mindNodeAddProduct(MindNode * node, void * product) {
 	mindMemoryProcessToken(&node->product_memory, product);
+}
+
+void mindNodeAddIngredient(MindNode * node, void * ingredient) {
+	node->ingredient_processor.on_new(
+		node,
+		ingredient
+	);
 }
 
 void mindNodeForgetHalf(MindNode * node) {

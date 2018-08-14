@@ -3,6 +3,7 @@
 #include "global.h"
 #include "object.h"
 #include "main_memory.h"
+#include "bird.h"
 
 void treeStatePrint(TreeState state) {
 	switch(state) {
@@ -90,6 +91,7 @@ void treeUpdateApplication(void * data) {
 		case TREE_INITIAL :
 			tree->state = TREE_GROWING;
 			sleep_time = rand_int_a_b(2, 8);
+			eventGridDeclareBeacon(&EVENT_GRID, &tree->grid_beacon, 100, TREE);
 			break;
 		case TREE_CANCELLED :
 			gameObjectUpdateGraphics(tree->memory_link);
@@ -130,6 +132,13 @@ void treeHandleEvent(void * data, GridEvent event) {
 	Tree * tree = data;
 
 	//printf("catching event\n");
+
+	if( event.type == OBJECT_SELF_DECLARATION_EVENT ) {
+		if( event.data.declarating_object.type != BIRD ) return;
+		Bird * bird = event.data.declarating_object.data;
+		birdAddTraget(bird, tree);
+		return;
+	}
 
 	if( event.type != TREE_SPAWNING_COLISION_CHECK_EVENT ) return;
 
@@ -176,9 +185,10 @@ void treeSetupRoutine(GameObjectListLink * link) {
 }
 
 #include "string.h"
+#include "test_graphics_2.h"
 
 void mainTreeMemoryTest() {
-	globalInit();
+	testGraphics2GlobalInit();
 
 	for(int k = 0; k < 98; k++)
 		treeCreate( complexCreate(0, 0) );
@@ -200,7 +210,7 @@ void mainTreeMemoryTest() {
 }
 
 void mainTreeLifeCycleTest() {
-	globalInit();
+	testGraphics2GlobalInit();
 
 	treeCreate( complexCreate(EVENT_GRID_WIDTH / 2, EVENT_GRID_HEIGHT / 2) );
 

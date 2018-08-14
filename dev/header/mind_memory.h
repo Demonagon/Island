@@ -26,7 +26,8 @@ typedef struct MindMemory {
 MindMemory mindMemoryCreate(void * data, int max_size,
 	MemoryTokenCallback on_new_memory_callback,
 	MemoryTokenCallback on_deleted_memory_callback,
-	MemoryTokenEvaluator memory_evaluator);
+	MemoryTokenEvaluator memory_evaluator,
+	void * context_data);
 
 void mindMemoryDestroy(MindMemory * memory);
 

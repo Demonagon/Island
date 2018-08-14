@@ -3,6 +3,7 @@
 #include "global.h"
 #include "object.h"
 #include "main_memory.h"
+#include "test_graphics_2.h"
 
 TestObject * testCreate(Complex position) {
 	GameObjectData data;
@@ -95,7 +96,7 @@ void testSetupRoutine(GameObjectListLink * link) {
 
 /** Test initialisation functions **/
 void testListManipulationMain() {
-	globalInit();
+	testGraphics2GlobalInit();
 
 	for(int k = 0; k < 10; k++)
 		testCreate( complexCreate(0, 0) );
