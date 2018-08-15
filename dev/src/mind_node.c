@@ -59,12 +59,12 @@ MindNode MindNodeCreateEmpty() {
 
 void MindNodeDefaultNewTokenCallback(void * data, void * token, int value) {
 	MindNode * node = data;
-	node->parent.on_new_solution(data, token, value);
+	node->parent.on_new_solution(node->parent.data, token, value);
 }
 
 void MindNodeDefaultDeletedTokenCallback(void * data, void * token, int value) {
 	MindNode * node = data;
-	node->parent.on_deleted_solution(data, token, value);
+	node->parent.on_deleted_solution(node->parent.data, token, value);
 }
 
 void mindNodeInit(

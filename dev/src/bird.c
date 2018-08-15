@@ -1,4 +1,5 @@
 #include <stdlib.h>
+#include <stdio.h>
 #include "bird.h"
 #include "global.h"
 #include "object.h"
