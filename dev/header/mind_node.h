@@ -92,6 +92,6 @@ void mindNodeAddProduct(MindNode * node, void * product);
 void mindNodeAddIngredient(MindNode * node, void * ingredient);
 void mindNodeForgetHalf(MindNode * node);
 
-void MindNodeOnDeletedIngredient(MindNode * node, void * ingredient);
+void MindNodeDeleteIngredient(MindNode * node, void * ingredient);
 
 #endif

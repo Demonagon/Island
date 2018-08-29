@@ -17,7 +17,7 @@ void globalInit(void * graphic_data, GraphicFactory factory) {
 	updateRegisterInit(&UPDATE_REGISTER);
 
 	randomInit();
-	//randomInitSeed(1532951520);
+	//randomInitSeed(1535457078);
 }
 
 void globalFree() {

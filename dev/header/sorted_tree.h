@@ -46,7 +46,7 @@ void sortedTreeRemoveMin(SortedTree * tree);
 TreeNode * sortedTreeGetMax(SortedTree * tree);
 
 typedef void (*TreeNodeApplication) (TreeNode *);
-typedef void (*TreeNodeParametrisedApplication) (void *, TreeNode *);
+typedef void (*TreeNodeParametrisedApplication) (TreeNode *, void *);
 
 void sortedTreeApplyAll(SortedTree * tree, TreeNodeApplication application);
 void sortedTreeParameterApplyAll(SortedTree * tree,

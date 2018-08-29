@@ -38,6 +38,8 @@ Tree * treeCreate(Complex position) {
 }
  
 void treeDestroy(Tree * tree) {
+	tree->state = TREE_DEAD;
+	gameObjectUpdateGraphics(tree->memory_link);
 	gridBeaconRemove(&tree->grid_beacon);
 	updateHandleRemove(&tree->update_handle);
 	mainMemoryRemoveObject(&MAIN_MEMORY, tree->memory_link);

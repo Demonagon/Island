@@ -79,10 +79,12 @@ void birdUpdateApplication(void * data) {
 			target = bird->state.data.target_tree;
 			bird->position = target->position;
 			eventGridPlaceBeacon(&EVENT_GRID, &bird->grid_beacon);
-			treeDestroy(target);
+			target->state = TREE_DEAD;
 			bird->state.id = BIRD_STATE_STATIONNARY;
 			bird->state.data.target_tree = NULL;
+			MindNodeDeleteIngredient(& bird->ai.tree_eating_action_node, target);
 			eventGridDeclareBeacon(&EVENT_GRID, &bird->grid_beacon, 100, BIRD);
+			gameObjectUpdateGraphics(bird->memory_link);
 			return;
 	}
 }
@@ -146,7 +148,7 @@ char birdIngredientCheckFunction(void * product, void * ingredient) {
 int birdDataEvaluator(void * context, void * data) {
 	Bird * bird = context;
 	Tree * tree = data;
-	return (int) ( -complexDistance(bird->position, tree->position) * 100 );
+	return (int) ( complexDistance(bird->position, tree->position) * -10 );
 }
 
 /** Memory setup callback **/

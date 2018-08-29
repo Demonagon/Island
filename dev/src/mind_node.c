@@ -30,7 +30,7 @@ void MindNodeDefaultNewOutputCallback(void * data, void * solution, int value) {
 
 void MindNodeDefaultDeletedOutputCallback(void * data, void * solution, int value) {
 	MindNode * node = data;
-	MindNodeOnDeletedIngredient(node, solution);
+	MindNodeDeleteIngredient(node, solution);
 }
 
 MindNodeParent mindNodeParentNodeCreate(MindNode * node) {
@@ -126,7 +126,7 @@ typedef struct {
 	MindNode * node;
 } IngredientDeletingData;
 
-void ingredientDeletingApplication(void * data, TreeNode * node) {
+void ingredientDeletingApplication(TreeNode * node, void * data) {
 	IngredientDeletingData * d_data = data;
 	if( d_data->node->ingredient_processor.ingredient_checker
 	 && d_data->node->ingredient_processor.ingredient_checker(
@@ -139,10 +139,11 @@ void ingredientDeletingApplication(void * data, TreeNode * node) {
 	}
 }
 
-void MindNodeOnDeletedIngredient(MindNode * node, void * ingredient) {
+void MindNodeDeleteIngredient(MindNode * node, void * ingredient) {
 	TreeNode ** treeNodeToDelete =
 		malloc( sizeof(TreeNode *) *
 				node->product_memory.memory_tree.size + 1);
+	TreeNode ** memory_pointer = treeNodeToDelete;
 	treeNodeToDelete[0] = NULL;
 
 	IngredientDeletingData data = (IngredientDeletingData) {
@@ -162,5 +163,5 @@ void MindNodeOnDeletedIngredient(MindNode * node, void * ingredient) {
 		treeNodeToDelete++;
 	}
 
-	free(treeNodeToDelete);
+	free(memory_pointer);
 }

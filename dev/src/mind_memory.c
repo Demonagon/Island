@@ -78,7 +78,7 @@ void mindMemoryRemoveNode(MindMemory * memory, TreeNode * node) {
 	sortedTreeRemoveNode(&memory->memory_tree, node);
 }
 
-void mindMemoryCopyNodeApplication(void * data, TreeNode * node) {
+void mindMemoryCopyNodeApplication(TreeNode * node, void * data) {
 	SortedTree * new_tree = data;
 	sortedTreeAddData(new_tree, node->data);
 }

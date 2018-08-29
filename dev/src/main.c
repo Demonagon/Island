@@ -93,21 +93,16 @@ void mainTreeLifeCycleMainTest() {
 				)
 			);
 
-		printf("\033[s");
+		//if(UPDATE_REGISTER.clock >= 200) break;
 
-		//testGraphicsPrint(&matrix);
 		printList(&TEST_GRAPHICS_2_LIST);
-		//printf("[%5ld] :\n", UPDATE_REGISTER.clock);
+		printf("[%5ld] :\n", UPDATE_REGISTER.clock);
 
-		//printf("tree state = %d\n", tree->state);
-		//*
+		
 		char input;
 		input = getc(stdin);
 		if(input == 'x') break;
 		if(input != '\n') while(getc(stdin) != '\n');
-		//*/
-
-		printf("\033[u");
 
 		updateRegisterUpdate(&UPDATE_REGISTER);
 	}
