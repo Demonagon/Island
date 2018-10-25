@@ -85,13 +85,13 @@ void mainTreeLifeCycleMainTest() {
 	//for(int k; k < 40; k++) {
 	for(;;) {
 
-		if(UPDATE_REGISTER.clock == 10)
+		/*if(UPDATE_REGISTER.clock == 10)
 			birdCreate(
 				complexCreate(
 					EVENT_GRID_WIDTH / 2,
 					EVENT_GRID_HEIGHT / 2
 				)
-			);
+			);*/
 
 		//if(UPDATE_REGISTER.clock >= 200) break;
 

@@ -2,7 +2,7 @@ INCLUDES = -Iheader
 CFLAGS = -std=c99 -pedantic -Wall -fPIC -no-pie
 LFLAGS = -L/usr/X11/lib -L/usr/X11R6/lib -L/usr/X11R6/lib -L./lib
 LIBS = -lX11 -lXext -lpthread -lglut -lGL -lGLU -lm -lml -fPIC
-DEBUG = #-g # <- retirer le premier # pour débugger
+DEBUG = -g # <- retirer le premier # pour débugger
 
 CC = gcc
 
