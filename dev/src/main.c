@@ -64,17 +64,9 @@ void mainGridTest() {
 }
 
 void mainTreeLifeCycleMainTest() {
-	/*TestGraphicsMatrix matrix = testMatrixCreate(
-		TREE_DEAD, testGraphicsTreeStatePrint, testGraphicsTreeUpdate,
-		100, 50, EVENT_GRID_WIDTH, EVENT_GRID_HEIGHT);
 
-	globalInit(&matrix, testGraphicsFactory);*/
 	testGraphics2GlobalInit();
 
-	/*int f = 1; // factor
-	for(int x = 0; x < EVENT_GRID_WIDTH / f; x++)
-		for(int y = 0; y < EVENT_GRID_HEIGHT / f; y++)
-				treeCreate( complexCreate(x*f + 0.5, y*f + 0.5) );*/
 	treeCreate(
 		complexCreate(
 			EVENT_GRID_WIDTH / 2,
@@ -82,23 +74,24 @@ void mainTreeLifeCycleMainTest() {
 		)
 	);
 
-	//for(int k; k < 40; k++) {
+	Bird * bird = NULL;
+
 	for(;;) {
 
 		if(UPDATE_REGISTER.clock == 10)
-			birdCreate(
+			bird = birdCreate(
 				complexCreate(
 					EVENT_GRID_WIDTH / 2,
 					EVENT_GRID_HEIGHT / 2
 				)
 			);
 
-		//if(UPDATE_REGISTER.clock >= 200) break;
-
 		printList(&TEST_GRAPHICS_2_LIST);
 		printf("[%5ld] :\n", UPDATE_REGISTER.clock);
 
-		
+		if(bird)
+			printf("bird state = %d\n", bird->state.id);
+
 		char input;
 		input = getc(stdin);
 		if(input == 'x') break;

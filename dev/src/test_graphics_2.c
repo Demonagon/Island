@@ -105,7 +105,8 @@ void printList(TestGraphicsList * list) {
 
 char objectIsPrintable(GameObject * object) {
 	if( object->type == TREE )
-		return object->data.tree.state != TREE_DEAD;
+		return object->data.tree.state != TREE_DEAD &&
+				object->data.tree.state != TREE_INITIAL;
 	return ( object->type == BIRD || object->type == TEST_OBJECT );
 }
 
