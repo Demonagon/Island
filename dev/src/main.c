@@ -77,14 +77,14 @@ void mainTreeLifeCycleMainTest() {
 	Bird * bird = NULL;
 
 	for(;;) {
-
-		if(UPDATE_REGISTER.clock == 10)
-			bird = birdCreate(
+		/*if(UPDATE_REGISTER.clock == 10)
+			birdCreate(
+>>>>>>> e267fee680664af354d4ab6b6102930397457003
 				complexCreate(
 					EVENT_GRID_WIDTH / 2,
 					EVENT_GRID_HEIGHT / 2
 				)
-			);
+			);*/
 
 		printList(&TEST_GRAPHICS_2_LIST);
 		printf("[%5ld] :\n", UPDATE_REGISTER.clock);
