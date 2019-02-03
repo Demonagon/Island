@@ -85,4 +85,6 @@ char isPointInCircle(Complex point, Complex centre, double radius);
 double randomAngle(void);
 int flipCoin(void);
 
+double approximateCircleCommonArea(double r1, double r2, double d);
+
 #endif

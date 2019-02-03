@@ -52,6 +52,8 @@ typedef enum GridEventType {
 	/** CUSTOM EVENTS HERE **/
 	TREE_SPAWNING_COLISION_CHECK_EVENT,
 
+	PLANT_SPAWNING_COLISION_CHECK_EVENT,
+
 	TEST_OBJECT_TURN_ON_EVENT // No associated data
 	/** ** ** *** ** ** ** **/
 } GridEventType;
@@ -61,6 +63,7 @@ typedef union GridEventData {
 
 	/** CUSTOM DATA HERE **/
 	void * spawning_tree; // -> TREE_SPAWNING_COLISION_CHECK_EVENT
+	void * spawning_plant; // -> PLANT_SPAWNING_COLISION_CHECK_EVENT
 
 	/** ** ** * ** ** ** **/
 } GridEventData;

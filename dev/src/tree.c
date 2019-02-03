@@ -45,17 +45,17 @@ void treeDestroy(Tree * tree) {
 	mainMemoryRemoveObject(&MAIN_MEMORY, tree->memory_link);
 }
 
-void treePrint(Tree * tree) {
-	complexPrint(tree->position);
-	printf("[%8p] -> ", (void *) tree->memory_link);
-	treeStatePrint(tree->state);
-}
-
 void treeReproduce(Tree * tree) {
 	double random_angle = randomAngle();
 	Complex son_relative_position =
 		complexCreatePolar(random_angle, TREE_SPAWN_RADIUS);
 	treeCreate( complexAdd(tree->position, son_relative_position) );
+}
+
+void treePrint(Tree * tree) {
+	complexPrint(tree->position);
+	printf("[%8p] -> ", (void *) tree->memory_link);
+	treeStatePrint(tree->state);
 }
 
 void treeUpdateDeclaration(void * data) {

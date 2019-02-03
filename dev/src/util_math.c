@@ -107,3 +107,10 @@ double randomAngle(void) {
 int flipCoin(void) {
 	return rand() % 2;
 }
+
+double approximateCircleCommonArea(double r1, double r2, double d) {
+	double x = ( r1 * r1 - r2 * r2 + d * d ) / (2 * d);
+	double y = sqrt(r2 * r2 - x * x);
+	return (d - (r1 + r2)) * y;
+}
+
