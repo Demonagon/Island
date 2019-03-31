@@ -15,8 +15,10 @@ EXEC=island
 
 MAIN=$(BIN_FOLDER)/$(EXEC)
 
-HEADERS=$(wildcard $(HEADER_FOLDER)/*.h)
-SRCS=$(wildcard $(SRC_FOLDER)/*.c)
+#HEADERS=$(wildcard $(HEADER_FOLDER)/*.h)
+#SRCS=$(wildcard $(SRC_FOLDER)/*.c)
+HEADERS=$(shell find $(HEADER_FOLDER)/ -name '*.h')
+SRCS=$(shell find $(SRC_FOLDER)/ -name '*.c')
 OBJS=$(patsubst $(SRC_FOLDER)/%.c,$(OBJ_FOLDER)/%.o,$(SRCS))
 
 .PHONY: depend clean
@@ -46,9 +48,12 @@ $(ML_OBJ_FOLDER)/%.o : $(ML_SRC_FOLDER)/%.c
 	$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@ $(DEBUG) -fPIC
 
 clean:
-	$(RM) $(OBJ_FOLDER)/*.o *~ $(MAIN)
+	$(RM) $(OBJS) *~ $(MAIN)
 
 depend: $(SRCS)
 	makedepend $(INCLUDES) $^
+
+open:
+	gedit $(HEADERS) $(SRCS) &
 
 # DO NOT DELETE THIS LINE -- make depend needs it
