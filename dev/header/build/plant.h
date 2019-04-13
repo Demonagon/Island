@@ -14,7 +14,8 @@
 #define PLANT_MIN_SIZE 1.0
 #define PLANT_MAX_SIZE 10.0
 
-#define PLANT_GROWTH_STAGES_COUNT 10
+#define PLANT_LIFE_REQUIREMENT_CONSTANT 0.3
+#define PLANT_REPRODUCTION_REQUIREMENT_CONSTANT 0.6
 
 /**
 * Une plante, qui se propage, avec un facteur génétique qui décrit sa taille.
@@ -32,8 +33,8 @@ struct GameObjectListLink;
 typedef enum PlantState {
 	PLANT_INITIAL,
 	PLANT_CANCELLED, // quand on pousse sur un tronc
-	PLANT_GROWING, // état vivant avant la maturité
-	PLANT_MATURE, // état de vie
+	PLANT_GROWING, // état où le calcul des racines doit être opéré
+	PLANT_MATURE, // état de vie stable
 	PLANT_DEAD // état quand la plante est morte et doit être retirée
 } PlantState;
 
@@ -43,8 +44,8 @@ typedef struct Plant {
 	/** plant related data **/
 	Complex position;
 	PlantState state;
-	int growth_stage;
-	double maximum_size;
+	double size;
+	double current_ressources;
 
 	/** Memory related data **/
 	struct GameObjectListLink * memory_link;
@@ -56,17 +57,20 @@ typedef struct Plant {
 	GridBeacon grid_beacon;
 } Plant;
 
-Plant * plantCreate(Complex position, double maximum_size);
+Plant * plantCreate(Complex position, double size);
 
 void plantDestroy(Plant * plant);
 
 double plantEvolveSize(double initial_size);
-
 void plantReproduce(Plant * plant);
 
 void plantPrint(Plant * plant);
 
 double plantSize(Plant * plant);
+
+double plantMinimalRessourceLifeRequirement(Plant * plant);
+
+double plantMinimalRessourceReproductionRequirement(Plant * plant);
 
 double plantConcurrentArea(Plant * plant1, Plant * plant2);
 

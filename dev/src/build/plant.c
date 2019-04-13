@@ -14,14 +14,14 @@ void plantStatePrint(PlantState state) {
 	}
 }
 
-Plant * plantCreate(Complex position, double maximum_size) {
+Plant * plantCreate(Complex position, double size) {
 	GameObjectData data;
 
 	data.plant = (Plant) {
 		.position = position,
 		.state = PLANT_INITIAL,
-		.growth_stage = 0,
-		.maximum_size = maximum_size,
+		.size = size,
+		.current_ressources = 0,
 		.memory_link = NULL,
 		.update_handle = updateHandleCreateEmpty(),
 		.grid_beacon = gridBeaconCreateEmpty()
@@ -37,7 +37,6 @@ Plant * plantCreate(Complex position, double maximum_size) {
 }
 
 void plantDestroy(Plant * plant) {
-	plant->state = PLANT_DEAD;
 	gameObjectUpdateGraphics(plant->memory_link);
 	gridBeaconRemove(&plant->grid_beacon);
 	updateHandleRemove(&plant->update_handle);
@@ -57,22 +56,32 @@ double plantEvolveSize(double initial_size) {
 void plantReproduce(Plant * plant) {
 	double random_angle = randomAngle();
 	double random_distance =
-		plant->maximum_size * PLANT_RADIUS_CONSTANT * rand_double_a_b(1.8, 2.5);
+		plant->size * PLANT_RADIUS_CONSTANT * rand_double_a_b(1.8, 2.5);
 	Complex son_relative_position =
 		complexCreatePolar(random_angle, random_distance);
 	plantCreate( complexAdd(plant->position, son_relative_position),
-				 plantEvolveSize(plant->maximum_size) );
+				 plantEvolveSize(plantSize(plant)) );
 }
 
 void plantPrint(Plant * plant) {
 	complexPrint(plant->position);
 	printf("[%8p] -> ", (void *) plant->memory_link);
 	plantStatePrint(plant->state);
-	printf(" (size = %4lf)", plant->maximum_size);
+	printf(" (size = %4lf)", plant->size);
 }
 
 double plantSize(Plant * plant) {
-	return ( (plant->growth_stage + 1.0) / PLANT_GROWTH_STAGES_COUNT );
+	return plant->size;
+}
+
+double plantMinimalRessourceLifeRequirement(Plant * plant) {
+	return plant->size * plant->size * plant->size
+		 * PLANT_LIFE_REQUIREMENT_CONSTANT; 
+}
+
+double plantMinimalRessourceReproductionRequirement(Plant * plant) {
+	return plant->size * plant->size * plant->size
+		 * PLANT_REPRODUCTION_REQUIREMENT_CONSTANT; 
 }
 
 double plantConcurrentArea(Plant * plant1, Plant * plant2) {
@@ -83,82 +92,79 @@ double plantConcurrentArea(Plant * plant1, Plant * plant2) {
 			distance);
 }
 
+void plantUpdateInitial(Plant * plant) {
+	GridEventData plant_data;
+	if( ! eventGridIsPointIn(&EVENT_GRID, plant->position) ) {
+		// out of bound check
+		plant->state = PLANT_CANCELLED;
+		return;
+	}
+
+	plant_data.spawning_plant = plant;
+	eventGridBroadcast(
+		&EVENT_GRID,
+		gridEventCreate(
+			PLANT_SPAWNING_COLISION_CHECK_EVENT,
+			plant_data,
+			plant->position,
+			plant->size * PLANT_TRUNK_SIZE_CONSTANT
+		)
+	);
+}
+
 /** Updating callbacks **/
 void plantUpdateDeclaration(void * data) {
 	Plant * plant = data;
-	GridEventData plant_data;
 
-	if(plant->state == PLANT_INITIAL || plant->state == PLANT_CANCELLED ) { 
-			if( ! eventGridIsPointIn(&EVENT_GRID, plant->position) ) {
-				// out of bound check
-				plant->state = PLANT_CANCELLED;
-				return;
-			}
-			plant_data.spawning_plant = plant;
-			eventGridBroadcast(
-				&EVENT_GRID,
-				gridEventCreate(
-					PLANT_SPAWNING_COLISION_CHECK_EVENT,
-					plant_data,
-					plant->position,
-					plant->maximum_size * PLANT_TRUNK_SIZE_CONSTANT
-				)
-			);
+	switch(plant->state) {
+		case PLANT_INITIAL :
+			// On vérifie si on pousse sur un tronc ou une autre pousse en
+			// initial. Si il y a colision on vérifie les priorités. Si on
+			// a la priorité, on passe en GROWING. Sinon on passe en CANCELED.
+
+			break;
+		case PLANT_CANCELLED :
+			// On détruit la pousse.
+			break;
+		case PLANT_GROWING :
+			// On grandit, en ajoutant aux voisins la diminution due au partage
+			// des ressources (ainsi qu'à soit).
+			// On vérifie intialiement les ressources disponibles : si pas
+			// assez pour vivre on passe en DEAD, si assez pour vivre on passe
+			// en MATURE.
+			break;
+		case PLANT_MATURE :
+			// Cet état est le seul stable, et se met à jour uniquement lorsque
+			// les ressources sont mises à jour. À chaque mise à jour des
+			// ressources :
+			// -> si on a pas assez pour vivre, on passe à DEAD
+			// -> si on a assez pour se reproduire et que l'on se s'est jamais
+			//    reproduit, on se reproduit
+			break;
+		case PLANT_DEAD :
+			// On dégrandit avant de disparaître, ce qui veut dire faire l'effet
+			// inverse à l'étape GROWING. Puis l'objet est enlevé.
+			break;
 	}
 }
 
 void plantUpdateApplication(void * data) {
 	Plant * plant = data;
-	int sleep_time = 0;
-
-	/* TODO
-	* Besoin de redesigner le système de sommeil puisqu'ici le croissance de la
-	* plante est influencée par l'apparition et la disparition de plantes à
-	* proximité...
-	* Voir la croissance comme continue risque d'être trop complexe à simuler.
-	* Solution à envisager : diviser la croissance en X segments, à chaque fois
-	* redéclarant et recalculant le partage local des ressources.
-	* Selont les ressources disponibles localement, la plante va décider selon
-	* le processus suivant :
-	* Si les ressources courantes remplissent la partie "survie" avec un
-	* ratio de 0 <= R <= 1, alors la plante a une probabilité 1-R de mourir
-	* instantanément. Dans l'autre cas, elle se contente de se conserver dans
-	* son état jusqu'à la prochaine mise à jour.
-	* Si les ressources courantes remplissent la partie "buffer" avec un ratio
-	* 0 < R < 1, alors la plante se conserve.
-	* Si les ressources courantes remplissent la partie "croisssance" avec un
-	* ratio 0 <= R <= 1, alors la plante à une probabilité R de croître. Sinon
-	* elle se conserve jusqu'à la prochaine étape. Si la plante est déjà à sa
-	* taile maximale, elle se reproduit. Cette reproduction n'arrive qu'une
-	* seule fois dans la vie de la plante.
-	*/
 
 	switch(plant->state) {
 		case PLANT_INITIAL :
-			plant->state = PLANT_GROWING;
-			sleep_time = rand_int_a_b(2, 8);
-			eventGridDeclareBeacon(&EVENT_GRID, &plant->grid_beacon,
-				plant->maximum_size * PLANT_RADIUS_CONSTANT * 3, PLANT);
+			// Check la priorité, et mettre à jour l'état en fonction
 			break;
 		case PLANT_CANCELLED :
-			gameObjectUpdateGraphics(plant->memory_link);
 			plantDestroy(plant);
 			return;
-		case PLANT_GROWING :
-			/* calculer, puis vérifier les jauges de resources.
-			* suivre la loi décidée au dessus. Une fois que la reproduction
-			* arrive, on passe à l'était mature. */
 
-			plant->state = PLANT_MATURE;
+		case PLANT_GROWING :
+			// Check la valeur qu'on obtient, et mettre à jour l'état en fonction
 			break;
 
 		case PLANT_MATURE :
-			/* calculer, puis vérifier les jauges de resources.
-			* suivre la loi décidée au dessus. */
-
-
-
-			plant->state = PLANT_DEAD;
+			// Check la valeur qu'on obtient, et mettre à jour l'état en fonction
 			break;
 			
 		case PLANT_DEAD :
@@ -168,8 +174,8 @@ void plantUpdateApplication(void * data) {
 
 	gameObjectUpdateGraphics(plant->memory_link);
 
-	updateRegisterAdd(&UPDATE_REGISTER,
-					  &plant->update_handle, sleep_time);
+	//updateRegisterAdd(&UPDATE_REGISTER,
+	//				  &plant->update_handle, sleep_time);
 }
 
 /** Event managing callback **/
