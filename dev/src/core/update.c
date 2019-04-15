@@ -104,7 +104,7 @@ void update_manager_free(UpdateManager * manager) {
 
 ArrayIndex * update_manager_k_cycle(UpdateManager * manager, int k) {
 	return manager->cycles + (
-			( manager->current_cycle_index + k - 1 ) %
+			( manager->current_cycle_index + k ) %
 			manager->cycle_count
 		) * manager->cycle_capacity;
 }
@@ -120,8 +120,9 @@ int update_manager_current_cycle_length(UpdateManager * manager) {
 }
 
 void update_manager_switch_cycle(UpdateManager * manager) {
+	manager->cycles_length[ manager->current_cycle_index ] = 0;
 	manager->current_cycle_index = 
-		manager->current_cycle_index >= manager->cycle_count ?
+		manager->current_cycle_index >= manager->cycle_count - 1 ?
 			0 : manager->current_cycle_index + 1;
 }
 
@@ -154,6 +155,7 @@ ArrayIndex update_manager_allocate_handle(UpdateManager * manager,
 }
 
 void update_manager_cycle_add(UpdateManager * manager, ArrayIndex index, int cycle_index) {
+
 	if(cycle_index >= manager->cycle_count) cycle_index = manager->cycle_count - 1;
 
 	ArrayIndex * cycle = update_manager_k_cycle(manager, cycle_index);
@@ -265,108 +267,117 @@ void update_manager_update(UpdateManager * manager) {
 			)
 		);
 
-	manager->cycles_length[ manager->current_cycle_index ] = 0;
+	for(int k = 0; k < manager->current_cycle_application_length; k++)
+		update_handle_reset_flags(
+			array_get(
+				&manager->handles_array,
+				cycle[k]
+			)
+		);
+
 	update_manager_switch_cycle(manager);
 	manager->phase = UPDATE_MANAGER_OFF_PHASE;
 }
 
-/*void updateRegisterUpdate(UpdateRegister * update_register) {
-	List * list = updateRegisterGetCurrentList(update_register);
-	update_register->currently_updated_list = list;
-	updateRegisterSwitch(update_register);
-
-	listApplyAll(*list, updateRegisterLocalDeclarationFunction);
-	listApplyAll(*list, updateRegisterLocalApplicationFunction);
-
-	listClear( list );
-
-	update_register->clock++;
-	update_register->currently_updated_list = NULL;
-}*/
-
 /**************************** TEST ********************************/
 
-/*void callBackA(void * a) {
-	printf("A !\n");
+typedef struct UpdateTestData {
+	UpdateManager * manager;
+	char symbol;
+	ArrayIndex cascade;
+} UpdateTestData;
+
+UpdateTestData test_data_init(UpdateManager * manager, char symbol, ArrayIndex cascade) {
+	return (UpdateTestData) {
+		.manager = manager,
+		.symbol = symbol,
+		.cascade = cascade
+	};
 }
 
-void callBackB(void * b) {
-	printf("B ! \n");
+void test_letter_call_back_declaration(void * v_data) {
+	UpdateTestData * data = v_data;
+	printf("%c...\n", data->symbol);
+	if( data->cascade >= 0 )
+		update_manager_register_handle_now(data->manager, data->cascade);
 }
 
-void callBackC(void * c) {
-	printf("C ! \n");
+void test_letter_call_back_application(void * v_data) {
+	UpdateTestData * data = v_data;
+	printf("%c !\n", data->symbol);
 }
 
-void updateTest() {
-	UpdateRegister reg;
+void test_2_declaration(void * v_data) {
+	UpdateTestData * data = v_data;
+	printf("%c...\n", data->symbol);
+	if( data->cascade >= 0 )
+		update_manager_register_handle(data->manager, data->cascade, 1);
+}
 
-	updateRegisterInit(&reg);
+int main(void) {
+	UpdateManager manager = update_manager_init(100, 10, 100);
 
-	UpdateHandle A1, A2, A3, B1, B2, C1, C2, C3;
+	for(int k = 0; k < 10; k++)
+		printf("length %d = %d\n", k, manager.cycles_length[k]);
 
-	updateHandleInit(&A1, NULL, callBackA, NULL);
-	updateHandleInit(&A2, NULL, callBackA, NULL);
-	updateHandleInit(&A3, NULL, callBackA, NULL);
-	updateHandleInit(&B1, NULL, callBackB, NULL);
-	updateHandleInit(&B2, NULL, callBackB, NULL);
-	updateHandleInit(&C1, NULL, callBackC, NULL);
-	updateHandleInit(&C2, NULL, callBackC, NULL);
-	updateHandleInit(&C3, NULL, callBackC, NULL);
+	UpdateTestData data_A = test_data_init(&manager, 'A' + 0, 1);
+	UpdateTestData data_B = test_data_init(&manager, 'A' + 1, 2);
+	UpdateTestData data_C = test_data_init(&manager, 'A' + 2, 3);
+	UpdateTestData data_D = test_data_init(&manager, 'A' + 3, 4);
+	UpdateTestData data_E = test_data_init(&manager, 'A' + 4, 0);
 
-	printf("tout en même temps\n");
-	updateRegisterAdd( &reg, &A1, 0);
-	updateRegisterAdd( &reg, &C1, 0);
-	updateRegisterAdd( &reg, &B1, 0);
-	updateRegisterAdd( &reg, &A2, 1);
-	updateRegisterAdd( &reg, &C2, 1);
-	updateRegisterAdd( &reg, &B2, 2);
-	updateRegisterAdd( &reg, &A3, 2);
-	updateRegisterAdd( &reg, &C3, 3);
-	updateRegisterUpdate(&reg);
-	printf("\n");
-	updateRegisterUpdate(&reg);
-	printf("\n");
-	updateRegisterUpdate(&reg);
-	printf("\n");
-	updateRegisterUpdate(&reg);
-	printf("\n");
+	ArrayIndex index_A = update_manager_allocate_handle(&manager,
+						&data_A, 
+						test_letter_call_back_declaration,
+						test_letter_call_back_application);
+	ArrayIndex index_B = update_manager_allocate_handle(&manager,
+						&data_B, 
+						test_letter_call_back_declaration,
+						test_letter_call_back_application);
+	ArrayIndex index_C = update_manager_allocate_handle(&manager,
+						&data_C, 
+						test_letter_call_back_declaration,
+						test_letter_call_back_application);
+	ArrayIndex index_D = update_manager_allocate_handle(&manager,
+						&data_D, 
+						test_letter_call_back_declaration,
+						test_letter_call_back_application);
+	ArrayIndex index_E = update_manager_allocate_handle(&manager,
+						&data_E, 
+						test_letter_call_back_declaration,
+						test_letter_call_back_application);
 
-	printf("par salves\n");
-	updateRegisterAdd( &reg, &A1, 0);
-	updateRegisterAdd( &reg, &C1, 0);
-	updateRegisterAdd( &reg, &B1, 0);
-	updateRegisterUpdate(&reg);
-	printf("\n");
-	updateRegisterAdd( &reg, &A2, 0);
-	updateRegisterAdd( &reg, &C2, 0);
-	updateRegisterUpdate(&reg);
-	printf("\n");
-	updateRegisterAdd( &reg, &B2, 0);
-	updateRegisterAdd( &reg, &A3, 0);
-	updateRegisterUpdate(&reg);
-	printf("\n");
-	updateRegisterAdd( &reg, &C3, 0);
-	updateRegisterUpdate(&reg);
-	printf("\n");
-
-	printf("par salves mélangées\n");
-	updateRegisterAdd( &reg, &C1, 3);
-	updateRegisterAdd( &reg, &A1, 0);
-	updateRegisterAdd( &reg, &A2, 1);
-	updateRegisterAdd( &reg, &C2, 0);
-	updateRegisterAdd( &reg, &B1, 0);
-	updateRegisterUpdate(&reg);
-	printf("\n");
-	updateRegisterAdd( &reg, &C3, 0);
-	updateRegisterAdd( &reg, &B2, 1);
-	updateRegisterUpdate(&reg);
-	printf("\n");
-	updateRegisterAdd( &reg, &A3, 0);
-	updateRegisterUpdate(&reg);
-	printf("\n");
-	updateRegisterUpdate(&reg);
-	printf("\n");
-
+	printf("indexes = %d, %d, %d, %d, %d\n", index_A, index_B, index_C, index_D,
+		index_E);
 	
-}*/
+	update_manager_register_handle(&manager, index_A, 0);
+	update_manager_register_handle(&manager, index_B, 1);
+	update_manager_register_handle(&manager, index_C, 1);
+	update_manager_register_handle(&manager, index_D, 2);
+	update_manager_register_handle(&manager, index_E, 2);
+
+	for(int k = 0; k < 3; k++) {
+		printf("Update %d :\n", k + 1);
+		update_manager_update(&manager);
+	}
+
+	UpdateTestData data_F = test_data_init(&manager, 'A' + 5, 6);
+	UpdateTestData data_G = test_data_init(&manager, 'A' + 6, 5);
+	ArrayIndex index_F = update_manager_allocate_handle(&manager,
+						&data_F, 
+						test_2_declaration,
+						test_letter_call_back_application);
+	ArrayIndex index_G = update_manager_allocate_handle(&manager,
+						&data_G,
+						test_2_declaration,
+						test_letter_call_back_application);
+
+	update_manager_register_handle_now(&manager, index_F);
+
+	for(int k = 3; k < 20; k++) {
+		printf("Update %d :\n", k + 1);
+		update_manager_update(&manager);
+	}
+
+	update_manager_free(&manager);
+}

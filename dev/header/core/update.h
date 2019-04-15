@@ -63,10 +63,6 @@ typedef struct {
 
 UpdateHandle update_handle_create_empty();
 
-/*void update_handle_init(UpdateHandle * handle, void * data,
-					  CallBack declaration_function,
-					  CallBack application_function);*/
-
 UpdateHandle update_handle_init(void * data,
 						CallBack declaration_function,
 						CallBack application_function);
@@ -107,14 +103,6 @@ typedef struct UpdateManager {
 	long int clock;
 } UpdateManager;
 
-//void updateRegisterInit(UpdateRegister * update_register);
-
-//List * updateRegisterGetCurrentList(UpdateRegister * update_register);
-
-//List * updateRegisterGetKthList(UpdateRegister * update_register, int k);
-
-//void updateRegisterSwitch(UpdateRegister * update_register);
-
 UpdateManager update_manager_create_empty();
 
 UpdateManager update_manager_init(int handle_capacity, int cycle_count, int cycle_capacity);
@@ -127,27 +115,10 @@ int update_manager_current_cycle_length(UpdateManager * manager);
 
 void update_manager_switch_cycle(UpdateManager * manager);
 
-/**
-* Fonction qui sera la plus utilisée dans le code : c'est la fonction qui permet
-* de rajouter une callback dans les listes du manager. Le paramètre delay est
-* équivalent au nombre de listes qui seront sautées avant d'effectuer l'ajout.
-* Pour executer la mise à jour le plus tôt possible, il suffit de mettre delay
-* à 0.
-* La valeur maximale acceptée pour delay est UPDATE_REGISTER_CYCLE_COUNT - 3.
-* La valeur delay est capée à ce maximum. De cette façon la liste précédente
-* ne peut pas être modifiée, ce qui permet une bonne opération des choses.
-*/
-
 ArrayIndex update_manager_allocate_handle(UpdateManager * manager,
 						void * data, 
 						CallBack declaration_function,
 						CallBack application_function);
-
-//void updateRegisterAdd(UpdateRegister * update_register,
-//							 UpdateHandle * handle, int delay);
-
-//void updateRegisterAddToCurrentUpdate(UpdateRegister * update_register,
-//									  UpdateHandle * handle);
 
 void update_manager_cycle_add(UpdateManager * manager, ArrayIndex index, int cycle);
 
@@ -160,11 +131,10 @@ void update_manager_register_handle_now(UpdateManager * manager, ArrayIndex inde
 * liste suivante.
 */
 
-//void updateRegisterUpdate(UpdateRegister * update_register);
 void update_manager_update(UpdateManager * manager);
 
 /************************************* TEST ***********************************/
 
-//void updateTest();
+int main(void);
 
 #endif
