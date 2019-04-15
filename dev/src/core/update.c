@@ -9,57 +9,120 @@ UpdateHandle updateHandleCreateEmpty() {
 		.data = NULL,
 		.declaration_function = NULL,
 		.application_function = NULL,
-		.list_link = listCreate()
+		.flags = 0
 	};
 }
 
-void updateHandleInit(UpdateHandle * handle, void * data,
-					  CallBack declaration_function,
-					  CallBack application_function) {
-	handle->data = data;
-	handle->declaration_function = declaration_function;
-	handle->application_function = application_function;
-	handle->list_link = listCreate();
-	handle->list_link.data = handle;
+UpdateHandle update_handle_init(void * data,
+						CallBack declaration_function,
+						CallBack application_function) {
+	return (UpdateHandle) {
+		.data = data,
+		.declaration_function = declaration_function,
+		.application_function = application_function,
+		.flags = 0
+	};
 }
 
-void updateHandleDeclarationCall(UpdateHandle * handle) {
-	if( handle->declaration_function )
-		handle->declaration_function(handle->data);
+int update_handle_is_declaration_updated(UpdateHandle * handle) {
+	return !! ( ( handle->flags ) & ( 1 << 0 ) );
 }
 
-void updateHandleApplicationCall(UpdateHandle * handle) {
-	if( handle->application_function )
-		handle->application_function(handle->data);
+void update_handle_set_declaration_flag(UpdateHandle * handle, int value) {
+	if( value )
+		handle->flags |=  ( 1 << 0 );
+	else
+		handle->flags &= ~( 1 << 0 );
 }
 
-void updateHandleRemove(UpdateHandle * handle) {
-	listLinkDetach(& handle->list_link);
+int update_handle_is_application_updated(UpdateHandle * handle) {
+	return !! ( ( handle->flags ) & ( 1 << 1 ) );
+}
+
+void update_handle_set_application_flag(UpdateHandle * handle, int value) {
+	if( value )
+		handle->flags |=  ( 1 << 1 );
+	else
+		handle->flags &= ~( 1 << 1 );
+}
+
+void update_handle_reset_flags(UpdateHandle * handle) {
+	handle->flags = 0;
+}
+
+void update_handle_declaration_call(UpdateHandle * handle) {
+	if( ! handle->declaration_function ) return;
+	if( update_handle_is_declaration_updated(handle) ) return;
+	handle->declaration_function(handle->data);
+	update_handle_set_declaration_flag(handle, 1);
+}
+
+void update_handle_application_call(UpdateHandle * handle) {
+	if( ! handle->application_function ) return;
+	if( update_handle_is_application_updated(handle) ) return;
+	handle->application_function(handle->data);
+	update_handle_set_application_flag(handle, 1);
 }
 
 /***************************** UPDATE REGISTER ****************************/
 
-void updateRegisterInit(UpdateRegister * update_register) {
-	update_register->current_list = 0;
-	update_register->clock = 0;
-	update_register->currently_updated_list = NULL;
-	for(int k = 0; k < UPDATE_REGISTER_CYCLE_COUNT; k++)
-		update_register->update_lists[k] = listCreate();
+
+UpdateManager update_manager_create_empty() {
+	return (UpdateManager) {
+		.handles_array = array_create_empty(),
+		.cycle_count = 0,
+		.cycle_capacity = 0,
+		.phase = UPDATE_MANAGER_OFF_PHASE,
+		.cycles = NULL,
+		.cycles_length = NULL,
+		.current_cycle_index = 0,
+		.current_cycle_application_length = 0,
+		.clock = 0
+	};
 }
 
-List * updateRegisterGetCurrentList(UpdateRegister * update_register) {
-	return &update_register->update_lists[update_register->current_list];
+UpdateManager update_manager_init(int handle_capacity, int cycle_count, int cycle_capacity) {
+	return (UpdateManager) {
+		.handles_array = array_init(sizeof(UpdateHandle), handle_capacity),
+		.cycle_count = cycle_count,
+		.cycle_capacity = cycle_capacity,
+		.phase = UPDATE_MANAGER_OFF_PHASE,
+		.cycles = malloc( sizeof(ArrayIndex) * cycle_count * cycle_capacity ),
+		.cycles_length = malloc( sizeof(int) * cycle_count ),
+		.current_cycle_index = 0,
+		.current_cycle_application_length = 0,
+		.clock = 0
+	};
 }
 
-List * updateRegisterGetKthList(UpdateRegister * update_register, int k) {
-	return update_register->update_lists + (
-		(update_register->current_list + (k - 1)) % UPDATE_REGISTER_CYCLE_COUNT
-	);
+void update_manager_free(UpdateManager * manager) {
+	if( ! manager ) return;
+	if( manager->cycles ) free(manager->cycles);
+	if( manager->cycles_length ) free(manager->cycles_length);
+	(*manager) = update_manager_create_empty();
 }
 
-void updateRegisterSwitch(UpdateRegister * update_register) {
-	update_register->current_list ++;
-	update_register->current_list %= UPDATE_REGISTER_CYCLE_COUNT;
+ArrayIndex * update_manager_k_cycle(UpdateManager * manager, int k) {
+	return manager->cycles + (
+			( manager->current_cycle_index + k - 1 ) %
+			manager->cycle_count
+		) * manager->cycle_capacity;
+}
+
+ArrayIndex * update_manager_current_cycle(UpdateManager * manager) {
+	return manager->cycles +
+		manager->current_cycle_index *
+		manager->cycle_capacity; 
+}
+
+int update_manager_current_cycle_length(UpdateManager * manager) {
+	return manager->cycles_length[ manager->current_cycle_index ];
+}
+
+void update_manager_switch_cycle(UpdateManager * manager) {
+	manager->current_cycle_index = 
+		manager->current_cycle_index >= manager->cycle_count ?
+			0 : manager->current_cycle_index + 1;
 }
 
 /**
@@ -72,7 +135,77 @@ void updateRegisterSwitch(UpdateRegister * update_register) {
 * (voir plus haut).
 */
 
-void updateRegisterAdd(UpdateRegister * update_register,
+ArrayIndex update_manager_allocate_handle(UpdateManager * manager,
+						void * data, 
+						CallBack declaration_function,
+						CallBack application_function) {
+	UpdateHandle handle = update_handle_init(data,
+											declaration_function,
+											application_function);
+
+	ArrayIndex index = array_allocate_slot(&manager->handles_array, &handle);
+
+	if(index < 0 ) {
+		fprintf(stderr, "ERROR : Update Manager : full update handle array ");
+		fprintf(stderr, "(size = %d)\n", manager->handles_array.capacity);
+	}
+	
+	return index;
+}
+
+void update_manager_cycle_add(UpdateManager * manager, ArrayIndex index, int cycle_index) {
+	if(cycle_index >= manager->cycle_count) cycle_index = manager->cycle_count - 1;
+
+	ArrayIndex * cycle = update_manager_k_cycle(manager, cycle_index);
+	int * length = manager->cycles_length +
+		(manager->current_cycle_index + cycle_index ) % manager->cycle_count;
+
+	if( *length >= manager->cycle_capacity ) {
+		fprintf(stderr, "ERROR : Update Manager : full update cycle ");
+		fprintf(stderr, "(capacity = %d, index = %d)\n",
+			manager->cycle_capacity, cycle_index);
+		return;
+	}
+
+	cycle[*length] = index;
+	(*length)++;
+}
+
+void update_manager_register_handle(UpdateManager * manager, ArrayIndex index,
+									int cycle) {
+	if(cycle == 0)
+		update_manager_register_handle_now(manager, index);
+	else update_manager_cycle_add(manager, index, cycle);
+}
+
+void update_manager_register_handle_now(UpdateManager * manager, ArrayIndex index) {
+	ArrayIndex * cycle = NULL;
+	int length = 0;
+	switch( manager->phase ) {
+		case UPDATE_MANAGER_OFF_PHASE :
+			update_manager_cycle_add(manager, index, 0);
+			break;
+		case UPDATE_MANAGER_DECLARATION_PHASE :	
+			cycle = update_manager_current_cycle(manager);
+			length = manager->current_cycle_application_length;
+
+			if( length >= manager->cycle_capacity ) {
+				fprintf(stderr, "ERROR : Update Manager : full update cycle ");
+				fprintf(stderr, "(capacity = %d, index = %d)\n",
+					manager->cycle_capacity, manager->current_cycle_index);
+				return;
+			}
+
+			cycle[length] = index;
+			manager->current_cycle_application_length++;
+			break;
+		case UPDATE_MANAGER_APPLICATION_PHASE :
+			update_manager_cycle_add(manager, index, 1);
+			break;
+	}
+}
+
+/*void updateRegisterAdd(UpdateRegister * update_register,
 							 UpdateHandle * handle, int delay) {
 	if(delay > UPDATE_REGISTER_CYCLE_COUNT - 3)
 		delay = UPDATE_REGISTER_CYCLE_COUNT - 3;
@@ -88,13 +221,13 @@ void updateRegisterAddToCurrentUpdate(UpdateRegister * update_register,
 		updateRegisterAdd(update_register, handle, 0);
 	else
 		listAdd(update_register->currently_updated_list, &handle->list_link);
-}
+}*/
 
 /**
 * Fonction pseudo lambda utilisée par la fonction suivante
 */
 
-void updateRegisterLocalDeclarationFunction(void * data) {
+/*void updateRegisterLocalDeclarationFunction(void * data) {
 	UpdateHandle * handle = data;
 	updateHandleDeclarationCall(handle);
 }
@@ -102,14 +235,42 @@ void updateRegisterLocalDeclarationFunction(void * data) {
 void updateRegisterLocalApplicationFunction(void * data) {
 	UpdateHandle * handle = data;
 	updateHandleApplicationCall(handle);
-}
+}*/
 
 /**
 * Fonction la plus importante, qui exécute toutes les handles, et passe à la
 * liste suivante.
 */
 
-void updateRegisterUpdate(UpdateRegister * update_register) {
+void update_manager_update(UpdateManager * manager) {
+	ArrayIndex * cycle = update_manager_current_cycle(manager);
+	int length = update_manager_current_cycle_length(manager);
+	manager->current_cycle_application_length = length;
+
+	manager->phase = UPDATE_MANAGER_DECLARATION_PHASE;
+	for(int k = 0; k < length; k++)
+		update_handle_declaration_call(
+			array_get(
+				&manager->handles_array,
+				cycle[k]
+			)
+		);
+
+	manager->phase = UPDATE_MANAGER_APPLICATION_PHASE;
+	for(int k = 0; k < manager->current_cycle_application_length; k++)
+		update_handle_application_call(
+			array_get(
+				&manager->handles_array,
+				cycle[k]
+			)
+		);
+
+	manager->cycles_length[ manager->current_cycle_index ] = 0;
+	update_manager_switch_cycle(manager);
+	manager->phase = UPDATE_MANAGER_OFF_PHASE;
+}
+
+/*void updateRegisterUpdate(UpdateRegister * update_register) {
 	List * list = updateRegisterGetCurrentList(update_register);
 	update_register->currently_updated_list = list;
 	updateRegisterSwitch(update_register);
@@ -121,11 +282,11 @@ void updateRegisterUpdate(UpdateRegister * update_register) {
 
 	update_register->clock++;
 	update_register->currently_updated_list = NULL;
-}
+}*/
 
 /**************************** TEST ********************************/
 
-void callBackA(void * a) {
+/*void callBackA(void * a) {
 	printf("A !\n");
 }
 
@@ -208,4 +369,4 @@ void updateTest() {
 	printf("\n");
 
 	
-}
+}*/

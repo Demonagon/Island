@@ -1,6 +1,6 @@
 #ifndef UPDATE__H
 #define UPDATE__H
-#include "util/list.h"
+#include "util/array.h"
 
 /**
 * Dans tout jeu, il y a un moment où l'on veut mettre à jour une liste d'objets
@@ -29,7 +29,22 @@
 * parallèle (mais c'est pas tout de suite).
 */
 
-#define UPDATE_REGISTER_CYCLE_COUNT 50
+//#define UDPATE_MANAGER_MAX_HANDLE_PER_CYCLE 1000
+//#define UPDATE_MANAGER_CYCLE_COUNT 50
+
+
+/**
+* Mise à jour, avril 2019. On refait tout.
+* Un principe à changé : afin de permettre à des objects qui n'auraient pas
+* été inclus dans la phase déclarative de la mise à jour d'appliquer tout de
+* même des modifications à la phase applicative. Pour cela, on considère que
+* placer un handler dans le cycle numéro 0 inclu l'objet dans la mise à jour
+* aussi tôt que possible. Si nous somme en phase déclarative, l'objet sera inclu
+* dans la liste pour la phase applicative.
+* Suite à la simplification drastique des structures de données on va inclure
+* un ensemble de flags dans les handlers afin de permettre de ne pas mettre à
+* jour un même objet deux fois.
+*/
 
 /**
 * une instance de UpdateHandle est là pour permettre au registre d'appeler
@@ -43,39 +58,74 @@ typedef struct {
 	void * data;
 	CallBack declaration_function;
 	CallBack application_function;
-	ListLink list_link;
+	int8_t flags;
 } UpdateHandle;
 
-UpdateHandle updateHandleCreateEmpty();
+UpdateHandle update_handle_create_empty();
 
-void updateHandleInit(UpdateHandle * handle, void * data,
+/*void update_handle_init(UpdateHandle * handle, void * data,
 					  CallBack declaration_function,
-					  CallBack application_function);
+					  CallBack application_function);*/
 
-void updateHandleDeclarationCall(UpdateHandle * handle);
+UpdateHandle update_handle_init(void * data,
+						CallBack declaration_function,
+						CallBack application_function);
 
-void updateHandleApplicationCall(UpdateHandle * handle);
+int update_handle_is_declaration_updated(UpdateHandle * handle);
+void update_handle_set_declaration_flag(UpdateHandle * handle, int value);
+int update_handle_is_application_updated(UpdateHandle * handle);
+void update_handle_set_application_flag(UpdateHandle * handle, int value);
 
-void updateHandleRemove(UpdateHandle * handle);
+void update_handle_reset_flags(UpdateHandle * handle);
+
+void update_handle_declaration_call(UpdateHandle * handle);
+
+void update_handle_application_call(UpdateHandle * handle);
 
 /****************************** UPDATE REGISTER *******************************/
 
-typedef struct UpdateRegister {
-	List update_lists[UPDATE_REGISTER_CYCLE_COUNT];
-	int current_list;
+typedef enum UpdateManagerPhase {
+	UPDATE_MANAGER_OFF_PHASE,
+	UPDATE_MANAGER_DECLARATION_PHASE,
+	UPDATE_MANAGER_APPLICATION_PHASE
+} UpdateManagerPhase;
+
+typedef struct UpdateManager {
+	Array handles_array;
+
+	int cycle_count;
+	int cycle_capacity;
+
+	UpdateManagerPhase phase;
+
+	ArrayIndex * cycles; // two dimentional array
+	int * cycles_length; // one dimentional array
+
+	int current_cycle_index;
+	int current_cycle_application_length; // the base length, + whatever elements are thrown in during the declaration phase
 
 	long int clock;
+} UpdateManager;
 
-	List * currently_updated_list;
-} UpdateRegister;
+//void updateRegisterInit(UpdateRegister * update_register);
 
-void updateRegisterInit(UpdateRegister * update_register);
+//List * updateRegisterGetCurrentList(UpdateRegister * update_register);
 
-List * updateRegisterGetCurrentList(UpdateRegister * update_register);
+//List * updateRegisterGetKthList(UpdateRegister * update_register, int k);
 
-List * updateRegisterGetKthList(UpdateRegister * update_register, int k);
+//void updateRegisterSwitch(UpdateRegister * update_register);
 
-void updateRegisterSwitch(UpdateRegister * update_register);
+UpdateManager update_manager_create_empty();
+
+UpdateManager update_manager_init(int handle_capacity, int cycle_count, int cycle_capacity);
+
+void update_manager_free(UpdateManager * manager);
+
+ArrayIndex * update_manager_k_cycle(UpdateManager * manager, int k);
+ArrayIndex * update_manager_current_cycle(UpdateManager * manager);
+int update_manager_current_cycle_length(UpdateManager * manager);
+
+void update_manager_switch_cycle(UpdateManager * manager);
 
 /**
 * Fonction qui sera la plus utilisée dans le code : c'est la fonction qui permet
@@ -88,21 +138,33 @@ void updateRegisterSwitch(UpdateRegister * update_register);
 * ne peut pas être modifiée, ce qui permet une bonne opération des choses.
 */
 
-void updateRegisterAdd(UpdateRegister * update_register,
-							 UpdateHandle * handle, int delay);
+ArrayIndex update_manager_allocate_handle(UpdateManager * manager,
+						void * data, 
+						CallBack declaration_function,
+						CallBack application_function);
 
-void updateRegisterAddToCurrentUpdate(UpdateRegister * update_register,
-									  UpdateHandle * handle);
+//void updateRegisterAdd(UpdateRegister * update_register,
+//							 UpdateHandle * handle, int delay);
+
+//void updateRegisterAddToCurrentUpdate(UpdateRegister * update_register,
+//									  UpdateHandle * handle);
+
+void update_manager_cycle_add(UpdateManager * manager, ArrayIndex index, int cycle);
+
+void update_manager_register_handle(UpdateManager * manager, ArrayIndex index,
+									int cycle);
+void update_manager_register_handle_now(UpdateManager * manager, ArrayIndex index);
 
 /**
 * Fonction la plus importante, qui exécute toutes les handles, et passe à la
 * liste suivante.
 */
 
-void updateRegisterUpdate(UpdateRegister * update_register);
+//void updateRegisterUpdate(UpdateRegister * update_register);
+void update_manager_update(UpdateManager * manager);
 
 /************************************* TEST ***********************************/
 
-void updateTest();
+//void updateTest();
 
 #endif
