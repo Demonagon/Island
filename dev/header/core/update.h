@@ -59,6 +59,11 @@ typedef struct {
 	CallBack declaration_function;
 	CallBack application_function;
 	int8_t flags;
+
+	// Linked List elements
+	ArrayIndex previous_handle;
+	ArrayIndex next_handle;
+	int cycle_list;
 } UpdateHandle;
 
 UpdateHandle update_handle_create_empty();
@@ -67,41 +72,45 @@ UpdateHandle update_handle_init(void * data,
 						CallBack declaration_function,
 						CallBack application_function);
 
-int update_handle_is_declaration_updated(UpdateHandle * handle);
-void update_handle_set_declaration_flag(UpdateHandle * handle, int value);
-int update_handle_is_application_updated(UpdateHandle * handle);
-void update_handle_set_application_flag(UpdateHandle * handle, int value);
-
-void update_handle_reset_flags(UpdateHandle * handle);
+void update_handle_mark_obsolete(UpdateHandle * handle);
+int update_handle_is_obsolete(UpdateHandle * handle);
 
 void update_handle_declaration_call(UpdateHandle * handle);
 
 void update_handle_application_call(UpdateHandle * handle);
 
+void update_handle_detach_link(UpdateHandle * handle);
+
 /****************************** UPDATE REGISTER *******************************/
+
+#define UPDATE_MANAGER_LIST_NO_OBJECT -1
+#define UPDATE_MANAGER_LIST_INITIAL_OBJECT -2
+#define UPDATE_MANAGER_PROPAGATION_LIST -1
+#define UPDATE_MANAGER_NO_LIST -2
 
 typedef enum UpdateManagerPhase {
 	UPDATE_MANAGER_OFF_PHASE,
 	UPDATE_MANAGER_DECLARATION_PHASE,
-	UPDATE_MANAGER_APPLICATION_PHASE
+	UPDATE_MANAGER_APPLICATION_PHASE,
+	UPDATE_MANAGER_CLEANUP_PHASE
 } UpdateManagerPhase;
 
 typedef struct UpdateManager {
 	Array handles_array;
 
 	int cycle_count;
-	int cycle_capacity;
 
 	UpdateManagerPhase phase;
 
-	ArrayIndex * cycles; // two dimentional array
-	int * cycles_length; // one dimentional array
+	ArrayIndex * cycle_lists;
+	ArrayIndex application_propagation_list;
 
 	int current_cycle_index;
-	int current_cycle_application_length; // the base length, + whatever elements are thrown in during the declaration phase
 
 	long int clock;
 } UpdateManager;
+
+/** MEMORY ALLOCATION **/
 
 UpdateManager update_manager_create_empty();
 
@@ -109,27 +118,39 @@ UpdateManager update_manager_init(int handle_capacity, int cycle_count, int cycl
 
 void update_manager_free(UpdateManager * manager);
 
-ArrayIndex * update_manager_k_cycle(UpdateManager * manager, int k);
-ArrayIndex * update_manager_current_cycle(UpdateManager * manager);
-int update_manager_current_cycle_length(UpdateManager * manager);
-
-void update_manager_switch_cycle(UpdateManager * manager);
-
 ArrayIndex update_manager_allocate_handle(UpdateManager * manager,
 						void * data, 
 						CallBack declaration_function,
 						CallBack application_function);
 
-void update_manager_cycle_add(UpdateManager * manager, ArrayIndex index, int cycle);
+void update_manager_free_handle(UpdateManager * manager, ArrayIndex index);
+
+/** CYCLE LIST ACCESS **/
+
+ArrayIndex * update_manager_k_cycle_list(UpdateManager * manager, int k);
+ArrayIndex * update_manager_current_cycle_list(UpdateManager * manager);
+
+/** CYCLE RAW LIST MANIPULATION **/
+
+// These functions will not operate if the handle is already in a list.
+void update_manager_list_add_handle(UpdateManager * manager, ArrayIndex index, int cycle);
+void update_manager_list_propagate_handle(UpdateManager * manager, ArrayIndex index);
+
+void update_manager_list_detach_handle(UpdateManager * manager, ArrayIndex index);
+
+void update_manager_cleanup_list(UpdateManager * manager, ArrayIndex index);
+void update_manager_cleanup_cycle_list(UpdateManager * manager, ArrayIndex index);
+void update_manager_cleanup_propagation_list(UpdateManager * manager);
+
+void update_manager_switch_cycle(UpdateManager * manager);
+
+/** HANDLE REGISTER **/
 
 void update_manager_register_handle(UpdateManager * manager, ArrayIndex index,
-									int cycle);
+									int delay);
 void update_manager_register_handle_now(UpdateManager * manager, ArrayIndex index);
 
-/**
-* Fonction la plus importante, qui exécute toutes les handles, et passe à la
-* liste suivante.
-*/
+/** UPDATE **/
 
 void update_manager_update(UpdateManager * manager);
 
